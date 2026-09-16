@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw shoot assets — unprocessed personal photos/videos, not needed at
+# runtime (public/media/ has the derived, web-ready versions the site
+# actually uses). Kept out of the public repo.
+/_source/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

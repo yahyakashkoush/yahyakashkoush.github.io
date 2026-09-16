@@ -1,0 +1,283 @@
+/**
+ * Case studies. Every string here comes from _source/cv.txt or the project's
+ * own _source/projects/<slug>/details.txt.
+ *
+ * Optional fields are genuinely optional: a project renders only the sections
+ * its source material supports. Nothing is padded to match a template.
+ */
+
+export type ProjectLink = { label: string; href: string };
+
+export type Project = {
+  slug: string;
+  index: string;
+  title: string;
+  subtitle: string;
+  /** Null where cv.txt gives no date. Never guessed. */
+  year: string | null;
+  date: string | null;
+  role: string;
+  summary: string;
+  overview: string[];
+  challenge?: string[];
+  approach?: string[];
+  capabilities?: { label: string; body: string }[];
+  architecture?: string;
+  outcome?: string[];
+  stack: string[];
+  credits?: string[];
+  links: ProjectLink[];
+};
+
+export const projects: Project[] = [
+  {
+    slug: "wkeyone",
+    index: "01",
+    title: "WKEYONE",
+    subtitle: "AI-powered WhatsApp business automation platform",
+    year: "2026",
+    date: "02 / 2026",
+    role: "Architecture, backend, AI layer, product",
+    summary:
+      "A sales management and business intelligence platform built on WhatsApp, for companies handling thousands of conversations a month.",
+    overview: [
+      "A sales management and business intelligence platform built on WhatsApp, designed for companies handling thousands of conversations a month, where losing a single order is not an option.",
+      "Not a reply bot. A full operating layer on top of the channel where customers in the region actually buy.",
+    ],
+    capabilities: [
+      {
+        label: "Intelligent sales engine",
+        body: "Understands text, voice and images, responds with your real business data within seconds, and detects purchase intent inside the conversation, turning it into a registered order.",
+      },
+      {
+        label: "Lifecycle automation",
+        body: "From first inquiry, to order confirmation, to recovering hesitant customers with personalised follow-ups at the right moment.",
+      },
+      {
+        label: "Built-in business intelligence",
+        body: "Daily AI reports and real-time analytics on revenue, orders and customer behaviour, delivered on WhatsApp.",
+      },
+      {
+        label: "Enterprise-ready architecture",
+        body: "Multiple numbers, role-based teams, targeted campaigns, Meta Cloud API integration, and an open API for existing systems.",
+      },
+    ],
+    outcome: [
+      "Live in 15 minutes: connect a number, add business data, and the platform runs. No developers, no code.",
+      "The standard held throughout: zero missed messages, zero lost orders.",
+    ],
+    stack: [
+      "WhatsApp Business API",
+      "Meta Cloud API",
+      "Multi-provider LLM context",
+      "Customer memory",
+      "AI-assisted order extraction",
+      "Automated workflows",
+      "Campaign scheduling",
+      "Human handoff",
+      "Analytics dashboard",
+      "Push notifications",
+      "Health monitoring",
+      "Multi-tenant + RBAC",
+      "Background jobs",
+    ],
+    links: [
+      { label: "wkeyone.app", href: "https://wkeyone.app" },
+      {
+        label: "Announcement",
+        href: "https://www.linkedin.com/posts/yahya-kashkoush-268172221_saas-whatsappbusiness-businessintelligence-activity-7485666574960513024-CU7D",
+      },
+    ],
+  },
+  {
+    slug: "headshot",
+    index: "02",
+    title: "Headshot",
+    subtitle: "AI-augmented OSINT and lead intelligence platform",
+    year: null,
+    date: null,
+    role: "Architecture, engine, AI layer",
+    summary:
+      "Autonomously discovers, validates, enriches and investigates business prospects from a niche plus location query.",
+    overview: [
+      "An AI-augmented OSINT and lead intelligence platform engineered to autonomously discover, validate, enrich and investigate business prospects from a simple niche plus location query.",
+      "It combines multi-source discovery, web intelligence, entity resolution, adaptive investigation planning, automated deep-link execution, Arabic and Franco-Arabic intelligence, evidence-based scoring and AI-assisted reasoning into a single investigation workflow.",
+    ],
+    capabilities: [
+      {
+        label: "Adaptive investigation engine",
+        body: "Identifies intelligence gaps, evaluates techniques by value, cost and reliability, selects the next action, executes it, and updates investigation state.",
+      },
+      {
+        label: "Autonomous deep-link intelligence",
+        body: "Generates and executes investigation paths rather than presenting static links. Verified chains include crt.sh to subdomains to derived probes.",
+      },
+      {
+        label: "Entity resolution and intelligence graph",
+        body: "Connects organisations, domains, people, emails, phones, social profiles, technologies, locations and infrastructure while maintaining provenance and confidence.",
+      },
+      {
+        label: "Arabic and Franco-Arabic intelligence",
+        body: "Arabic normalisation, transliteration, phonetic matching, regional variants, and Franco-Arabic inputs such as m7amed and 3abdallah.",
+      },
+      {
+        label: "Evidence-based lead scoring",
+        body: "Weighs contactability, ICP fit, pain signals, decision-makers, social presence, source quality and corroborating evidence.",
+      },
+      {
+        label: "False-positive detection",
+        body: "Explicitly rejects irrelevant businesses, duplicate entities, unrelated locations, noisy directories, misleading matches and unsupported relationships.",
+      },
+      {
+        label: "AI safety and graceful degradation",
+        body: "Validates structured AI responses and falls back to deterministic behaviour during provider failures, rate limits, malformed responses or unavailable models.",
+      },
+      {
+        label: "Non-obvious techniques",
+        body: "DMARC rua intelligence, certificate organisation searches, security.txt, urlscan intelligence, sitemap analysis and infrastructure attribution.",
+      },
+    ],
+    architecture:
+      "Discovery → Normalization → Entity Resolution → Enrichment → Evidence Graph → Gap Analysis → Adaptive Planner → Deep-Link Execution → Re-scoring → Next Investigation",
+    stack: [
+      "Python",
+      "OSINT",
+      "Web Scraping",
+      "Playwright",
+      "REST APIs",
+      "SQLite",
+      "Async Processing",
+      "Entity Resolution",
+      "Information Retrieval",
+      "NLP",
+      "Arabic NLP",
+      "Transliteration",
+      "Generative AI",
+      "AI Provider Abstraction",
+      "Knowledge Retrieval",
+      "Adaptive Planning",
+      "Evidence Graphs",
+      "Lead Scoring",
+      "Automation",
+    ],
+    links: [],
+  },
+  {
+    slug: "lai",
+    index: "03",
+    title: "LAI",
+    subtitle: "Multi-provider AI chat application for iOS",
+    year: "2025",
+    date: "01 / 2025",
+    role: "iOS architecture, AI integration, interface",
+    summary:
+      "Several AI providers behind one interface, with an abstraction layer that lets the provider change without touching application logic.",
+    overview: [
+      "A platform that brings several AI providers together behind one interface. Rather than binding the app directly to each provider, an abstraction layer lets the AI provider change without changing application logic.",
+      "LAI v1 is a comprehensive iOS application that integrates multiple AI models into a unified conversational interface.",
+    ],
+    capabilities: [
+      { label: "Multi-AI integration", body: "Access to Gemini, Mistral and OpenRouter APIs through one surface." },
+      { label: "Conversation management", body: "Persistent chat history with context preservation and contextual smart replies." },
+      { label: "Image analysis", body: "AI-powered interpretation of visual content." },
+      { label: "Resilience", body: "Crash recovery, data validation, retry mechanisms, string safety and input validation." },
+    ],
+    approach: [
+      "Modular AI model factory design, so a new provider is an addition rather than a rewrite.",
+      "Modern iOS architecture patterns with SwiftUI and adaptive theming.",
+      "Efficient conversation storage and maintenance algorithms.",
+    ],
+    outcome: [
+      "Multi-API integration strategies for diverse AI capabilities, resilient mobile architecture, and conversation context and memory management at scale.",
+    ],
+    stack: ["iOS", "SwiftUI", "Gemini", "Mistral", "OpenRouter", "AI Provider Abstraction", "Mobile Architecture"],
+    links: [
+      {
+        label: "Announcement",
+        href: "https://www.linkedin.com/posts/yahya-kashkoush-268172221_ios-swiftui-artificialintelligence-activity-7336776985374867457-lC7Z",
+      },
+    ],
+  },
+  {
+    slug: "keyone-data",
+    index: "04",
+    title: "KEYONE Data",
+    subtitle: "Large-scale analytics engine",
+    year: "2024",
+    date: "01 / 2024",
+    role: "Data engineering, query layer, performance",
+    summary: "An analytics engine over hundreds of millions of records, built on DuckDB and Parquet with a FastAPI query layer.",
+    overview: [
+      "A project built specifically for large-scale analytics, handling hundreds of millions of records.",
+    ],
+    approach: [
+      "DuckDB and Apache Parquet as the storage and execution layer.",
+      "A FastAPI query layer built on top of it.",
+      "The engineering focus was performance, pagination and query optimisation.",
+    ],
+    stack: ["DuckDB", "Apache Parquet", "FastAPI", "Python", "Query Optimisation", "Pagination"],
+    links: [
+      {
+        label: "Announcement",
+        href: "https://www.linkedin.com/posts/yahya-kashkoush-268172221_digitalmarketing-ai-python-activity-7357149739794006018-HRvg",
+      },
+    ],
+  },
+  {
+    slug: "ykchat",
+    index: "05",
+    title: "YkChat",
+    subtitle: "Real-time iOS messaging application",
+    year: "2023",
+    date: "03 / 2023",
+    role: "iOS architecture and development",
+    summary:
+      "A messaging application built on MVVM, covering real-time text, media, audio and location messaging.",
+    overview: [
+      "A messaging application that leans on modern software architecture and mature libraries to deliver a seamless experience. It employs MVVM throughout, keeping separation of concerns clear and the codebase maintainable.",
+    ],
+    capabilities: [
+      { label: "Real-time messaging", body: "Text, images, video and audio sent and received instantly, with sent, delivered and read status tracking." },
+      { label: "Media and voice", body: "Photo, video and audio sharing, with integrated recording for voice messages." },
+      { label: "Location sharing", body: "Users can share their current location with contacts, displayed on a map." },
+      { label: "Accounts", body: "Secure registration and login, customisable profiles with display names and avatars, and push notifications for incoming messages." },
+    ],
+    approach: [
+      "Custom classes for each feature area, including incoming and outgoing message handling and audio recording, following MVVM and Clean Architecture patterns.",
+      "Realm for local storage, so messages save and retrieve efficiently offline.",
+    ],
+    stack: [
+      "Swift",
+      "UIKit",
+      "MVVM",
+      "Firebase Auth",
+      "Firebase Realtime Database",
+      "Cloud Functions",
+      "MessageKit",
+      "Realm",
+      "AVFoundation",
+      "CoreLocation",
+      "MapKit",
+      "ProgressHUD",
+    ],
+    credits: ["Logo design: @ykarcart"],
+    links: [
+      {
+        label: "Announcement",
+        href: "https://www.linkedin.com/posts/yahya-kashkoush-268172221_swift-ios-swiftui-activity-7245403119294062592-pQib",
+      },
+    ],
+  },
+];
+
+export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
+
+/** Wraps around, so the last case study leads back to the first. */
+export const adjacentProjects = (slug: string) => {
+  const i = projects.findIndex((p) => p.slug === slug);
+  if (i === -1) return { prev: null, next: null };
+  return {
+    prev: projects[(i - 1 + projects.length) % projects.length],
+    next: projects[(i + 1) % projects.length],
+  };
+};

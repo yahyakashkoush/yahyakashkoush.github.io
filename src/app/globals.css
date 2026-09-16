@@ -1,26 +1,416 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* The site is dark-locked: one theme, no inversion, no toggle.
+   The `dark` variant is kept only so shadcn primitives resolve their own
+   dark: branches against the same palette. */
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   TOKENS
+   Near-blacks and the accent red are sampled from the photography in
+   public/media/portrait, not generated. Red marks state; it never decorates.
+--------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* surfaces */
+  --bg: #050505;
+  --bg-2: #0a0a0b;
+  --bg-3: #111113;
+
+  /* text */
+  --fg: #f2f2f0;
+  --fg-2: #a3a3a0;
+  --fg-3: #6b6b69;
+
+  /* accent */
+  --red: #d91f26;
+  --red-hi: #ff3b30;
+  --red-glow: rgb(217 31 38 / 0.14);
+
+  /* lines */
+  --line: rgb(255 255 255 / 0.08);
+  --line-2: rgb(255 255 255 / 0.14);
+  --line-red: rgb(217 31 38 / 0.45);
+
+  /* motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 200ms;
+  --t-hover: 300ms;
+  --t-reveal: 700ms;
+
+  /* shadcn contract, remapped onto the palette above */
+  --radius: 0rem;
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --card: var(--bg-2);
+  --card-foreground: var(--fg);
+  --popover: var(--bg-3);
+  --popover-foreground: var(--fg);
+  --primary: var(--red);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-3);
+  --secondary-foreground: var(--fg);
+  --muted: var(--bg-2);
+  --muted-foreground: var(--fg-3);
+  --accent: var(--bg-3);
+  --accent-foreground: var(--fg);
+  --destructive: var(--red);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--red);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-surface: var(--bg-2);
+  --color-elevated: var(--bg-3);
+  --color-red: var(--red);
+  --color-red-hi: var(--red-hi);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-line-red: var(--line-red);
+
+  --font-sans: var(--font-archivo);
+  --font-heading: var(--font-archivo);
+  --font-mono: var(--font-jetbrains);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------------------------------------------------------------------------
+   BASE
+--------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Radius lock: nothing on this site is rounded. Overrides any primitive
+     that ships its own literal rounded-* utility. */
+  [class*="rounded"] {
+    border-radius: 0 !important;
+  }
+
+  ::selection {
+    background: var(--red);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Scrollbar, kept in the same language as the hairlines. */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-2);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--red);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   TYPE SCALE
+--------------------------------------------------------------------------- */
+@layer components {
+  .t-display {
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+  .t-hero {
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .t-section {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .t-sub {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .t-body {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.65;
+    color: var(--fg-2);
+  }
+  @media (min-width: 768px) {
+    .t-body {
+      font-size: 1.0625rem;
+    }
+  }
+  .t-caption {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--fg-3);
+  }
+  .t-meta {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+  }
+  .t-label {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    line-height: 1.2;
+  }
+  .t-nav {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    line-height: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   UTILITIES
+--------------------------------------------------------------------------- */
+@utility grain {
+  /* Film texture. Fixed + pointer-events-none so it never repaints on scroll. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   HERO ENTRANCE
+   Deliberately CSS rather than Motion. The hero title is the LCP element, so it
+   must never depend on JS to become visible, and the opening curtain must never
+   be able to stay black if a script fails. `fill-mode: both` also means the
+   reduced-motion override above lands each element on its final state.
+--------------------------------------------------------------------------- */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-curtain {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@utility hero-rise {
+  animation: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--rise-delay, 0s);
+}
+
+@utility hero-curtain {
+  animation: hero-curtain 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Underline that wipes in from the left. Used on every text link on the site. */
+@utility link-wipe {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 100%;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-hover) var(--ease);
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   PAPER  (/start only)
+   The brief is a physical sheet, so it inverts: warm off-white stock, ink
+   instead of light type. Scoped to .paper so nothing else on the dark site is
+   affected. The red accent carries straight over — it is the one colour shared
+   between the page and the letter.
+--------------------------------------------------------------------------- */
+.paper {
+  --paper: #e8e5de;
+  --paper-edge: #d9d5cb;
+  --ink: #171614;
+  --ink-2: #57544c;
+  --ink-3: #8a8579;
+  --rule: rgb(23 22 20 / 0.16);
+  --rule-2: rgb(23 22 20 / 0.28);
+
+  position: relative;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* Two crossed linear washes read as stock grain far more cheaply than a
+     bitmap, and stay crisp at any zoom. */
+  background-image:
+    repeating-linear-gradient(94deg, rgb(0 0 0 / 0.016) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(2deg, rgb(0 0 0 / 0.012) 0 3px, transparent 3px 7px),
+    radial-gradient(120% 90% at 22% 8%, rgb(255 255 255 / 0.5), transparent 62%);
+}
+
+/* Fibre speckle. Separate layer so it sits above the washes but under text. */
+.paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23p)' opacity='0.22'/%3E%3C/svg%3E");
+}
+
+.paper > * {
+  position: relative;
+}
+
+/* Cut edge, not a card: a hairline plus a tight contact shadow and one long
+   soft shadow for the lift off the black. No radius anywhere. */
+@utility paper-edge {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 1px 0 0 rgb(255 255 255 / 0.22) inset,
+    0 2px 6px rgb(0 0 0 / 0.5),
+    0 28px 70px -18px rgb(0 0 0 / 0.78);
+}
+
+/* Fields on paper: a ruled line you write on, never a box. */
+@utility ink-field {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--rule-2);
+  background: transparent;
+  color: var(--ink);
+  padding: 0.55rem 0 0.5rem;
+  outline: none;
+  transition: border-color var(--t-hover) var(--ease);
+
+  &::placeholder {
+    color: var(--ink-3);
+  }
+  &:focus-visible {
+    border-bottom-color: var(--red);
+    outline: none;
+  }
+  &[aria-invalid="true"] {
+    border-bottom-color: var(--red);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   ENVELOPE
+   The flap is a clip-path triangle laid over the same plate image, so closed it
+   is pixel-identical to the render underneath and the seam is invisible.
+   `--apex` is where the flap point sits, measured off the render.
+--------------------------------------------------------------------------- */
+@utility envelope-3d {
+  transform-style: preserve-3d;
+  perspective: 1600px;
+}
+
+@utility flap-face {
+  clip-path: polygon(0% 0%, 100% 0%, 50% var(--apex, 62%));
+  transform-origin: top center;
+  backface-visibility: hidden;
+}
+
+@utility body-face {
+  clip-path: polygon(0% 0%, 50% var(--apex, 62%), 100% 0%, 100% 100%, 0% 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
