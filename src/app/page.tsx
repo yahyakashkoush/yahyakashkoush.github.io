@@ -32,7 +32,12 @@ export default function Home() {
       <About />
       <Experience />
       <Capabilities />
-      <CinematicStill clip={humanSystemStill} caption="Human first. Technology second." className="mt-24 md:mt-32 lg:mt-40" />
+      <CinematicStill
+        clip={humanSystemStill}
+        caption="Human first. Technology second."
+        className="mt-24 md:mt-32 lg:mt-40"
+        fit="contain"
+      />
       <Contact />
     </>
   );
