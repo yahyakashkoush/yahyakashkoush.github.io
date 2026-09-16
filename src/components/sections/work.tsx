@@ -57,7 +57,6 @@ export function Work() {
         <Rule />
         <RevealGroup>
           {projects.map((p) => {
-            const shot = getProjectMedia(p.slug).preview;
             return (
               <RevealItem key={p.slug}>
                 <Link
@@ -67,21 +66,6 @@ export function Work() {
                   className="group block border-b border-line transition-colors duration-500 hover:bg-surface focus-visible:bg-surface"
                 >
                   <Container>
-                    {/* Touch devices have no hover, so a project with real
-                        screenshots shows one inline instead. */}
-                    {shot && (
-                      <div className="w-full border-b border-line bg-surface p-4 md:hidden">
-                        <Image
-                          src={shot.src}
-                          alt={shot.alt}
-                          width={shot.width}
-                          height={shot.height}
-                          sizes="(min-width: 768px) 1px, 100vw"
-                          className="h-auto w-full object-contain"
-                        />
-                      </div>
-                    )}
-
                     <div className="flex items-baseline gap-5 py-7 md:gap-8 md:py-10 lg:py-12">
                       <span className="t-label shrink-0 text-fg-3 transition-colors duration-300 group-hover:text-red">
                         {p.index}

@@ -22,16 +22,19 @@ export function Intro({ opening, onOpen }: { opening: boolean; onOpen: () => voi
     <div className="mx-auto flex w-full max-w-[42rem] flex-col items-center">
       <motion.div
         className="w-full"
-        style={{ perspective: 1800 }}
         initial={reduce ? false : { opacity: 0, y: 26, scale: 0.97 }}
         animate={{
           opacity: 1,
           y: opening ? -14 : 0,
           scale: opening ? 1.035 : 1,
-          rotateX: opening ? 7 : 0,
         }}
         transition={t(opening ? 0.75 : 1.1, opening ? 0 : 0.1)}
       >
+        {/* No 3D transform (rotateX/perspective) on this wrapper: the flap
+            inside `Envelope` runs its own `preserve-3d` rotation, and nesting
+            a second, independent 3D rotation context around it corrupts the
+            render mid-animation (Chromium compositing bug — the whole
+            envelope intermittently vanishes while both are in flight). */}
         <Envelope state={opening ? "open" : "closed"} sealed={!opening} />
       </motion.div>
 

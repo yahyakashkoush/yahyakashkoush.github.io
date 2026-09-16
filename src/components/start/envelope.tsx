@@ -25,6 +25,10 @@ export const ENVELOPE_ASPECT = 2048 / 1096;
 const APEX = "62%";
 
 const PLATE = "/media/object/envelope-plate.webp";
+// Same render, pre-cut to just the flap triangle (transparent elsewhere) —
+// see the flap-face utility comment in globals.css for why this can't be a
+// clip-path on the rotating element instead.
+const FLAP = "/media/object/envelope-flap.webp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -100,9 +104,9 @@ export function Envelope({
         }
       >
         <div className="relative size-full" style={{ transformStyle: "preserve-3d" }}>
-          {/* Outer face: the real paper. */}
+          {/* Outer face: the real paper, pre-cut to the triangle — see FLAP. */}
           <Image
-            src={PLATE}
+            src={FLAP}
             alt=""
             fill
             sizes="(max-width: 768px) 92vw, 640px"
@@ -111,7 +115,7 @@ export function Envelope({
           />
           {/* Inner face, seen once the flap is over. Flat unprinted stock. */}
           <div
-            className="flap-face absolute inset-0 bg-[#151413]"
+            className="flap-inner-face absolute inset-0 bg-[#151413]"
             style={{ transform: "rotateX(180deg)" }}
           />
         </div>

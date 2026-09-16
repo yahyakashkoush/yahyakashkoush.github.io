@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Action, Container } from "@/components/primitives";
 import { Magnetic } from "@/components/motion";
-import { LiquidEther } from "@/components/liquid-ether";
 
 /**
  * Film opening: black, then the frame resolves, then the title card rises.
@@ -12,9 +11,11 @@ import { LiquidEther } from "@/components/liquid-ether";
  * See globals.css for the keyframes.
  *
  * No client state of its own, so this stays a Server Component — the portrait
- * `Image` is still the LCP element and paints without waiting on JS. The
- * client islands are the magnetic button wrappers and the WebGL fluid layer,
- * which both mount after hydration and never block the initial paint.
+ * `Image` is the LCP element and paints without waiting on JS. The only
+ * client islands are the magnetic button wrappers. (An ambient WebGL fluid
+ * layer sat behind the portrait here previously; removed — it could drift out
+ * of alignment with the photo's focal point across viewport widths and
+ * partially cover the subject, which isn't acceptable for a portrait.)
  */
 export function Hero() {
   return (
@@ -32,34 +33,6 @@ export function Hero() {
         sizes="100vw"
         className="object-cover object-center md:object-[50%_36%]"
       />
-
-      {/* Ambient fluid wash. Masked to a ring around the frame — transparent
-          over the ellipse where he stands, opaque (i.e. visible) toward the
-          edges and corners — so it reads as atmosphere around him, never
-          crossing over his shape. `screen` blending means it can only ever
-          add light, never darken or otherwise alter the photo underneath.
-          Desktop only: on phones the portrait already fills nearly the whole
-          frame, leaving no ring for this to live in. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 hidden opacity-70 mix-blend-screen md:block"
-        style={{
-          maskImage: "radial-gradient(ellipse 45% 68% at 50% 38%, transparent 55%, black 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse 45% 68% at 50% 38%, transparent 55%, black 100%)",
-        }}
-      >
-        <LiquidEther
-          colors={["#1a0606", "#D91F26", "#0a0a0b"]}
-          mouseForce={18}
-          cursorSize={110}
-          resolution={0.5}
-          autoDemo
-          autoSpeed={0.4}
-          autoIntensity={1.8}
-          autoResumeDelay={2400}
-          autoRampDuration={0.8}
-        />
-      </div>
 
       {/* Scrim. Bottom-up black only: the photograph already carries the red, so
           a red wash on top of it just flattens the contrast. */}

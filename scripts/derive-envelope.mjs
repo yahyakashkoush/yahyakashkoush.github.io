@@ -133,6 +133,38 @@ const run = async () => {
   // Keep a sealed composite for the OG/meta still and the reduced-motion poster.
   await sharp(SRC).resize(1600).webp({ quality: 88 }).toFile(resolve(DIR, "envelope-sealed.webp"));
   console.log("wrote envelope-sealed.webp");
+
+  /* 3. Flap cut-out --------------------------------------------------------- */
+
+  // The flap used to be the plate again, `clip-path`-ed to its triangle and
+  // rotated in 3D. Combining `clip-path` with an animating 3D `transform` on
+  // the same element is a known WebKit bug (Safari/iOS): the clipped region
+  // can render corrupted mid-rotation instead of the expected foreshortened
+  // triangle. A pre-cut transparent image sidesteps it entirely — the
+  // rotating element is then just a plain rectangle with baked-in alpha, the
+  // ordinary, well-supported case for a 3D transform.
+  const APEX_Y = 0.62; // matches Envelope's APEX constant
+  const plateRGBA = await sharp(plate).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { data: pd, info: pi } = plateRGBA;
+  const pw = pi.width;
+  const ph = pi.height;
+  const apexY = ph * APEX_Y;
+  const apexX = pw / 2;
+
+  for (let y = 0; y < ph; y++) {
+    // Triangle edges: left runs (0,0)->(apexX,apexY), right runs (pw,0)->(apexX,apexY).
+    const leftEdgeX = (apexX * y) / apexY;
+    const rightEdgeX = pw - (apexX * y) / apexY;
+    for (let x = 0; x < pw; x++) {
+      const o = (y * pw + x) * 4;
+      const inside = y <= apexY && x >= leftEdgeX && x <= rightEdgeX;
+      if (!inside) pd[o + 3] = 0;
+    }
+  }
+
+  const flapPng = await sharp(pd, { raw: { width: pw, height: ph, channels: 4 } }).png().toBuffer();
+  await sharp(flapPng).resize(1600).webp({ quality: 88, alphaQuality: 100 }).toFile(resolve(DIR, "envelope-flap.webp"));
+  console.log("wrote envelope-flap.webp");
 };
 
 run().catch((e) => {

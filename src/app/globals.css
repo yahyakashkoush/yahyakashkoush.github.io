@@ -392,7 +392,21 @@
   perspective: 1600px;
 }
 
+/* No clip-path here on purpose: the outer face is a pre-cut transparent
+   image (scripts/derive-envelope.mjs writes envelope-flap.webp with the
+   triangle already baked into its alpha channel), because clip-path on an
+   element that is itself the target of an animating 3D transform is a known
+   WebKit bug — Safari/iOS can render the clipped region corrupted mid-rotation
+   instead of the expected foreshortened shape. */
 @utility flap-face {
+  transform-origin: top center;
+  backface-visibility: hidden;
+}
+
+/* The inner backface is a flat colour div, not an image, so it still needs
+   clip-path to read as a triangle — but its own transform is a constant
+   rotateX(180deg), never animated, so it doesn't hit the same bug. */
+@utility flap-inner-face {
   clip-path: polygon(0% 0%, 100% 0%, 50% var(--apex, 62%));
   transform-origin: top center;
   backface-visibility: hidden;
