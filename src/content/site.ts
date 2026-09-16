@@ -17,7 +17,9 @@ export const site = {
     "I build AI products, SaaS platforms and automation systems from architecture through to production. Computer Science and AI graduate. Started in iOS, moved to applied AI in 2023.",
   email: "yahyaemad999@gmail.com",
   linkedin: "https://www.linkedin.com/in/yahya-kashkoush-268172221/",
-  url: "https://yahyakashkoush.com",
+  // The custom domain already wired to the GitHub Pages deployment (see
+  // public/CNAME), not a guess — matches what was already live.
+  url: "https://kashkoush.me",
 } as const;
 
 export const nav = [
