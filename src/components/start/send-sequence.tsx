@@ -3,32 +3,43 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { budgetLabel, typeLabels, type ProjectInquiry } from "@/lib/inquiry";
-import { Envelope } from "@/components/start/envelope";
+import { Envelope, LetterSheet } from "@/components/start/envelope";
 import { cn } from "cn";
 
 /**
- * The letter being folded, posted and sealed.
+ * The closing half of the sequence, in physical order:
  *
- * Ten beats, driven by one timeline rather than chained transition callbacks so
- * the whole sequence has a single source of truth and cannot strand itself
- * half-finished if a transition event is dropped. Under reduced motion the same
- * beats run at ~8% duration: the sequence still completes and still reports
- * back, it simply does not perform.
+ *   folding  — the sheet, still out of the mouth, folds down
+ *   letterIn — it slides back down inside, behind the front panel
+ *   closing  — only then does the flap rotate down over the mouth
+ *   sealed   — and only once it is shut does the wax press on
+ *
+ * One timeline drives the beats so the order can't invert, and every stage is
+ * a transform on the same mounted envelope — nothing is swapped or hidden.
  */
 
-type Beat = "settle" | "fold" | "insert" | "close" | "seal" | "done";
+type Beat = "settle" | "folding" | "letterIn" | "closing" | "sealed" | "done";
 
 /** Cumulative milliseconds at which each beat begins. */
 const TIMELINE: { beat: Beat; at: number }[] = [
   { beat: "settle", at: 0 },
-  { beat: "fold", at: 620 },
-  { beat: "insert", at: 2000 },
-  { beat: "close", at: 3040 },
-  { beat: "seal", at: 4080 },
-  { beat: "done", at: 4760 },
+  { beat: "folding", at: 450 },
+  { beat: "letterIn", at: 1600 },
+  { beat: "closing", at: 2600 },
+  { beat: "sealed", at: 3600 },
+  { beat: "done", at: 4300 },
 ];
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const LABELS: Record<Beat, string> = {
+  settle: "Folding",
+  folding: "Folding",
+  letterIn: "Posting",
+  closing: "Closing",
+  sealed: "Sealing",
+  done: "Sealing",
+};
 
 export function SendSequence({ value, onComplete }: { value: ProjectInquiry; onComplete: () => void }) {
   const reduce = useReducedMotion();
@@ -51,11 +62,10 @@ export function SendSequence({ value, onComplete }: { value: ProjectInquiry; onC
     return () => timers.forEach(window.clearTimeout);
   }, [reduce, onComplete]);
 
-  const folding = beat === "fold" || beat === "insert" || beat === "close" || beat === "seal";
-  const inserted = beat === "insert" || beat === "close" || beat === "seal";
-  const closed = beat === "close" || beat === "seal";
-
-  const t = (duration: number) => (reduce ? { duration: 0 } : { duration, ease: EASE });
+  const folded = beat !== "settle";
+  // The sheet is only out of the mouth for the first two beats.
+  const letterOut = beat === "settle" || beat === "folding";
+  const closed = beat === "closing" || beat === "sealed" || beat === "done";
 
   return (
     <div className="relative mx-auto flex w-full max-w-[42rem] flex-col items-center">
@@ -64,35 +74,21 @@ export function SendSequence({ value, onComplete }: { value: ProjectInquiry; onC
       </p>
 
       <div className="relative w-full">
-        <Envelope state={closed ? "closed" : "open"} sealed={beat === "seal"}>
-          {/* Positioned by the envelope's own children slot, which sits behind
-              the front panel — so once `top` crosses below the panel's edge
-              the letter is genuinely occluded, not just faded. */}
-          <motion.div
-            aria-hidden
-            className="absolute left-1/2 w-[86%] origin-center"
-            initial={false}
-            animate={{
-              // Sits above the mouth, then drops in and disappears behind the panel.
-              top: inserted ? "34%" : "-58%",
-              x: "-50%",
-              scale: inserted ? 0.82 : 1,
-              rotateX: inserted ? 18 : 0,
-            }}
-            transition={t(inserted ? 0.95 : 0.6)}
-          >
-            <FoldedLetter value={value} folded={folding} reduce={!!reduce} />
-          </motion.div>
-        </Envelope>
+        <Envelope
+          state={closed ? "closed" : "open"}
+          sealed={beat === "sealed" || beat === "done"}
+          letterOut={letterOut}
+          letter={<FoldedLetter value={value} folded={folded} reduce={!!reduce} />}
+        />
       </div>
 
       <motion.p
         className="t-label mt-10 text-fg-3"
         initial={false}
-        animate={{ opacity: beat === "seal" ? 1 : 0.55 }}
-        transition={t(0.4)}
+        animate={{ opacity: beat === "sealed" || beat === "done" ? 1 : 0.55 }}
+        transition={reduce ? { duration: 0 } : { duration: 0.4, ease: EASE }}
       >
-        {beat === "seal" ? "Sealing" : closed ? "Closing" : inserted ? "Posting" : "Folding"}
+        {LABELS[beat]}
       </motion.p>
     </div>
   );
@@ -101,11 +97,11 @@ export function SendSequence({ value, onComplete }: { value: ProjectInquiry; onC
 /* Letter ------------------------------------------------------------------ */
 
 /**
- * A still of the brief that folds in two.
+ * A still of the brief that folds in half before it goes back in.
  *
- * The live form is not folded — its inputs would distort and its focus would be
- * lost mid-animation — so the sequence hands over to this frozen sheet carrying
- * the same content.
+ * The live form is not folded — its inputs would distort and its focus would
+ * be lost mid-animation — so the sequence hands over to this frozen sheet
+ * carrying the same content.
  */
 function FoldedLetter({
   value,
@@ -120,55 +116,47 @@ function FoldedLetter({
 
   return (
     <motion.div
-      className="relative w-full"
-      style={{ transformStyle: "preserve-3d" }}
+      className="relative w-full origin-bottom"
       initial={false}
-      animate={{ scaleY: folded ? 0.34 : 1, scale: folded ? 0.98 : 1 }}
-      transition={t(0.8)}
+      animate={{ scaleY: folded ? 0.52 : 1 }}
+      transition={t(0.7)}
     >
-      <div className="paper paper-edge relative px-6 py-6 sm:px-8 sm:py-7">
-        {/* Content compresses as the sheet closes so the type does not smear
-            vertically with the scale. */}
+      <LetterSheet className="relative overflow-hidden">
         <motion.div
           initial={false}
-          animate={{ opacity: folded ? 0 : 1, scaleY: folded ? 2.4 : 1 }}
+          animate={{ opacity: folded ? 0.25 : 1, scaleY: folded ? 1.9 : 1 }}
           transition={t(0.5)}
           className="origin-top"
         >
-          <p className="t-label mb-4 text-[var(--ink-3)]">Project brief</p>
-          <p className="mb-4 line-clamp-3 text-[0.9375rem] leading-relaxed text-[var(--ink)]">
+          <p className="t-label mb-[3%] text-[0.5rem] text-[var(--ink-3)]">Project brief</p>
+          <p className="mb-[3%] line-clamp-2 text-[0.6rem] leading-snug text-[var(--ink)]">
             {value.projectBrief.trim()}
           </p>
-          <p className="t-meta text-[var(--ink-2)]">{typeLabels(value.projectTypes)}</p>
-          <p className="t-meta mt-1 text-[var(--ink-2)]">{budgetLabel(value.budget)}</p>
-          <p className="t-meta mt-4 text-[var(--ink-3)]">{value.name.trim()}</p>
+          <p className="t-meta text-[0.45rem] text-[var(--ink-2)]">{typeLabels(value.projectTypes)}</p>
+          <p className="t-meta mt-[1%] text-[0.45rem] text-[var(--ink-2)]">{budgetLabel(value.budget)}</p>
+          <p className="t-meta mt-[3%] text-[0.45rem] text-[var(--ink-3)]">{value.name.trim()}</p>
         </motion.div>
 
-        {/* Creases. Two ruled folds that print as the sheet closes. */}
-        {[33, 66].map((pos, i) => (
-          <motion.span
-            key={pos}
-            aria-hidden
-            className={cn(
-              "pointer-events-none absolute inset-x-0 h-px",
-              "bg-[linear-gradient(90deg,transparent,rgb(23_22_20_/_0.34)_12%,rgb(23_22_20_/_0.34)_88%,transparent)]",
-            )}
-            style={{ top: `${pos}%` }}
-            initial={false}
-            animate={{ opacity: folded ? 1 : 0, scaleX: folded ? 1 : 0.4 }}
-            transition={t(0.45, i * 0.09)}
-          />
-        ))}
-
-        {/* Shading that gathers along the folds as the paper doubles over. */}
+        {/* The crease, printed across the middle as the sheet doubles over. */}
         <motion.span
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgb(0_0_0_/_0.22)_33%,transparent_46%,transparent_54%,rgb(0_0_0_/_0.22)_66%,transparent_80%)]"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-1/2 h-px",
+            "bg-[linear-gradient(90deg,transparent,rgb(23_22_20_/_0.4)_12%,rgb(23_22_20_/_0.4)_88%,transparent)]",
+          )}
+          initial={false}
+          animate={{ opacity: folded ? 1 : 0, scaleX: folded ? 1 : 0.4 }}
+          transition={t(0.4)}
+        />
+
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgb(0_0_0_/_0.24)_50%,transparent_70%)]"
           initial={false}
           animate={{ opacity: folded ? 1 : 0 }}
-          transition={t(0.6)}
+          transition={t(0.5)}
         />
-      </div>
+      </LetterSheet>
     </motion.div>
   );
 }

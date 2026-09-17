@@ -1,22 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "motion/react";
+import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { cn } from "cn";
 
 /**
- * The envelope.
+ * The envelope, as one persistent physical object.
  *
- * The supplied GLB is a single 207k-triangle mesh with one material and no
- * animation tracks, so the flap cannot be driven from the file. It is rendered
- * once offline instead (scripts/render-envelope.mjs) and the flap is restored
- * here: a clip-path triangle laid over the *same* plate image at the same size,
- * which means the closed state is pixel-identical to the render — there is no
- * seam to hide — and the triangle can then rotate on its own.
+ * Layer order, back to front, never swapped: interior wall · letter · front
+ * panel · flap · seal. Nothing is hidden or replaced to fake a transition —
+ * the same nodes stay mounted and only their transforms change.
  *
- * Stacking, back to front: interior · letter slot · body · flap. The flap sits
- * above the body when closed and drops behind it once past vertical, which is
- * what a real flap does as it falls open.
+ * The flap hinges on the envelope's TOP edge (`transform-origin: top center`
+ * on the cut-out triangle) and rotates backward over the top, which is what a
+ * real flap does. Its z-index is derived from the live angle rather than
+ * keyframed, so it crosses behind the body exactly as it passes vertical —
+ * the one moment it is edge-on and invisible — with no discrete jump and no
+ * race if the state flips mid-flight.
+ *
+ * The letter lives *inside* the envelope at rest, behind the front panel, and
+ * slides up and out through the mouth. It is never repositioned instantly.
  */
 
 export const ENVELOPE_ASPECT = 2048 / 1096;
@@ -32,48 +36,77 @@ const FLAP = "/media/object/envelope-flap.webp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/** Flap travel. Stops shy of 180° so the fold keeps a little thickness. */
+const OPEN_ANGLE = -168;
+
+export const FLAP_MS = 900;
+export const LETTER_MS = 900;
+
 export type EnvelopeState = "closed" | "open";
 
 export function Envelope({
   state,
   sealed,
+  letter,
+  letterOut = false,
   className,
-  children,
 }: {
   state: EnvelopeState;
   /** Draws the wax seal over the flap point. */
   sealed: boolean;
+  /** The sheet that lives inside this envelope. */
+  letter?: React.ReactNode;
+  /** true slides the letter up and out of the mouth; false keeps it inside. */
+  letterOut?: boolean;
   className?: string;
-  /** Rendered in the envelope's mouth, behind the body panel. */
-  children?: React.ReactNode;
 }) {
   const reduce = useReducedMotion();
   const open = state === "open";
+
+  const flapAngle = useMotionValue(open ? OPEN_ANGLE : 0);
+  // Past vertical the flap belongs behind the body, before it in front.
+  const flapZ = useTransform(flapAngle, (a) => (a < -90 ? 0 : 3));
+
+  useEffect(() => {
+    const controls = animate(
+      flapAngle,
+      open ? OPEN_ANGLE : 0,
+      reduce ? { duration: 0 } : { duration: FLAP_MS / 1000, ease: EASE },
+    );
+    return () => controls.stop();
+  }, [open, reduce, flapAngle]);
 
   return (
     <div
       className={cn("envelope-3d relative w-full select-none", className)}
       style={{ aspectRatio: ENVELOPE_ASPECT, ["--apex" as string]: APEX }}
     >
-      {/* Interior. Sits furthest back and is only ever glimpsed through the
-          mouth once the flap is up. */}
+      {/* Interior wall. Only ever glimpsed through the mouth once the flap is
+          up, behind whatever is inside. */}
       <div aria-hidden className="absolute inset-0 bg-[#0d0c0c]" />
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 h-[62%] bg-gradient-to-b from-black/80 to-transparent"
       />
 
-      {/* Whatever is being posted. `inset-0` so it matches the envelope box
-          exactly — the letter positions itself with percentage `top` values,
-          which need a sized ancestor to resolve against, not a flow div that
-          collapses to zero height. Explicitly under the front panel: without a
-          z-index here, an absolutely-positioned child with its own z-index
-          (the letter, in send-sequence.tsx) would establish a stacking context
-          above this panel's implicit auto/0 level regardless of DOM order, and
-          never actually disappear "inside" the envelope. */}
-      <div className="absolute inset-0 z-[1]">{children}</div>
+      {/* The letter, inside. Anchored low enough that at rest it sits wholly
+          within the envelope's own box — its middle visible through the open
+          mouth, its sides behind the front panel, exactly as a real one reads.
+          Sliding out is a transform on this same node, never a remount. */}
+      {letter && (
+        <motion.div
+          aria-hidden
+          className="absolute inset-x-[8%] top-[24%] z-[1]"
+          initial={false}
+          animate={{ y: letterOut ? "-88%" : "0%" }}
+          transition={reduce ? { duration: 0 } : { duration: LETTER_MS / 1000, ease: EASE }}
+        >
+          {letter}
+        </motion.div>
+      )}
 
-      {/* Front panel: the render, notched so the mouth reads as an opening. */}
+      {/* Front panel: the render, notched so the mouth reads as an opening.
+          Always above the letter, so anything still inside stays occluded. */}
       <Image
         src={PLATE}
         alt=""
@@ -84,24 +117,11 @@ export function Envelope({
         className="body-face relative z-[2] object-cover"
       />
 
-      {/* Flap. Same plate, same object-fit, so closed it lands exactly over the
-          panel beneath it. */}
+      {/* Flap, hinged on the top edge. */}
       <motion.div
         aria-hidden
         className="absolute inset-0"
-        style={{ transformStyle: "preserve-3d" }}
-        initial={false}
-        animate={{
-          rotateX: open ? -172 : 0,
-          // Discrete: the flap has to cross behind the body as it passes
-          // vertical, and z-index cannot be interpolated meaningfully.
-          zIndex: open ? [3, 3, 0, 0] : [0, 0, 3, 3],
-        }}
-        transition={
-          reduce
-            ? { duration: 0 }
-            : { rotateX: { duration: 1.05, ease: EASE }, zIndex: { duration: 1.05, times: [0, 0.42, 0.43, 1] } }
-        }
+        style={{ rotateX: flapAngle, zIndex: flapZ, transformStyle: "preserve-3d", transformOrigin: "top center" }}
       >
         <div className="relative size-full" style={{ transformStyle: "preserve-3d" }}>
           {/* Outer face: the real paper, pre-cut to the triangle — see FLAP. */}
@@ -122,7 +142,7 @@ export function Envelope({
       </motion.div>
 
       {/* Wax seal, at the flap point. Its own layer so it can be broken on the
-          way in and pressed on again at the end. */}
+          way in and pressed on again once the flap is fully down. */}
       <motion.div
         aria-hidden
         className="absolute z-[4]"
@@ -140,5 +160,12 @@ export function Envelope({
         />
       </motion.div>
     </div>
+  );
+}
+
+/** The sheet itself. Shared so the envelope holds the same object throughout. */
+export function LetterSheet({ children, className }: { children?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("paper paper-edge aspect-[1/0.42] w-full px-[6%] py-[5%]", className)}>{children}</div>
   );
 }

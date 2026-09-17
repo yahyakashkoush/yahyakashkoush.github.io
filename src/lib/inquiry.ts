@@ -31,7 +31,13 @@ export const emptyInquiry: ProjectInquiry = {
 export const STEPS = ["brief", "budget", "contact", "schedule"] as const;
 export type StepId = (typeof STEPS)[number];
 
-export type Phase = "intro" | "opening" | StepId | "review" | "sending" | "sent";
+/**
+ * The whole interaction as one deterministic machine:
+ * intro(closed) → opening(flap up) → letterOut(sheet slides out) → the four
+ * steps + review(interactive) → sending(fold → letter in → flap down → seal)
+ * → sent. Every arrow is driven from StartExperience and locked while it runs.
+ */
+export type Phase = "intro" | "opening" | "letterOut" | StepId | "review" | "sending" | "sent";
 
 /** Steps are numbered on the letter as 01 / 04. Non-step phases return null. */
 export const stepIndex = (phase: Phase): { n: number; of: number } | null => {

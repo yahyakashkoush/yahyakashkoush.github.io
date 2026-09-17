@@ -26,8 +26,15 @@ import {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/** How long the envelope pre-roll runs before the brief takes the stage. */
-const OPENING_MS = 1750;
+/**
+ * Opening beats, in physical order: the flap lifts, then the sheet slides out
+ * of the mouth, and only then does the brief take the stage. Matches the
+ * envelope's own FLAP_MS / LETTER_MS so the phase never changes mid-travel.
+ */
+const FLAP_MS = 900;
+const LETTER_MS = 900;
+/** A beat of daylight between the sheet arriving and the form replacing it. */
+const HANDOFF_MS = 260;
 
 const STEP_COMPONENTS = {
   brief: BriefStep,
@@ -52,6 +59,14 @@ export function StartExperience() {
   const [outcome, setOutcome] = useState<BookingOutcome | null>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const movedByKeyboard = useRef(false);
+  /** Set while a scripted transition owns the envelope; blocks re-entry. */
+  const locked = useRef(false);
+  const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach(window.clearTimeout);
+  }, []);
 
   /**
    * Answers are merged, never replaced, so moving between steps keeps
@@ -87,9 +102,27 @@ export function StartExperience() {
     setPhase(next);
   }, []);
 
+  /**
+   * Transitions are locked while they run: the envelope is a physical object
+   * mid-travel, so a second click can't be allowed to start a competing
+   * animation or strand it half-open. Every timer is tracked and cleared on
+   * unmount so nothing fires into a dead component.
+   */
   const open = useCallback(() => {
+    if (locked.current) return;
+    locked.current = true;
+    const s = reduce ? 0.08 : 1;
     setPhase("opening");
-    window.setTimeout(() => goto("brief"), reduce ? 120 : OPENING_MS);
+    timers.current.push(window.setTimeout(() => setPhase("letterOut"), FLAP_MS * s));
+    timers.current.push(
+      window.setTimeout(
+        () => {
+          locked.current = false;
+          goto("brief");
+        },
+        (FLAP_MS + LETTER_MS + HANDOFF_MS) * s,
+      ),
+    );
   }, [goto, reduce]);
 
   const advance = useCallback(
@@ -115,16 +148,21 @@ export function StartExperience() {
   );
 
   const seal = useCallback(() => {
+    if (locked.current) return;
     const found = validateAll(value);
     if (Object.keys(found).length > 0) {
       setErrors(found);
       return;
     }
+    // Held until the choreography reports back, so a second press can't
+    // restart the sequence or double-submit.
+    locked.current = true;
     setPhase("sending");
   }, [value]);
 
   // Fired when the fold/post/seal choreography lands.
   const finishSending = useCallback(() => {
+    locked.current = false;
     bookingService
       .submit(value)
       .then((res) => setOutcome(res))
@@ -135,6 +173,7 @@ export function StartExperience() {
   }, [value]);
 
   const restart = useCallback(() => {
+    locked.current = false;
     setOutcome(null);
     setErrors({});
     setPhase("intro");
@@ -169,14 +208,20 @@ export function StartExperience() {
 
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={phase === "opening" ? "intro" : phase}
+            /* The opening beats keep the intro's key so the envelope stays the
+               same mounted node throughout — it is never remounted mid-open. */
+            key={phase === "opening" || phase === "letterOut" ? "intro" : phase}
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -14 }}
             transition={transition}
           >
-            {(phase === "intro" || phase === "opening") && (
-              <Intro opening={phase === "opening"} onOpen={open} />
+            {(phase === "intro" || phase === "opening" || phase === "letterOut") && (
+              <Intro
+                opening={phase === "opening" || phase === "letterOut"}
+                letterOut={phase === "letterOut"}
+                onOpen={open}
+              />
             )}
 
             {isStep && step && <StepPage phase={phase as StepId} value={value} patch={patch} errors={errors} advance={advance} back={back} step={step} />}

@@ -4,17 +4,27 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { startCopy } from "@/content/inquiry";
 import { Magnetic } from "@/components/motion";
-import { Envelope } from "@/components/start/envelope";
+import { Envelope, LetterSheet } from "@/components/start/envelope";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
  * Opening frame: the envelope is the object, the type sits under it as a
- * caption rather than a centred hero stack. `opening` runs the pre-roll — the
- * object settles and leans a few degrees before the flap moves — so the
- * sequence starts as a camera move rather than a screen change.
+ * caption rather than a centred hero stack.
+ *
+ * `opening` lifts the flap; `letterOut` then slides the blank sheet up out of
+ * the mouth. Two separate beats on the same mounted envelope, so the object
+ * never jumps or gets swapped for a different one.
  */
-export function Intro({ opening, onOpen }: { opening: boolean; onOpen: () => void }) {
+export function Intro({
+  opening,
+  letterOut,
+  onOpen,
+}: {
+  opening: boolean;
+  letterOut: boolean;
+  onOpen: () => void;
+}) {
   const reduce = useReducedMotion();
   const t = (duration: number, delay = 0) => (reduce ? { duration: 0 } : { duration, delay, ease: EASE });
 
@@ -25,24 +35,29 @@ export function Intro({ opening, onOpen }: { opening: boolean; onOpen: () => voi
         initial={reduce ? false : { opacity: 0, y: 26, scale: 0.97 }}
         animate={{
           opacity: 1,
-          y: opening ? -14 : 0,
-          scale: opening ? 1.035 : 1,
+          y: opening || letterOut ? -14 : 0,
+          scale: opening || letterOut ? 1.035 : 1,
         }}
-        transition={t(opening ? 0.75 : 1.1, opening ? 0 : 0.1)}
+        transition={t(opening || letterOut ? 0.75 : 1.1, opening || letterOut ? 0 : 0.1)}
       >
         {/* No 3D transform (rotateX/perspective) on this wrapper: the flap
             inside `Envelope` runs its own `preserve-3d` rotation, and nesting
             a second, independent 3D rotation context around it corrupts the
             render mid-animation (Chromium compositing bug — the whole
             envelope intermittently vanishes while both are in flight). */}
-        <Envelope state={opening ? "open" : "closed"} sealed={!opening} />
+        <Envelope
+          state={opening || letterOut ? "open" : "closed"}
+          sealed={!opening && !letterOut}
+          letterOut={letterOut}
+          letter={<LetterSheet />}
+        />
       </motion.div>
 
       <motion.div
         className="mt-12 w-full border-t border-line pt-8"
         initial={reduce ? false : { opacity: 0, y: 20 }}
-        animate={{ opacity: opening ? 0 : 1, y: 0 }}
-        transition={t(0.8, opening ? 0 : 0.42)}
+        animate={{ opacity: opening || letterOut ? 0 : 1, y: 0 }}
+        transition={t(0.8, opening || letterOut ? 0 : 0.42)}
       >
         <p className="t-label mb-5 text-red">{startCopy.label}</p>
         <h1 className="t-hero mb-5 max-w-[12ch] text-foreground">{startCopy.title}</h1>
