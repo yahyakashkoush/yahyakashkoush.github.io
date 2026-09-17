@@ -5,8 +5,8 @@ import { Experience } from "@/components/sections/experience";
 import { Capabilities } from "@/components/sections/capabilities";
 import { Contact } from "@/components/sections/contact";
 import { CinematicCut } from "@/components/video";
-import { CinematicStill } from "@/components/cinematic-still";
-import { cinematic, humanSystemStill } from "@/content/media";
+import { CrtMonitor } from "@/components/crt-monitor";
+import { cinematic } from "@/content/media";
 
 /**
  * Two cuts, placed where the footage earns them:
@@ -17,7 +17,7 @@ import { cinematic, humanSystemStill } from "@/content/media";
  *   About           close-up.mp4      the identity beat, inside the section
  *   Experience
  *   Capabilities
- *   [ still ]       human-system.jpg  wide among monoliths, by request a still not a cut
+ *   [ CRT monitor ] crt-reel.mp4      intro → manual chaos → AI organising it → automated result
  *   Contact
  *
  * Deliberately not a cut between every section: three or more would turn the
@@ -32,12 +32,7 @@ export default function Home() {
       <About />
       <Experience />
       <Capabilities />
-      <CinematicStill
-        clip={humanSystemStill}
-        caption="Human first. Technology second."
-        className="mt-24 md:mt-32 lg:mt-40"
-        fit="contain"
-      />
+      <CrtMonitor clip={cinematic.crtReel} caption="From manual work to automated systems" />
       <Contact />
     </>
   );

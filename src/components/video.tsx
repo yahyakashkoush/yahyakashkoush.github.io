@@ -12,7 +12,7 @@ import { cn } from "cn";
  * `preload="none"` behind its poster until it scrolls into view, and pauses
  * again on the way out, so a visitor who never reaches a cut never pays for it.
  */
-function useViewportPlayback(enabled = true) {
+export function useViewportPlayback(enabled = true) {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 

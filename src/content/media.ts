@@ -149,18 +149,23 @@ export const cinematic = {
     duration: 8,
     content: "Abstract red lattice and slabs, camera travelling forward. No subject.",
   },
+  /**
+   * The four uploaded retro-cartoon scenes (intro, manual work, AI automation,
+   * automated future), cropped to just the in-footage screen content and
+   * crossfaded into one continuous reel by scripts/build-crt-reel.sh. Played
+   * inside the new CrtMonitor frame, not the original footage's own TV body.
+   */
+  crtReel: {
+    src: "/media/video/crt-reel.mp4",
+    poster: "/media/portrait/crt-reel-poster.webp",
+    posterAlt: "Illustrated figure surrounded by files and gears, mid-transition on a CRT screen",
+    width: 950,
+    height: 590,
+    duration: 23.33,
+    content:
+      "Four-beat story: intro, manual work turning to chaos, an AI system organising it, the automated result.",
+  },
 } satisfies Record<string, Clip>;
-
-/**
- * The "Human first. Technology second." cut, by request a still
- * (`CinematicStill`) rather than a `CinematicCut` — same set as
- * human-system.mp4 below, shot as its own vertical personal photo rather than
- * a video frame, so it isn't a `Clip` (no src/duration to play).
- */
-export const humanSystemStill = {
-  poster: "/media/portrait/human-system.jpg",
-  posterAlt: "Figure standing on a red grid among dark monoliths",
-} satisfies { poster: string; posterAlt: string };
 
 /**
  * Held back on purpose, so the audit has no unexplained orphans.
