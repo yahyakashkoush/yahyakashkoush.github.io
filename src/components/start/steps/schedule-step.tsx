@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
-import { scheduling } from "@/content/inquiry";
+import { usePortfolio } from "@/components/content-provider";
 import { bookingService, type Availability } from "@/lib/booking";
 import {
   formatTime,
@@ -30,6 +30,8 @@ const sameDay = (a: Date, b: Date) => toISODate(a) === toISODate(b);
  * Connect a provider and the same grid narrows to whatever it publishes.
  */
 export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: StepProps) {
+  const { content: { start } } = usePortfolio();
+  const scheduling = start.scheduling;
   const [month, setMonth] = useState(() => startOfMonth(value.date ? fromISODate(value.date) : new Date()));
   const [availability, setAvailability] = useState<Availability | null>(null);
   const [focusDate, setFocusDate] = useState<Date>(() => (value.date ? fromISODate(value.date) : new Date()));
@@ -46,14 +48,14 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
   }, []);
 
   const openable = (d: Date) => {
-    if (!isRequestable(d, today)) return false;
+    if (!isRequestable(d, today, scheduling)) return false;
     return availability ? availability.dates.includes(toISODate(d)) : true;
   };
 
   const slots = useMemo(() => {
     if (!value.date) return scheduling.slots as readonly string[];
     return availability?.slotsByDate[value.date] ?? (scheduling.slots as readonly string[]);
-  }, [availability, value.date]);
+  }, [availability, value.date, scheduling.slots]);
 
   /* Grid cells, padded to whole weeks. */
   const cells = useMemo(() => {
@@ -102,9 +104,9 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
 
   return (
     <Sheet>
-      <SheetHead title="Schedule" step={step} />
+      <SheetHead title={start.scheduleTitle} step={step} />
 
-      <Ask>When should we talk?</Ask>
+      <Ask>{start.scheduleQuestion}</Ask>
 
       {/* Calendar --------------------------------------------------------- */}
       <div className="border-t border-[var(--rule-2)] pt-5">
@@ -217,7 +219,7 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
             : "Choose a day first. "}
           {bookingService.confirmsBookings
             ? "Slots shown are open."
-            : "This is a preferred slot, not a confirmed booking — I'll confirm by reply."}
+            : start.scheduleHelp}
         </p>
       </div>
 

@@ -61,6 +61,7 @@ export function StartExperience() {
   const movedByKeyboard = useRef(false);
   /** Set while a scripted transition owns the envelope; blocks re-entry. */
   const locked = useRef(false);
+  const requestId = useRef<string | null>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -162,22 +163,23 @@ export function StartExperience() {
 
   // Fired when the fold/post/seal choreography lands.
   const finishSending = useCallback(() => {
-    locked.current = false;
+    requestId.current ||= crypto.randomUUID();
     bookingService
-      .submit(value)
+      .submit(value, requestId.current)
       .then((res) => setOutcome(res))
       .catch((e: unknown) =>
         setOutcome({ status: "failed", reason: e instanceof Error ? e.message : "The brief could not be sent." }),
       )
-      .finally(() => setPhase("sent"));
+      .finally(() => { locked.current = false; setPhase("sent"); });
   }, [value]);
 
   const restart = useCallback(() => {
     locked.current = false;
+    if (outcome?.status !== "failed") { setValue(emptyInquiry); requestId.current = null; }
     setOutcome(null);
     setErrors({});
     setPhase("intro");
-  }, []);
+  }, [outcome]);
 
   const step = stepIndex(phase);
   const isStep = STEPS.includes(phase as StepId);

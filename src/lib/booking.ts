@@ -1,4 +1,5 @@
 import { site } from "@/content/site";
+import { submitMessage } from "@/lib/cms";
 import {
   budgetLabel,
   formatLongDate,
@@ -11,19 +12,18 @@ import {
 /**
  * The seam between the brief and whoever actually books the meeting.
  *
- * The site has no backend — the existing contact form hands off to the
- * visitor's mail client — so the shipped provider is a handoff, and it says so.
- * It reports `requested`, never `confirmed`, because nothing has confirmed
- * anything: the visitor picked a preferred slot and sent it. The UI keys its
- * final copy off that status, so wiring a real provider later is the only
- * change needed to start claiming a booking.
+ * The shipped provider saves project briefs to the private CMS inbox. It reports
+ * `requested`, never `confirmed`, because the visitor picked a preferred slot
+ * and no calendar provider has held it yet. The UI keys its final copy off that
+ * status, so wiring a real provider later is the only change needed to start
+ * claiming a booking.
  */
 
 export type BookingOutcome =
   /** A provider held the slot. Only this status may be shown as booked. */
   | { status: "confirmed"; reference: string; when: string }
   /** Brief delivered, meeting time still a request awaiting a human reply. */
-  | { status: "requested"; via: "mail" }
+  | { status: "requested"; via: "mail" | "inbox"; reference?: string }
   | { status: "failed"; reason: string };
 
 /** A provider that publishes real availability returns one of these. */
@@ -43,7 +43,7 @@ export interface BookingProvider {
    * the UI must present its grid as preferred times rather than free ones.
    */
   getAvailability(): Promise<Availability | null>;
-  submit(inquiry: ProjectInquiry): Promise<BookingOutcome>;
+  submit(inquiry: ProjectInquiry, requestId?: string): Promise<BookingOutcome>;
 }
 
 /* Transcript -------------------------------------------------------------- */
@@ -83,11 +83,7 @@ export function inquiryTranscript(v: ProjectInquiry, locale?: string): string {
 
 const MAILTO_LIMIT = 1800;
 
-/**
- * No server, so the brief is handed to the visitor's own mail client exactly
- * as the site's contact form already does. Nothing is transmitted from the
- * page, and the address stays visible as a fallback.
- */
+/** Legacy fallback that opens the visitor's mail client with the brief. */
 export const mailHandoffProvider: BookingProvider = {
   id: "mail-handoff",
   confirmsBookings: false,
@@ -120,4 +116,12 @@ export const mailHandoffProvider: BookingProvider = {
  * Swap this for a real adapter when a calendar is connected. Everything the UI
  * needs is behind the interface above, so no component has to change.
  */
-export const bookingService: BookingProvider = mailHandoffProvider;
+export const bookingService: BookingProvider = {
+  id: "private-inbox",
+  confirmsBookings: false,
+  async getAvailability() { return null; },
+  async submit(value, requestId) {
+    const result = await submitMessage({ id: requestId || crypto.randomUUID(), kind: "project", name: value.name, email: value.email, message: value.projectBrief, company: value.company, projectTypes: value.projectTypes, budget: value.budget, date: value.date, time: value.time, timeZone: resolvedTimeZone(), website: "" });
+    return { status: "requested", via: "inbox", reference: result.id };
+  },
+};

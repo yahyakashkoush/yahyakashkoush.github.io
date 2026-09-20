@@ -9,7 +9,7 @@
  * schedule offers *preferred* slots — see `scheduling` below.
  */
 
-export type ProjectTypeId = "web" | "product" | "ai" | "automation" | "mobile" | "other";
+export type ProjectTypeId = string;
 
 export const projectTypes: readonly { id: ProjectTypeId; label: string }[] = [
   { id: "web", label: "Web experience" },
@@ -20,7 +20,7 @@ export const projectTypes: readonly { id: ProjectTypeId; label: string }[] = [
   { id: "other", label: "Other" },
 ];
 
-export type BudgetId = "1-3" | "3-5" | "5-10" | "10-plus" | "discuss";
+export type BudgetId = string;
 
 /** Edit freely: `label` is what the letter prints, `id` is what gets submitted. */
 export const budgetBands: readonly { id: BudgetId; label: string; note?: string }[] = [

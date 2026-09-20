@@ -1,6 +1,7 @@
 "use client";
 
 import { Ask, InkAction, InkField, Sheet, SheetFoot, SheetHead } from "@/components/start/paper";
+import { usePortfolio } from "@/components/content-provider";
 import type { StepProps } from "@/components/start/steps/types";
 
 /**
@@ -9,17 +10,19 @@ import type { StepProps } from "@/components/start/steps/types";
  * exist on this end.
  */
 export function ContactStep({ value, patch, errors, onNext, onBack, step }: StepProps) {
+  const { content: { start } } = usePortfolio();
   return (
     <Sheet>
-      <SheetHead title="Your details" step={step} />
+      <SheetHead title={start.contactTitle} step={step} />
 
-      <Ask>Where should I send the reply?</Ask>
+      <Ask>{start.contactQuestion}</Ask>
 
       <div className="flex flex-col gap-8">
         <InkField id="name" label="Name" error={errors.name}>
           <input
             id="name"
             name="name"
+            maxLength={120}
             autoComplete="name"
             value={value.name}
             onChange={(e) => patch({ name: e.target.value })}
@@ -33,6 +36,7 @@ export function ContactStep({ value, patch, errors, onNext, onBack, step }: Step
           <input
             id="email"
             name="email"
+            maxLength={254}
             type="email"
             inputMode="email"
             autoComplete="email"
@@ -48,6 +52,7 @@ export function ContactStep({ value, patch, errors, onNext, onBack, step }: Step
           <input
             id="company"
             name="company"
+            maxLength={200}
             autoComplete="organization"
             value={value.company}
             onChange={(e) => patch({ company: e.target.value })}

@@ -1,9 +1,10 @@
 "use client";
 
+import { usePortfolio } from "@/components/content-provider";
 import { motion, useReducedMotion } from "motion/react";
 import { Action } from "@/components/primitives";
 import { Envelope } from "@/components/start/envelope";
-import { bookingService, type BookingOutcome } from "@/lib/booking";
+import { type BookingOutcome } from "@/lib/booking";
 import { formatLongDate, formatTime, resolvedTimeZone, type ProjectInquiry } from "@/lib/inquiry";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -24,6 +25,7 @@ export function SentState({
   outcome: BookingOutcome;
   onRestart: () => void;
 }) {
+  const { content: { start } } = usePortfolio();
   const reduce = useReducedMotion();
   const t = (duration: number, delay = 0) => (reduce ? { duration: 0 } : { duration, delay, ease: EASE });
 
@@ -65,11 +67,11 @@ export function SentState({
       >
         <p className="t-label mb-5 text-red">Sent</p>
         <h1 className="t-hero mb-6 max-w-[14ch] text-foreground">
-          Your project brief is on its way.
+          {start.successTitle}
         </h1>
 
         <div role="status" className="t-body mb-9 max-w-[46ch]">
-          <p>I&rsquo;ll be in touch shortly.</p>
+          <p>{start.successMessage}</p>
           {value.date && value.time && (
             <p className="mt-4">
               {confirmed ? "Confirmed for " : "You asked for "}
@@ -80,7 +82,7 @@ export function SentState({
               {!confirmed && ". I'll confirm that time by reply."}
             </p>
           )}
-          {!bookingService.confirmsBookings && (
+          {outcome.status === "requested" && outcome.via === "mail" && (
             <p className="t-caption mt-5">
               The brief was handed to your mail client. If nothing opened, the draft didn&rsquo;t send — you can go
               back and copy it out.

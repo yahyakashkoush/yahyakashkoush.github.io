@@ -87,11 +87,11 @@ export const isComplete = (v: ProjectInquiry): boolean => Object.keys(validateAl
 
 /* Labels ------------------------------------------------------------------ */
 
-export const typeLabels = (ids: ProjectTypeId[]): string =>
-  ids.map((id) => projectTypes.find((t) => t.id === id)?.label ?? id).join(", ");
+export const typeLabels = (ids: ProjectTypeId[], choices: readonly {id: string; label: string}[] = projectTypes): string =>
+  ids.map((id) => choices.find((t) => t.id === id)?.label ?? id).join(", ");
 
-export const budgetLabel = (id: BudgetId | null): string =>
-  budgetBands.find((b) => b.id === id)?.label ?? "";
+export const budgetLabel = (id: BudgetId | null, choices: readonly {id: string; label: string}[] = budgetBands): string =>
+  choices.find((b) => b.id === id)?.label ?? "";
 
 /* Dates ------------------------------------------------------------------- */
 
@@ -106,14 +106,14 @@ export const fromISODate = (s: string): Date => {
   return new Date(y, m - 1, d);
 };
 
-export function isRequestable(d: Date, today = new Date()): boolean {
+export function isRequestable(d: Date, today = new Date(), config: {leadTimeDays: number; horizonDays: number; weekdays: readonly number[]} = scheduling): boolean {
   const floor = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  floor.setDate(floor.getDate() + scheduling.leadTimeDays);
+  floor.setDate(floor.getDate() + config.leadTimeDays);
   const ceiling = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  ceiling.setDate(ceiling.getDate() + scheduling.horizonDays);
+  ceiling.setDate(ceiling.getDate() + config.horizonDays);
   const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   if (day < floor || day > ceiling) return false;
-  return (scheduling.weekdays as readonly number[]).includes(day.getDay());
+  return config.weekdays.includes(day.getDay());
 }
 
 export const formatLongDate = (s: string, locale?: string): string =>

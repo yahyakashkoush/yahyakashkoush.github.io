@@ -1,62 +1,47 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { validateProjects, encodeContent, decodeContent, loadProjects, publishProjects, deploymentStatus } from "../src/lib/admin.ts";
+import { parseContent } from "../src/lib/content-schema.ts";
 
-const projects = JSON.parse(readFileSync(new URL("../src/content/projects.json", import.meta.url), "utf8"));
+const content = parseContent(JSON.parse(readFileSync(new URL("../src/content/portfolio.json", import.meta.url), "utf8")));
+const gitignore = readFileSync(new URL("../.gitignore", import.meta.url), "utf8");
 
-test("real portfolio data remains valid and Unicode survives GitHub encoding", () => {
-  validateProjects(projects);
-  const content = JSON.stringify(projects) + " العربية → ✨";
-  assert.equal(decodeContent(encodeContent(content)), content);
-});
-
-test("invalid content, duplicate URLs, and unsafe external links cannot publish", () => {
-  assert.throws(() => validateProjects([]), /at least one/);
-  assert.throws(() => validateProjects([...projects, projects[0]]), /unique/);
-  for (const href of ["javascript:alert(1)", "data:text/html,hello", "not-a-url"]) {
-    const draft = structuredClone(projects);
-    draft[0].links = [{ label: "Open", href }];
-    assert.throws(() => validateProjects(draft), /https/);
+test("the admin can edit every public portfolio area from one content snapshot", () => {
+  for (const key of ["site", "navigation", "hero", "work", "about", "experience", "capabilities", "contact", "start", "cinematic", "projects"]) {
+    assert.ok(content[key], `${key} should exist`);
   }
-  const draft = structuredClone(projects);
-  draft[0].capabilities = [null];
-  assert.throws(() => validateProjects(draft), /Capabilities/);
+  assert.ok(content.projects.length >= 1);
+  assert.ok(content.start.projectTypes.length >= 1);
+  assert.ok(content.start.budgetBands.length >= 1);
+  assert.ok(content.navigation.some((item) => item.href === "/start"));
 });
 
-test("GitHub load and publish use the file revision, main branch, and UTF-8 content", async (context) => {
-  const calls = [];
-  context.mock.method(globalThis, "fetch", async (url, init) => {
-    calls.push({ url, init });
-    return Response.json(init.method === "PUT" ? { content: { sha: "new-file" }, commit: { sha: "new-commit" } } : { sha: "old-file", content: encodeContent(JSON.stringify(projects)) });
-  });
-  const loaded = await loadProjects("test-token");
-  assert.deepEqual(loaded.projects, projects);
-  const result = await publishProjects("test-token", loaded.projects, loaded.sha);
-  const payload = JSON.parse(calls[1].init.body);
-  assert.equal(payload.sha, "old-file");
-  assert.equal(payload.branch, "main");
-  assert.deepEqual(JSON.parse(decodeContent(payload.content)), projects);
-  assert.equal(calls[1].init.headers.Authorization, "Bearer test-token");
-  assert.deepEqual(result, { sha: "new-file", commit: "new-commit" });
+test("project slugs, titles and indexes are ready for admin publishing", () => {
+  const slugs = new Set();
+  for (const [index, project] of content.projects.entries()) {
+    assert.match(project.slug, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    assert.equal(slugs.has(project.slug), false);
+    slugs.add(project.slug);
+    assert.equal(project.index, String(index + 1).padStart(2, "0"));
+    assert.ok(project.title.trim());
+    assert.ok(project.subtitle.trim());
+  }
 });
 
-test("conflicts and failed authorization produce actionable errors", async (context) => {
-  let status = 409;
-  context.mock.method(globalThis, "fetch", async () => new Response("", { status }));
-  await assert.rejects(publishProjects("test-token", projects, "stale"), /changed/);
-  status = 401;
-  await assert.rejects(loadProjects("test-token"), /expired/);
-  status = 403;
-  await assert.rejects(loadProjects("test-token"), /permission/);
+test("image records have the metadata the CMS needs to upload and preview safely", () => {
+  const images = [
+    content.hero.poster,
+    content.about.image,
+    ...content.projects.flatMap((project) => [project.media.cover, ...project.media.gallery]),
+  ];
+  for (const image of images.filter(Boolean)) {
+    assert.match(image.src, /^(\/|https:\/\/)/);
+    assert.ok(image.alt.trim());
+    if (image.width !== undefined) assert.ok(image.width > 0);
+    if (image.height !== undefined) assert.ok(image.height > 0);
+  }
 });
 
-test("deployment state distinguishes queued, failed, and live builds", async (context) => {
-  let runs = [];
-  context.mock.method(globalThis, "fetch", async () => Response.json({ workflow_runs: runs }));
-  assert.match(await deploymentStatus("token", "commit"), /Waiting/);
-  runs = [{ status: "completed", conclusion: "failure" }];
-  assert.match(await deploymentStatus("token", "commit"), /failure/);
-  runs = [{ status: "completed", conclusion: "success" }];
-  assert.match(await deploymentStatus("token", "commit"), /Live/);
+test("local administrator credentials stay out of version control", () => {
+  assert.match(gitignore, /\.env\*/);
 });

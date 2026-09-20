@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { usePortfolio } from "@/components/content-provider";
 import { Action, Container } from "@/components/primitives";
 import { Magnetic } from "@/components/motion";
 import { LiquidEther } from "@/components/liquid-ether";
@@ -17,6 +20,7 @@ import { LiquidEther } from "@/components/liquid-ether";
  * which both mount after hydration and never block the initial paint.
  */
 export function Hero() {
+  const { content: { hero } } = usePortfolio();
   return (
     <section className="relative min-h-[100dvh] w-full overflow-hidden">
       {/* The portrait is 3:4. On a wide viewport `object-cover` crops top and
@@ -24,8 +28,8 @@ export function Hero() {
           title block. On phones the frame is taller than the image, so the
           composition survives almost intact at object-center. */}
       <Image
-        src="/media/portrait/front-medium.jpg"
-        alt=""
+        src={hero.image.src}
+        alt={hero.image.alt}
         aria-hidden
         fill
         priority
@@ -78,23 +82,21 @@ export function Hero() {
 
       <Container className="relative flex min-h-[100dvh] flex-col justify-end pb-16 md:pb-20 lg:pb-24">
         <p className="hero-rise t-label mb-6 text-red" style={{ "--rise-delay": "0.9s" } as React.CSSProperties}>
-          Applied AI &amp; Automation Engineer
+          {hero.role}
         </p>
 
         <h1
           className="hero-rise t-display max-w-[20ch] text-foreground"
           style={{ "--rise-delay": "1.05s" } as React.CSSProperties}
         >
-          Yahya
-          <br />
-          Kashkoush
+          <span className="whitespace-pre-line">{hero.heading}</span>
         </h1>
 
         <p
           className="hero-rise t-body mt-7 max-w-[46ch] text-fg-2"
           style={{ "--rise-delay": "1.25s" } as React.CSSProperties}
         >
-          I build AI products, SaaS platforms and automation systems, end to end.
+          {hero.description}
         </p>
 
         <div
@@ -102,13 +104,13 @@ export function Hero() {
           style={{ "--rise-delay": "1.4s" } as React.CSSProperties}
         >
           <Magnetic className="w-full sm:w-auto">
-            <Action href="/#work" variant="solid" block direction="down" className="sm:w-auto">
-              Selected work
+            <Action href={hero.primaryHref} variant="solid" block direction="down" className="sm:w-auto">
+              {hero.primaryLabel}
             </Action>
           </Magnetic>
           <Magnetic className="w-full sm:w-auto">
-            <Action href="/#contact" variant="outline" block direction="down" className="sm:w-auto">
-              Contact
+            <Action href={hero.secondaryHref} variant="outline" block direction="down" className="sm:w-auto">
+              {hero.secondaryLabel}
             </Action>
           </Magnetic>
         </div>

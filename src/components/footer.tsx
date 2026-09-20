@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Container, Rule } from "@/components/primitives";
-import { nav, site } from "@/content/site";
+import { usePortfolio } from "@/components/content-provider";
 
 export function Footer() {
+  const { content: { navigation: nav, site } } = usePortfolio();
   return (
     <footer className="pt-20">
       <Rule />

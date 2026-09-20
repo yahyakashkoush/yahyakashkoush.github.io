@@ -1,3 +1,5 @@
+"use client";
+
 import { Hero } from "@/components/sections/hero";
 import { Work } from "@/components/sections/work";
 import { About } from "@/components/sections/about";
@@ -6,7 +8,7 @@ import { Capabilities } from "@/components/sections/capabilities";
 import { Contact } from "@/components/sections/contact";
 import { CinematicCut } from "@/components/video";
 import { CrtMonitor } from "@/components/crt-monitor";
-import { cinematic } from "@/content/media";
+import { usePortfolio } from "@/components/content-provider";
 
 /**
  * Two cuts, placed where the footage earns them:
@@ -24,15 +26,16 @@ import { cinematic } from "@/content/media";
  * page back into section/video/section/video.
  */
 export default function Home() {
+  const { content: { cinematic } } = usePortfolio();
   return (
     <>
       <Hero />
       <Work />
-      <CinematicCut clip={cinematic.chapterWork} caption="The systems behind the work" className="mt-24 md:mt-32 lg:mt-40" />
+      <CinematicCut clip={cinematic.chapterWork} caption={cinematic.chapterWork.caption} className="mt-24 md:mt-32 lg:mt-40" />
       <About />
       <Experience />
       <Capabilities />
-      <CrtMonitor clip={cinematic.crtReel} caption="From manual work to automated systems" />
+      <CrtMonitor clip={cinematic.crtReel} caption={cinematic.crtReel.caption} />
       <Contact />
     </>
   );

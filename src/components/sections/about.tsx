@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import { Container, Kicker, Prose, SectionHeading, TextLink } from "@/components/primitives";
 import { Parallax, Reveal } from "@/components/motion";
-import { about } from "@/content/profile";
-import { site } from "@/content/site";
+import { usePortfolio } from "@/components/content-provider";
 
 export function About() {
+  const { content: { about, site } } = usePortfolio();
   return (
     <section id="about" className="scroll-mt-24 pt-24 md:pt-32 lg:pt-40">
       <Container>
@@ -14,8 +16,8 @@ export function About() {
           <Reveal className="md:col-span-5">
             <Parallax distance={28} className="relative aspect-[3/4] w-full">
               <Image
-                src="/media/portrait/close-up.jpg"
-                alt="Portrait lit from one side in deep red"
+                src={about.image.src}
+                alt={about.image.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="scale-110 object-cover object-center"
@@ -25,16 +27,16 @@ export function About() {
 
           <div className="flex flex-col justify-center md:col-span-7 md:pl-4 lg:pl-10">
             <Reveal>
-              <Kicker className="mb-5">About</Kicker>
-              <SectionHeading className="mb-8 max-w-[16ch]">Architecture, not just models.</SectionHeading>
+              <Kicker className="mb-5">{about.label}</Kicker>
+              <SectionHeading className="mb-8 max-w-[16ch]">{about.title}</SectionHeading>
             </Reveal>
             <Reveal delay={0.08}>
-              <Prose blocks={about} />
+              <Prose blocks={about.paragraphs} />
             </Reveal>
             <Reveal delay={0.16}>
               <div className="mt-10">
                 <TextLink href={site.linkedin} external className="t-meta">
-                  LinkedIn
+                  {about.linkLabel}
                 </TextLink>
               </div>
             </Reveal>

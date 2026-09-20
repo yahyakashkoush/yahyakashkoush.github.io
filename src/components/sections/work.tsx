@@ -7,8 +7,8 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } 
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Container, Kicker, Rule, SectionHeading } from "@/components/primitives";
 import { RevealGroup, RevealItem } from "@/components/motion";
-import { projects } from "@/content/projects";
-import { getProjectMedia, type ProjectShot } from "@/content/media";
+import { usePortfolio, projectHref } from "@/components/content-provider";
+import { type ProjectShot } from "@/content/media";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -19,6 +19,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * preview rather than a borrowed image.
  */
 export function Work() {
+  const { content: { projects, work } } = usePortfolio();
   const reduce = useReducedMotion();
   const [hovered, setHovered] = useState<string | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
@@ -42,14 +43,14 @@ export function Work() {
   };
 
   const active = hovered ? projects.find((p) => p.slug === hovered) : null;
-  const activeShot = hovered ? getProjectMedia(hovered).preview : null;
+  const activeShot = active?.media.preview ?? null;
 
   return (
     <section id="work" className="scroll-mt-24 pt-24 md:pt-32 lg:pt-40">
       <Container>
         <div className="mb-12 flex flex-col gap-4 md:mb-16">
-          <Kicker>Selected work</Kicker>
-          <SectionHeading className="max-w-[18ch]">Five systems, built end to end.</SectionHeading>
+          <Kicker>{work.label}</Kicker>
+          <SectionHeading className="max-w-[18ch]">{work.title}</SectionHeading>
         </div>
       </Container>
 
@@ -60,7 +61,7 @@ export function Work() {
             return (
               <RevealItem key={p.slug}>
                 <Link
-                  href={`/work/${p.slug}`}
+                  href={projectHref(p.slug)}
                   onPointerEnter={(e) => enter(e, p.slug)}
                   onPointerLeave={() => setHovered((h) => (h === p.slug ? null : h))}
                   className="group block border-b border-line transition-colors duration-500 hover:bg-surface focus-visible:bg-surface"

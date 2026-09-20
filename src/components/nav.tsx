@@ -5,12 +5,13 @@ import { useState } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Container } from "@/components/primitives";
-import { nav, site } from "@/content/site";
+import { usePortfolio } from "@/components/content-provider";
 import { cn } from "cn";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Nav() {
+  const { content: { navigation: nav, site } } = usePortfolio();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
@@ -74,6 +75,7 @@ export function Nav() {
 }
 
 function MobileMenu({ onNavigate }: { onNavigate: () => void }) {
+  const { content: { navigation: nav, site } } = usePortfolio();
   const reduce = useReducedMotion();
 
   return (

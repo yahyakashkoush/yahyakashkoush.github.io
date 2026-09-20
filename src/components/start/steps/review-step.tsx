@@ -1,6 +1,6 @@
 "use client";
 
-import { bookingService } from "@/lib/booking";
+import { usePortfolio } from "@/components/content-provider";
 import {
   budgetLabel,
   formatLongDate,
@@ -31,12 +31,13 @@ export function ReviewStep({
   onSeal: () => void;
   onBack: () => void;
 }) {
+  const { content: { start } } = usePortfolio();
   const blocked = Object.keys(errors).length > 0;
 
   return (
     <Sheet>
       <div className="mb-9 border-b border-[var(--rule-2)] pb-4">
-        <h2 className="t-label text-[var(--ink)]">Project brief</h2>
+        <h2 className="t-label text-[var(--ink)]">{start.reviewTitle}</h2>
       </div>
 
       <dl className="flex flex-col">
@@ -45,11 +46,11 @@ export function ReviewStep({
         </Entry>
 
         <Entry label="Type" onEdit={() => onEdit("brief")}>
-          {typeLabels(value.projectTypes)}
+          {typeLabels(value.projectTypes, start.projectTypes)}
         </Entry>
 
         <Entry label="Investment" onEdit={() => onEdit("budget")}>
-          {budgetLabel(value.budget)}
+          {budgetLabel(value.budget, start.budgetBands)}
         </Entry>
 
         <Entry label="Contact" onEdit={() => onEdit("contact")}>
@@ -73,10 +74,9 @@ export function ReviewStep({
         </Entry>
       </dl>
 
-      {!bookingService.confirmsBookings && (
+      {(
         <p className="t-caption mt-8 max-w-[54ch] border-l border-red pl-4 text-[var(--ink-2)]">
-          Sending opens a message in your own mail client with this brief in it — nothing is transmitted from this
-          page. The meeting time travels as a request and is confirmed by reply.
+          {start.reviewHelp}
         </p>
       )}
 
@@ -91,7 +91,7 @@ export function ReviewStep({
         <div className="flex flex-col items-start gap-3 sm:items-end">
           <span className="t-label text-[var(--ink-3)]">Ready to send?</span>
           <InkAction onClick={onSeal} disabled={blocked}>
-            Seal the brief
+            {start.submitLabel}
           </InkAction>
         </div>
       </div>

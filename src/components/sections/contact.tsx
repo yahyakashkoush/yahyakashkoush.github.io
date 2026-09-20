@@ -1,31 +1,33 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Container, Kicker, SectionHeading } from "@/components/primitives";
 import { Magnetic, Reveal } from "@/components/motion";
-import { site } from "@/content/site";
+import { usePortfolio } from "@/components/content-provider";
+import { submitMessage, errorMessage } from "@/lib/cms";
 import { cn } from "cn";
 
 type Errors = Partial<Record<"name" | "email" | "message", string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/**
- * There is no server behind this site, so the form composes a mail draft
- * rather than pretending to submit. Validation is real; the send is a handoff
- * to the visitor's own mail client, and the address is always visible as a
- * direct fallback.
- */
 export function Contact() {
+  const { content: { site, contact } } = usePortfolio();
+  const [result, setResult] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const requestId = useRef<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
+    if (sending) return;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setResult(""); setSubmitError("");
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
@@ -40,10 +42,11 @@ export function Contact() {
     if (Object.keys(next).length > 0) return;
 
     setSending(true);
-    const subject = encodeURIComponent(`Enquiry from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
-    window.setTimeout(() => setSending(false), 1200);
+    try {
+      requestId.current ||= crypto.randomUUID();
+      await submitMessage({ id: requestId.current, kind: "contact", name, email, message, website: String(data.get("website") || "") });
+      setResult(contact.successMessage); form.reset(); requestId.current = null;
+    } catch (error) { setSubmitError(errorMessage(error)); } finally { setSending(false); }
   };
 
   return (
@@ -52,8 +55,8 @@ export function Contact() {
         <div className="grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-10 lg:gap-16">
           <div className="md:col-span-7">
             <Reveal>
-              <Kicker className="mb-5">Contact</Kicker>
-              <SectionHeading className="mb-8 max-w-[14ch]">Let&rsquo;s build something.</SectionHeading>
+              <Kicker className="mb-5">{contact.label}</Kicker>
+              <SectionHeading className="mb-8 max-w-[14ch]">{contact.title}</SectionHeading>
               <a
                 href={`mailto:${site.email}`}
                 className="link-wipe t-sub inline-block break-all text-fg-2 transition-colors duration-300 hover:text-red"
@@ -64,14 +67,16 @@ export function Contact() {
 
             <Reveal delay={0.1}>
               <form onSubmit={onSubmit} noValidate className="mt-14 flex flex-col gap-8">
+                <div aria-hidden="true" className="hidden"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
                 <Field id="name" label="Name" error={errors.name}>
-                  <Input id="name" name="name" autoComplete="name" placeholder="Your name" aria-invalid={!!errors.name} />
+                  <Input id="name" name="name" maxLength={120} autoComplete="name" placeholder="Your name" aria-invalid={!!errors.name} />
                 </Field>
 
                 <Field id="email" label="Email" error={errors.email}>
                   <Input
                     id="email"
                     name="email"
+                    maxLength={254}
                     type="email"
                     autoComplete="email"
                     placeholder="you@company.com"
@@ -83,6 +88,7 @@ export function Contact() {
                   <Textarea
                     id="message"
                     name="message"
+                    maxLength={12000}
                     rows={4}
                     placeholder="What are you building?"
                     aria-invalid={!!errors.message}
@@ -101,13 +107,15 @@ export function Contact() {
                         "disabled:pointer-events-none disabled:opacity-40",
                       )}
                     >
-                      {sending ? "Opening mail" : "Send message"}
+                      {sending ? "Sending…" : contact.buttonLabel}
                     </button>
                   </Magnetic>
                   <p className="t-caption mt-4 max-w-[46ch]">
-                    This opens a draft in your own mail client. Nothing is sent from this page.
+                    {contact.description}
                   </p>
                 </div>
+                {result && <p role="status" className="t-body text-foreground">{result}</p>}
+                {submitError && <p role="alert" className="t-body text-red">{submitError}</p>}
               </form>
             </Reveal>
           </div>
@@ -115,8 +123,8 @@ export function Contact() {
           <Reveal delay={0.12} className="md:col-span-5">
             <div className="relative aspect-[3/4] w-full">
               <Image
-                src="/media/portrait/full-body.jpg"
-                alt="Full-length portrait inside a red light frame"
+                src={contact.image.src}
+                alt={contact.image.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="object-cover object-center"

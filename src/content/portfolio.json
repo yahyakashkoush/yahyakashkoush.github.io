@@ -1,0 +1,791 @@
+{
+  "site": {
+    "name": "Yahya Kashkoush",
+    "role": "Applied AI & Automation Full-Stack Engineer",
+    "statement": [
+      "Applied AI",
+      "and automation,",
+      "built end to end."
+    ],
+    "intro": "I build AI products, SaaS platforms and automation systems from architecture through to production. Computer Science and AI graduate. Started in iOS, moved to applied AI in 2023.",
+    "email": "yahyaemad999@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/yahya-kashkoush-268172221/",
+    "url": "https://kashkoush.me"
+  },
+  "navigation": [
+    {
+      "label": "Work",
+      "href": "/#work"
+    },
+    {
+      "label": "About",
+      "href": "/#about"
+    },
+    {
+      "label": "Experience",
+      "href": "/#experience"
+    },
+    {
+      "label": "Capabilities",
+      "href": "/#capabilities"
+    },
+    {
+      "label": "Contact",
+      "href": "/#contact"
+    },
+    {
+      "label": "Start a project",
+      "href": "/start"
+    }
+  ],
+  "hero": {
+    "heading": "Yahya\nKashkoush",
+    "role": "Applied AI & Automation Engineer",
+    "description": "I build AI products, SaaS platforms and automation systems, end to end.",
+    "image": {
+      "src": "/media/portrait/front-medium.jpg",
+      "alt": "Yahya Kashkoush"
+    },
+    "primaryLabel": "Selected work",
+    "primaryHref": "/#work",
+    "secondaryLabel": "Contact",
+    "secondaryHref": "/#contact"
+  },
+  "work": {
+    "label": "Selected work",
+    "title": "Five systems, built end to end."
+  },
+  "about": {
+    "label": "About",
+    "title": "Architecture, not just models.",
+    "paragraphs": [
+      "Computer Science and Artificial Intelligence graduate. I started on a software and mobile path, moved into applied AI, and now build AI SaaS, automation and backend systems end to end.",
+      "My interest sits in architecture and production engineering, not only in using AI models. The question that holds my attention is how a system behaves once it is carrying real traffic, real data and real money."
+    ],
+    "image": {
+      "src": "/media/portrait/close-up.jpg",
+      "alt": "Portrait lit from one side in deep red"
+    },
+    "linkLabel": "LinkedIn"
+  },
+  "experience": {
+    "label": "Experience",
+    "title": "From iOS to applied AI.",
+    "entries": [
+      {
+        "period": "2023 - Present",
+        "title": "Independent Applied AI Engineer",
+        "body": [
+          "Building AI products, SaaS platforms and automation systems end to end, from architecture through to production deployment."
+        ],
+        "org": ""
+      },
+      {
+        "period": "2021 / 2022 - 2023",
+        "title": "iOS Developer",
+        "body": [
+          "Started as an iOS developer, building mobile applications independently.",
+          "Worked on real-time applications and Firebase, covering the full product cycle from architecture to UI to deployment."
+        ],
+        "org": ""
+      },
+      {
+        "period": "2022",
+        "title": "Training, iOS",
+        "org": "Information Technology Institute (ITI)",
+        "body": [
+          "Three-month iOS training programme."
+        ]
+      },
+      {
+        "period": "2021 - 2025",
+        "title": "B.Sc. Computer Science & Artificial Intelligence",
+        "org": "MTI University",
+        "body": []
+      }
+    ]
+  },
+  "capabilities": {
+    "label": "Capabilities",
+    "title": "What I work with.",
+    "groups": [
+      {
+        "title": "AI Engineering & Agents",
+        "items": [
+          "AI Model Integration",
+          "AI Tools, Agents & Integrations",
+          "AI Agent Development",
+          "Data & RAG Agents",
+          "Multi-Agent Workflows",
+          "Knowledge Bases",
+          "Chatbot Development",
+          "CrewAI",
+          "OpenRouter",
+          "Hugging Face",
+          "Claude",
+          "Codex"
+        ]
+      },
+      {
+        "title": "Automation & Browser Automation",
+        "items": [
+          "Browser Automation",
+          "Playwright",
+          "Selenium",
+          "Chromium",
+          "Browser Use",
+          "Requests",
+          "HTTPX",
+          "Web Crawling",
+          "Web Scraping",
+          "Scrapy",
+          "Background Workers",
+          "Cron Jobs",
+          "Workflow Automation",
+          "n8n",
+          "Make",
+          "BullMQ",
+          "Redis",
+          "Message Queues"
+        ]
+      },
+      {
+        "title": "Web Intelligence, Search & Data Acquisition",
+        "items": [
+          "Search Engine Intelligence",
+          "Google Advanced Search",
+          "Google Dorking",
+          "DuckDuckGo Search",
+          "S3 Bucket Search",
+          "Google Drive Search",
+          "Web Data Extraction",
+          "Google Maps",
+          "Bing",
+          "Yandex",
+          "X",
+          "LinkedIn",
+          "Facebook",
+          "Instagram",
+          "TikTok",
+          "GitHub"
+        ]
+      },
+      {
+        "title": "Data Engineering & Processing",
+        "items": [
+          "Big Data Search & Processing",
+          "Data Cleaning",
+          "Data Analysis",
+          "On-Site Data Processing",
+          "DuckDB",
+          "Apache Parquet",
+          "SQLite",
+          "MySQL",
+          "PostgreSQL",
+          "MongoDB",
+          "Firebase",
+          "Firestore",
+          "Caching"
+        ]
+      },
+      {
+        "title": "Backend & API Engineering",
+        "items": [
+          "FastAPI",
+          "Node.js",
+          "REST APIs",
+          "GraphQL",
+          "Webhooks",
+          "OAuth Flows",
+          "JWT Authentication",
+          "API Security",
+          "Secure API Design",
+          "Rate Limiting",
+          "SDK Integration",
+          "Payment Gateway APIs",
+          "Meta APIs",
+          "API Architecture",
+          "Backend Integrations",
+          "System & Service Bridges"
+        ]
+      },
+      {
+        "title": "SaaS & Business Systems",
+        "items": [
+          "SaaS Architecture",
+          "CRM Systems",
+          "ERP Systems",
+          "AI-Powered Business Automation",
+          "Third-Party Integrations",
+          "Payment Integrations",
+          "CRM/ERP Integrations",
+          "API-Based System Integration",
+          "Automation Pipelines"
+        ]
+      },
+      {
+        "title": "Cloud, DevOps & Infrastructure",
+        "items": [
+          "AWS",
+          "Docker",
+          "SSH",
+          "Environment Management",
+          "Production Deployment",
+          "Background Processing",
+          "Redis",
+          "BullMQ",
+          "S3"
+        ]
+      },
+      {
+        "title": "Security",
+        "items": [
+          "Web Security Testing",
+          "Web Application Security",
+          "API Security",
+          "Secure API Design",
+          "Authentication & Authorization",
+          "JWT",
+          "OAuth",
+          "Rate Limiting",
+          "Security Testing & Vulnerability Resolution"
+        ]
+      },
+      {
+        "title": "Languages & Frontend",
+        "items": [
+          "Python",
+          "Node.js",
+          "JavaScript",
+          "C++",
+          "Java",
+          "Swift",
+          "React",
+          "Tailwind CSS",
+          "HTML",
+          "CSS",
+          "GSAP",
+          "Git",
+          "GitHub",
+          "VS Code"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "label": "Contact",
+    "title": "Let’s build something.",
+    "image": {
+      "src": "/media/portrait/full-body.jpg",
+      "alt": "Full-length portrait inside a red light frame"
+    },
+    "description": "Your message is sent privately. I’ll reply by email.",
+    "buttonLabel": "Send message",
+    "successMessage": "Thank you. Your message has been received. I’ll reply by email."
+  },
+  "start": {
+    "label": "Project inquiry · Private",
+    "title": "Start a project",
+    "lede": "Have something worth building?",
+    "cta": "Open the brief",
+    "briefTitle": "Project brief",
+    "briefQuestion": "What are you building?",
+    "briefPlaceholder": "Tell me what you're trying to build, improve, launch, or solve…",
+    "typeQuestion": "What kind of project is this?",
+    "budgetTitle": "Investment",
+    "budgetQuestion": "What’s the expected investment?",
+    "budgetHelp": "A range is enough. It sets the shape of what’s possible before we talk.",
+    "contactTitle": "Your details",
+    "contactQuestion": "Where should I send the reply?",
+    "scheduleTitle": "Schedule",
+    "scheduleQuestion": "When should we talk?",
+    "scheduleHelp": "This is a preferred slot, not a confirmed booking — I’ll confirm by reply.",
+    "reviewTitle": "Project brief",
+    "reviewHelp": "Your brief is sent privately. The meeting time is a request and will be confirmed by reply.",
+    "submitLabel": "Seal the brief",
+    "successTitle": "Your project brief has been received.",
+    "successMessage": "I’ll be in touch shortly.",
+    "projectTypes": [
+      {
+        "id": "web",
+        "label": "Web experience"
+      },
+      {
+        "id": "product",
+        "label": "Product / SaaS"
+      },
+      {
+        "id": "ai",
+        "label": "AI system"
+      },
+      {
+        "id": "automation",
+        "label": "Automation"
+      },
+      {
+        "id": "mobile",
+        "label": "Mobile app"
+      },
+      {
+        "id": "other",
+        "label": "Other"
+      }
+    ],
+    "budgetBands": [
+      {
+        "id": "1-3",
+        "label": "$1K — $3K",
+        "note": ""
+      },
+      {
+        "id": "3-5",
+        "label": "$3K — $5K",
+        "note": ""
+      },
+      {
+        "id": "5-10",
+        "label": "$5K — $10K",
+        "note": ""
+      },
+      {
+        "id": "10-plus",
+        "label": "$10K+",
+        "note": ""
+      },
+      {
+        "id": "discuss",
+        "label": "Let's discuss",
+        "note": "Scope first, number second."
+      }
+    ],
+    "scheduling": {
+      "leadTimeDays": 2,
+      "horizonDays": 42,
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "slots": [
+        "09:00",
+        "10:00",
+        "11:00",
+        "13:00",
+        "14:00",
+        "15:00",
+        "16:00",
+        "17:00"
+      ]
+    }
+  },
+  "cinematic": {
+    "chapterWork": {
+      "src": "/media/video/ai-transition.mp4",
+      "poster": "/media/portrait/abstract-system.jpg",
+      "posterAlt": "Abstract red wireframe architecture suspended in darkness",
+      "width": 1920,
+      "height": 1080,
+      "duration": 8,
+      "content": "Abstract red lattice and slabs, camera travelling forward. No subject.",
+      "caption": "The systems behind the work"
+    },
+    "crtReel": {
+      "src": "/media/video/crt-reel.mp4",
+      "poster": "/media/portrait/crt-reel-poster.webp",
+      "posterAlt": "Illustrated figure surrounded by files and gears, mid-transition on a CRT screen",
+      "width": 950,
+      "height": 590,
+      "duration": 23.33,
+      "content": "Four-beat story: intro, manual work turning to chaos, an AI system organising it, the automated result.",
+      "caption": "From manual work to automated systems"
+    }
+  },
+  "projects": [
+    {
+      "slug": "wkeyone",
+      "index": "01",
+      "title": "WKEYONE",
+      "subtitle": "AI-powered WhatsApp business automation platform",
+      "year": "2026",
+      "date": "02 / 2026",
+      "role": "Architecture, backend, AI layer, product",
+      "summary": "A sales management and business intelligence platform built on WhatsApp, for companies handling thousands of conversations a month.",
+      "overview": [
+        "A sales management and business intelligence platform built on WhatsApp, designed for companies handling thousands of conversations a month, where losing a single order is not an option.",
+        "Not a reply bot. A full operating layer on top of the channel where customers in the region actually buy."
+      ],
+      "capabilities": [
+        {
+          "label": "Intelligent sales engine",
+          "body": "Understands text, voice and images, responds with your real business data within seconds, and detects purchase intent inside the conversation, turning it into a registered order."
+        },
+        {
+          "label": "Lifecycle automation",
+          "body": "From first inquiry, to order confirmation, to recovering hesitant customers with personalised follow-ups at the right moment."
+        },
+        {
+          "label": "Built-in business intelligence",
+          "body": "Daily AI reports and real-time analytics on revenue, orders and customer behaviour, delivered on WhatsApp."
+        },
+        {
+          "label": "Enterprise-ready architecture",
+          "body": "Multiple numbers, role-based teams, targeted campaigns, Meta Cloud API integration, and an open API for existing systems."
+        }
+      ],
+      "outcome": [
+        "Live in 15 minutes: connect a number, add business data, and the platform runs. No developers, no code.",
+        "The standard held throughout: zero missed messages, zero lost orders."
+      ],
+      "stack": [
+        "WhatsApp Business API",
+        "Meta Cloud API",
+        "Multi-provider LLM context",
+        "Customer memory",
+        "AI-assisted order extraction",
+        "Automated workflows",
+        "Campaign scheduling",
+        "Human handoff",
+        "Analytics dashboard",
+        "Push notifications",
+        "Health monitoring",
+        "Multi-tenant + RBAC",
+        "Background jobs"
+      ],
+      "links": [
+        {
+          "label": "wkeyone.app",
+          "href": "https://wkeyone.app"
+        },
+        {
+          "label": "Announcement",
+          "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_saas-whatsappbusiness-businessintelligence-activity-7485666574960513024-CU7D"
+        }
+      ],
+      "challenge": [],
+      "approach": [],
+      "architecture": "",
+      "credits": [],
+      "media": {
+        "preview": {
+          "src": "/media/work/wkeyone/landing.png",
+          "width": 929,
+          "height": 639,
+          "alt": "WKEYONE marketing site, Arabic right-to-left, with a revenue chart and a live WhatsApp conversation",
+          "caption": "Marketing site",
+          "kind": "desktop"
+        },
+        "gallery": [
+          {
+            "src": "/media/work/wkeyone/landing.png",
+            "width": 929,
+            "height": 639,
+            "alt": "WKEYONE marketing site, Arabic right-to-left, with a revenue chart and a live WhatsApp conversation",
+            "caption": "Marketing site",
+            "kind": "desktop"
+          },
+          {
+            "src": "/media/work/wkeyone/dashboard.png",
+            "width": 1361,
+            "height": 645,
+            "alt": "WKEYONE control panel showing WhatsApp connection status and a six-step activation checklist",
+            "caption": "Control panel and activation",
+            "kind": "desktop"
+          },
+          {
+            "src": "/media/work/wkeyone/assistant.png",
+            "width": 1364,
+            "height": 646,
+            "alt": "WKEYONE automated replies screen, configuring the assistant persona and welcome message",
+            "caption": "Assistant configuration",
+            "kind": "desktop"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "headshot",
+      "index": "02",
+      "title": "Headshot",
+      "subtitle": "AI-augmented OSINT and lead intelligence platform",
+      "year": null,
+      "date": null,
+      "role": "Architecture, engine, AI layer",
+      "summary": "Autonomously discovers, validates, enriches and investigates business prospects from a niche plus location query.",
+      "overview": [
+        "An AI-augmented OSINT and lead intelligence platform engineered to autonomously discover, validate, enrich and investigate business prospects from a simple niche plus location query.",
+        "It combines multi-source discovery, web intelligence, entity resolution, adaptive investigation planning, automated deep-link execution, Arabic and Franco-Arabic intelligence, evidence-based scoring and AI-assisted reasoning into a single investigation workflow."
+      ],
+      "capabilities": [
+        {
+          "label": "Adaptive investigation engine",
+          "body": "Identifies intelligence gaps, evaluates techniques by value, cost and reliability, selects the next action, executes it, and updates investigation state."
+        },
+        {
+          "label": "Autonomous deep-link intelligence",
+          "body": "Generates and executes investigation paths rather than presenting static links. Verified chains include crt.sh to subdomains to derived probes."
+        },
+        {
+          "label": "Entity resolution and intelligence graph",
+          "body": "Connects organisations, domains, people, emails, phones, social profiles, technologies, locations and infrastructure while maintaining provenance and confidence."
+        },
+        {
+          "label": "Arabic and Franco-Arabic intelligence",
+          "body": "Arabic normalisation, transliteration, phonetic matching, regional variants, and Franco-Arabic inputs such as m7amed and 3abdallah."
+        },
+        {
+          "label": "Evidence-based lead scoring",
+          "body": "Weighs contactability, ICP fit, pain signals, decision-makers, social presence, source quality and corroborating evidence."
+        },
+        {
+          "label": "False-positive detection",
+          "body": "Explicitly rejects irrelevant businesses, duplicate entities, unrelated locations, noisy directories, misleading matches and unsupported relationships."
+        },
+        {
+          "label": "AI safety and graceful degradation",
+          "body": "Validates structured AI responses and falls back to deterministic behaviour during provider failures, rate limits, malformed responses or unavailable models."
+        },
+        {
+          "label": "Non-obvious techniques",
+          "body": "DMARC rua intelligence, certificate organisation searches, security.txt, urlscan intelligence, sitemap analysis and infrastructure attribution."
+        }
+      ],
+      "architecture": "Discovery → Normalization → Entity Resolution → Enrichment → Evidence Graph → Gap Analysis → Adaptive Planner → Deep-Link Execution → Re-scoring → Next Investigation",
+      "stack": [
+        "Python",
+        "OSINT",
+        "Web Scraping",
+        "Playwright",
+        "REST APIs",
+        "SQLite",
+        "Async Processing",
+        "Entity Resolution",
+        "Information Retrieval",
+        "NLP",
+        "Arabic NLP",
+        "Transliteration",
+        "Generative AI",
+        "AI Provider Abstraction",
+        "Knowledge Retrieval",
+        "Adaptive Planning",
+        "Evidence Graphs",
+        "Lead Scoring",
+        "Automation"
+      ],
+      "links": [],
+      "challenge": [],
+      "approach": [],
+      "outcome": [],
+      "credits": [],
+      "media": {
+        "preview": null,
+        "gallery": []
+      }
+    },
+    {
+      "slug": "lai",
+      "index": "03",
+      "title": "LAI",
+      "subtitle": "Multi-provider AI chat application for iOS",
+      "year": "2025",
+      "date": "01 / 2025",
+      "role": "iOS architecture, AI integration, interface",
+      "summary": "Several AI providers behind one interface, with an abstraction layer that lets the provider change without touching application logic.",
+      "overview": [
+        "A platform that brings several AI providers together behind one interface. Rather than binding the app directly to each provider, an abstraction layer lets the AI provider change without changing application logic.",
+        "LAI v1 is a comprehensive iOS application that integrates multiple AI models into a unified conversational interface."
+      ],
+      "capabilities": [
+        {
+          "label": "Multi-AI integration",
+          "body": "Access to Gemini, Mistral and OpenRouter APIs through one surface."
+        },
+        {
+          "label": "Conversation management",
+          "body": "Persistent chat history with context preservation and contextual smart replies."
+        },
+        {
+          "label": "Image analysis",
+          "body": "AI-powered interpretation of visual content."
+        },
+        {
+          "label": "Resilience",
+          "body": "Crash recovery, data validation, retry mechanisms, string safety and input validation."
+        }
+      ],
+      "approach": [
+        "Modular AI model factory design, so a new provider is an addition rather than a rewrite.",
+        "Modern iOS architecture patterns with SwiftUI and adaptive theming.",
+        "Efficient conversation storage and maintenance algorithms."
+      ],
+      "outcome": [
+        "Multi-API integration strategies for diverse AI capabilities, resilient mobile architecture, and conversation context and memory management at scale."
+      ],
+      "stack": [
+        "iOS",
+        "SwiftUI",
+        "Gemini",
+        "Mistral",
+        "OpenRouter",
+        "AI Provider Abstraction",
+        "Mobile Architecture"
+      ],
+      "links": [
+        {
+          "label": "Announcement",
+          "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_ios-swiftui-artificialintelligence-activity-7336776985374867457-lC7Z"
+        }
+      ],
+      "challenge": [],
+      "architecture": "",
+      "credits": [],
+      "media": {
+        "preview": {
+          "src": "/media/work/lai/model-settings.png",
+          "width": 614,
+          "height": 1128,
+          "alt": "LAI settings sheet offering gemini, mistral and openRouter as the AI model, plus a dark mode toggle",
+          "caption": "Provider switching",
+          "kind": "mobile",
+          "needsCleanExport": true
+        },
+        "gallery": [
+          {
+            "src": "/media/work/lai/chat.png",
+            "width": 562,
+            "height": 1108,
+            "alt": "LAI chat screen on iPhone with the Gemini provider active and a token counter",
+            "caption": "Conversation, Gemini active",
+            "kind": "mobile",
+            "needsCleanExport": true
+          },
+          {
+            "src": "/media/work/lai/model-settings.png",
+            "width": 614,
+            "height": 1128,
+            "alt": "LAI settings sheet offering gemini, mistral and openRouter as the AI model, plus a dark mode toggle",
+            "caption": "Provider switching",
+            "kind": "mobile",
+            "needsCleanExport": true
+          },
+          {
+            "src": "/media/work/lai/conversations.png",
+            "width": 584,
+            "height": 1138,
+            "alt": "LAI conversations list with four saved chats and refresh, clear and new actions",
+            "caption": "Conversation history",
+            "kind": "mobile",
+            "needsCleanExport": true
+          }
+        ]
+      }
+    },
+    {
+      "slug": "keyone-data",
+      "index": "04",
+      "title": "KEYONE Data",
+      "subtitle": "Large-scale analytics engine",
+      "year": "2024",
+      "date": "01 / 2024",
+      "role": "Data engineering, query layer, performance",
+      "summary": "An analytics engine over hundreds of millions of records, built on DuckDB and Parquet with a FastAPI query layer.",
+      "overview": [
+        "A project built specifically for large-scale analytics, handling hundreds of millions of records."
+      ],
+      "approach": [
+        "DuckDB and Apache Parquet as the storage and execution layer.",
+        "A FastAPI query layer built on top of it.",
+        "The engineering focus was performance, pagination and query optimisation."
+      ],
+      "stack": [
+        "DuckDB",
+        "Apache Parquet",
+        "FastAPI",
+        "Python",
+        "Query Optimisation",
+        "Pagination"
+      ],
+      "links": [
+        {
+          "label": "Announcement",
+          "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_digitalmarketing-ai-python-activity-7357149739794006018-HRvg"
+        }
+      ],
+      "challenge": [],
+      "capabilities": [],
+      "architecture": "",
+      "outcome": [],
+      "credits": [],
+      "media": {
+        "preview": null,
+        "gallery": []
+      }
+    },
+    {
+      "slug": "ykchat",
+      "index": "05",
+      "title": "YkChat",
+      "subtitle": "Real-time iOS messaging application",
+      "year": "2023",
+      "date": "03 / 2023",
+      "role": "iOS architecture and development",
+      "summary": "A messaging application built on MVVM, covering real-time text, media, audio and location messaging.",
+      "overview": [
+        "A messaging application that leans on modern software architecture and mature libraries to deliver a seamless experience. It employs MVVM throughout, keeping separation of concerns clear and the codebase maintainable."
+      ],
+      "capabilities": [
+        {
+          "label": "Real-time messaging",
+          "body": "Text, images, video and audio sent and received instantly, with sent, delivered and read status tracking."
+        },
+        {
+          "label": "Media and voice",
+          "body": "Photo, video and audio sharing, with integrated recording for voice messages."
+        },
+        {
+          "label": "Location sharing",
+          "body": "Users can share their current location with contacts, displayed on a map."
+        },
+        {
+          "label": "Accounts",
+          "body": "Secure registration and login, customisable profiles with display names and avatars, and push notifications for incoming messages."
+        }
+      ],
+      "approach": [
+        "Custom classes for each feature area, including incoming and outgoing message handling and audio recording, following MVVM and Clean Architecture patterns.",
+        "Realm for local storage, so messages save and retrieve efficiently offline."
+      ],
+      "stack": [
+        "Swift",
+        "UIKit",
+        "MVVM",
+        "Firebase Auth",
+        "Firebase Realtime Database",
+        "Cloud Functions",
+        "MessageKit",
+        "Realm",
+        "AVFoundation",
+        "CoreLocation",
+        "MapKit",
+        "ProgressHUD"
+      ],
+      "credits": [
+        "Logo design: @ykarcart"
+      ],
+      "links": [
+        {
+          "label": "Announcement",
+          "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_swift-ios-swiftui-activity-7245403119294062592-pQib"
+        }
+      ],
+      "challenge": [],
+      "architecture": "",
+      "outcome": [],
+      "media": {
+        "preview": null,
+        "gallery": []
+      }
+    }
+  ]
+}

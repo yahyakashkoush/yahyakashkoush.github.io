@@ -1,22 +1,25 @@
+"use client";
+
 import { Container, Kicker, SectionHeading } from "@/components/primitives";
 import { RevealGroup, RevealItem } from "@/components/motion";
-import { timeline } from "@/content/profile";
+import { usePortfolio } from "@/components/content-provider";
 
 /**
  * Career arc on a left rail. Four entries, so a plain list is the right
  * component here: no accordion, no cards.
  */
 export function Experience() {
+  const { content: { experience } } = usePortfolio();
   return (
     <section id="experience" className="scroll-mt-24 pt-24 md:pt-32 lg:pt-40">
       <Container>
         <div className="mb-12 flex flex-col gap-4 md:mb-16">
-          <Kicker>Experience</Kicker>
-          <SectionHeading className="max-w-[20ch]">From iOS to applied AI.</SectionHeading>
+          <Kicker>{experience.label}</Kicker>
+          <SectionHeading className="max-w-[20ch]">{experience.title}</SectionHeading>
         </div>
 
         <RevealGroup className="border-l border-line">
-          {timeline.map((entry) => (
+          {experience.entries.map((entry) => (
             <RevealItem key={entry.title}>
               <article className="group relative grid grid-cols-1 gap-3 py-8 pl-6 transition-colors duration-500 md:grid-cols-12 md:gap-8 md:py-10 md:pl-10">
                 {/* Node sits on the rail and warms as the row is read. */}

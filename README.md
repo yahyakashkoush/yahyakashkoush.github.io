@@ -42,26 +42,45 @@ Identity and contact details live in `src/content/site.ts`.
 
 ## Portfolio admin
 
-Open `/admin` to add, edit, reorder, preview, or remove case studies. Project
-content lives in `src/content/projects.json`, re-exported with its type and
-helpers by `projects.ts`. Existing project URLs are fixed to preserve links
-and their screenshot associations. Screenshots remain in `src/content/media.ts`.
+Open `/admin` to manage the live portfolio. The dashboard is backed by Supabase
+Auth, Postgres row-level security, Storage, and the `portfolio-submit` Edge
+Function. Only emails listed in `portfolio_admins` can read private drafts,
+publish content, upload images, or open the inbox.
 
-Drafts stay in the current tab. Export a draft to JSON to keep a backup; restore
-it through Publishing. Reloading discards unsaved drafts and authorization.
-The admin shell displays public portfolio content only. GitHub enforces write
-authorization; no shared password or token is shipped with the site.
+The editable content snapshot lives in `src/content/portfolio.json` as the
+static fallback and deployment metadata source. Runtime edits are stored in
+`portfolio_content`:
 
-To publish, connect a fine-grained GitHub personal access token scoped to
-`yahyakashkoush/yahyakashkoush.github.io` with **Contents: read/write** and
-**Actions: read**. Tokens stay in memory and are sent only to GitHub's API.
-Publishing updates the JSON on `main` using the loaded file SHA to prevent
-overwriting concurrent edits. Branch rules still apply. The existing Pages
-workflow rebuilds the portfolio; check the deployment status/history before
-expecting the changes to be live. Use GitHub commit history to revert changes.
+- draft content is private to approved admins;
+- published content is public and powers the portfolio on page load;
+- publishing snapshots the draft atomically and records a revision;
+- messages from `/start` and the contact form land in `portfolio_messages`;
+- uploaded images are stored in the public `portfolio-images` bucket.
 
-Run `node --test scripts/test-admin.mjs` on Node 24 to verify content validation,
-UTF-8 round trips, publish payloads, conflicts, and deployment status handling.
+The admin can add, edit, reorder, preview, import, export, and remove projects;
+edit the hero, about, experience, capabilities, contact, navigation, film, work,
+and `/start` copy; upload or reuse images; review messages; add private notes;
+and mark messages new, read, replied, or archived.
+
+Admin credentials are kept out of git in `.env.admin-access`. The current owner
+account is `yahyaemad999@gmail.com`. Supabase email recovery links should keep
+`https://kashkoush.me/admin` in the allowed redirect list.
+
+Deploy the database and function with the Supabase CLI or connector:
+
+```bash
+supabase db push
+supabase functions deploy portfolio-submit
+```
+
+Run the local checks before shipping:
+
+```bash
+node --test scripts/test-cms.mjs scripts/test-admin.mjs
+node scripts/check-cms-backend.mjs
+npm run lint
+npm run build
+```
 
 ## Design system
 
@@ -203,4 +222,4 @@ Then swap the `<video src>` for `<source>` children, WebM first.
 - Four portrait stills are currently unused: `ai-network.jpg`,
   `front-medium.jpg`, `portrait-34.jpg`, `side.jpg`.
 - No GitHub profile URL exists in the CV, so none is linked.
-- The contact form composes a mail draft via `mailto`; there is no backend.
+- Contact and `/start` submissions now save to the private CMS inbox.

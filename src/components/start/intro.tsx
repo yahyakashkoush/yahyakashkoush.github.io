@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
-import { startCopy } from "@/content/inquiry";
+import { usePortfolio } from "@/components/content-provider";
 import { Magnetic } from "@/components/motion";
 import { Envelope, LetterSheet } from "@/components/start/envelope";
 
@@ -25,6 +25,7 @@ export function Intro({
   letterOut: boolean;
   onOpen: () => void;
 }) {
+  const { content: { start: startCopy } } = usePortfolio();
   const reduce = useReducedMotion();
   const t = (duration: number, delay = 0) => (reduce ? { duration: 0 } : { duration, delay, ease: EASE });
 

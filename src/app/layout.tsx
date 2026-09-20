@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteShell } from "@/components/site-shell";
+import { PortfolioProvider } from "@/components/content-provider";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -60,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to content
           </a>
-          <SiteShell>{children}</SiteShell>
+          <PortfolioProvider><SiteShell>{children}</SiteShell></PortfolioProvider>
         </TooltipProvider>
       </body>
     </html>
