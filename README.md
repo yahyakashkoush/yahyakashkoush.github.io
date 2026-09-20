@@ -40,6 +40,29 @@ only when there is real material for it.
 
 Identity and contact details live in `src/content/site.ts`.
 
+## Portfolio admin
+
+Open `/admin` to add, edit, reorder, preview, or remove case studies. Project
+content lives in `src/content/projects.json`, re-exported with its type and
+helpers by `projects.ts`. Existing project URLs are fixed to preserve links
+and their screenshot associations. Screenshots remain in `src/content/media.ts`.
+
+Drafts stay in the current tab. Export a draft to JSON to keep a backup; restore
+it through Publishing. Reloading discards unsaved drafts and authorization.
+The admin shell displays public portfolio content only. GitHub enforces write
+authorization; no shared password or token is shipped with the site.
+
+To publish, connect a fine-grained GitHub personal access token scoped to
+`yahyakashkoush/yahyakashkoush.github.io` with **Contents: read/write** and
+**Actions: read**. Tokens stay in memory and are sent only to GitHub's API.
+Publishing updates the JSON on `main` using the loaded file SHA to prevent
+overwriting concurrent edits. Branch rules still apply. The existing Pages
+workflow rebuilds the portfolio; check the deployment status/history before
+expecting the changes to be live. Use GitHub commit history to revert changes.
+
+Run `node --test scripts/test-admin.mjs` on Node 24 to verify content validation,
+UTF-8 round trips, publish payloads, conflicts, and deployment status handling.
+
 ## Design system
 
 Defined once in `src/app/globals.css`.

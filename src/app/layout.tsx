@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { CursorAccent, Grain } from "@/components/atmosphere";
-import { ScrollProgress } from "@/components/motion";
-import { Nav } from "@/components/nav";
-import { Footer } from "@/components/footer";
+import { SiteShell } from "@/components/site-shell";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -63,12 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to content
           </a>
-          <Grain />
-          <CursorAccent />
-          <ScrollProgress />
-          <Nav />
-          <main id="main">{children}</main>
-          <Footer />
+          <SiteShell>{children}</SiteShell>
         </TooltipProvider>
       </body>
     </html>
