@@ -123,7 +123,11 @@
           "OpenRouter",
           "Hugging Face",
           "Claude",
-          "Codex"
+          "Codex",
+          "Multi-provider AI Routing",
+          "Provider Fallback",
+          "Structured AI Outputs",
+          "AI Cost Budgeting"
         ]
       },
       {
@@ -146,7 +150,10 @@
           "Make",
           "BullMQ",
           "Redis",
-          "Message Queues"
+          "Message Queues",
+          "Investigation Loops",
+          "Autonomous Pivot Execution",
+          "Loop Prevention"
         ]
       },
       {
@@ -167,7 +174,19 @@
           "Facebook",
           "Instagram",
           "TikTok",
-          "GitHub"
+          "GitHub",
+          "OSINT",
+          "RDAP",
+          "DNS-over-HTTPS",
+          "Certificate Transparency",
+          "crt.sh",
+          "URLScan",
+          "Wayback Machine",
+          "RIPEstat",
+          "SEC EDGAR",
+          "Nominatim",
+          "Photon",
+          "Overpass"
         ]
       },
       {
@@ -185,7 +204,11 @@
           "MongoDB",
           "Firebase",
           "Firestore",
-          "Caching"
+          "Caching",
+          "Entity Resolution",
+          "Evidence Graphs",
+          "Relationship Graphs",
+          "Confidence Scoring"
         ]
       },
       {
@@ -206,7 +229,12 @@
           "Meta APIs",
           "API Architecture",
           "Backend Integrations",
-          "System & Service Bridges"
+          "System & Service Bridges",
+          "ASGI",
+          "Gmail OAuth",
+          "Microsoft OAuth",
+          "Email Synchronization",
+          "Provider Gateway Architecture"
         ]
       },
       {
@@ -220,7 +248,13 @@
           "Payment Integrations",
           "CRM/ERP Integrations",
           "API-Based System Integration",
-          "Automation Pipelines"
+          "Automation Pipelines",
+          "Revenue Intelligence",
+          "Sales Operations Platforms",
+          "Opportunity Intelligence",
+          "Conversation Intelligence",
+          "Deal Management",
+          "Workspace Architecture"
         ]
       },
       {
@@ -248,7 +282,12 @@
           "JWT",
           "OAuth",
           "Rate Limiting",
-          "Security Testing & Vulnerability Resolution"
+          "Security Testing & Vulnerability Resolution",
+          "Fernet Encryption",
+          "Secret Masking",
+          "OAuth State Protection",
+          "Workspace Isolation",
+          "Adversarial Testing"
         ]
       },
       {
@@ -267,7 +306,8 @@
           "GSAP",
           "Git",
           "GitHub",
-          "VS Code"
+          "VS Code",
+          "BeautifulSoup"
         ]
       }
     ]
@@ -508,75 +548,106 @@
       "slug": "headshot",
       "index": "02",
       "title": "Headshot",
-      "subtitle": "AI-augmented OSINT and lead intelligence platform",
+      "subtitle": "Evidence-based OSINT and lead intelligence platform",
       "year": null,
       "date": null,
-      "role": "Architecture, engine, AI layer",
-      "summary": "Autonomously discovers, validates, enriches and investigates business prospects from a niche plus location query.",
+      "role": "Product architecture, OSINT engine, AI layer, reliability",
+      "summary": "A public-web investigation platform that discovers, enriches, verifies and prioritizes leads through evidence graphs, entity resolution and autonomous pivots.",
       "overview": [
-        "An AI-augmented OSINT and lead intelligence platform engineered to autonomously discover, validate, enrich and investigate business prospects from a simple niche plus location query.",
-        "It combines multi-source discovery, web intelligence, entity resolution, adaptive investigation planning, automated deep-link execution, Arabic and Franco-Arabic intelligence, evidence-based scoring and AI-assisted reasoning into a single investigation workflow."
+        "Headshot turns fragmented public data into a structured investigation workflow for sales, research and market-intelligence teams. A user can start from a business category, location, company, domain, email, phone or username, then let the system discover candidates, extract evidence, resolve entities and score the result.",
+        "The product is positioned as lead intelligence rather than scraped data: every useful claim is tied to source, timestamp, evidence family and confidence, so the output can be reviewed instead of blindly trusted.",
+        "The current V2 baseline is covered by 503 passing tests across discovery, entity resolution, evidence handling, pivot correctness, planner behavior, Arabic/English handling, AI-off execution and failure recovery."
       ],
       "capabilities": [
         {
-          "label": "Adaptive investigation engine",
-          "body": "Identifies intelligence gaps, evaluates techniques by value, cost and reliability, selects the next action, executes it, and updates investigation state."
+          "label": "Multi-channel discovery",
+          "body": "Searches across web, geographic and entity channels using business categories, domains, names, emails, phones, usernames, Arabic, English and Franco-Arabic queries."
         },
         {
-          "label": "Autonomous deep-link intelligence",
-          "body": "Generates and executes investigation paths rather than presenting static links. Verified chains include crt.sh to subdomains to derived probes."
+          "label": "Deep crawling and extraction",
+          "body": "Extracts company names, people, titles, emails, phones, addresses, social profiles, metadata, external links and obfuscated contact details from public websites."
         },
         {
-          "label": "Entity resolution and intelligence graph",
-          "body": "Connects organisations, domains, people, emails, phones, social profiles, technologies, locations and infrastructure while maintaining provenance and confidence."
+          "label": "Domain and infrastructure intelligence",
+          "body": "Builds intelligence profiles from DNS, RDAP, SSL certificates, subdomains, SPF, DMARC, security.txt, Wayback, URLScan, IP and registry data."
         },
         {
-          "label": "Arabic and Franco-Arabic intelligence",
-          "body": "Arabic normalisation, transliteration, phonetic matching, regional variants, and Franco-Arabic inputs such as m7amed and 3abdallah."
+          "label": "Entity resolution and evidence graph",
+          "body": "Connects organizations, domains, people, emails, phones, social profiles and infrastructure while preserving the evidence behind each relationship."
         },
         {
-          "label": "Evidence-based lead scoring",
-          "body": "Weighs contactability, ICP fit, pain signals, decision-makers, social presence, source quality and corroborating evidence."
+          "label": "Autonomous pivot planner",
+          "body": "Generates next-best investigation paths such as certificate to organization to related domains, or filing to subsidiary to domain and infrastructure."
         },
         {
-          "label": "False-positive detection",
-          "body": "Explicitly rejects irrelevant businesses, duplicate entities, unrelated locations, noisy directories, misleading matches and unsupported relationships."
+          "label": "Lead scoring and dossiers",
+          "body": "Turns raw findings into lead profiles with identity, contactability, business signals, confidence, connections and recommended next action."
         },
         {
-          "label": "AI safety and graceful degradation",
-          "body": "Validates structured AI responses and falls back to deterministic behaviour during provider failures, rate limits, malformed responses or unavailable models."
+          "label": "Contradiction handling",
+          "body": "Keeps conflicting evidence visible instead of overwriting it, separating verified evidence from inference to reduce false positives."
         },
         {
-          "label": "Non-obvious techniques",
-          "body": "DMARC rua intelligence, certificate organisation searches, security.txt, urlscan intelligence, sitemap analysis and infrastructure attribution."
+          "label": "AI-assisted, AI-off capable",
+          "body": "Uses LLMs for research, classification, analysis and strategy when useful, while preserving deterministic operation without provider dependency."
         }
       ],
-      "architecture": "Discovery → Normalization → Entity Resolution → Enrichment → Evidence Graph → Gap Analysis → Adaptive Planner → Deep-Link Execution → Re-scoring → Next Investigation",
+      "architecture": "Discover -> Crawl -> Extract -> Resolve -> Evidence Graph -> Pivot Planner -> Verify -> Score -> Dossier / Export",
       "stack": [
         "Python",
-        "OSINT",
-        "Web Scraping",
-        "Playwright",
-        "REST APIs",
+        "FastAPI",
         "SQLite",
+        "REST APIs",
         "Async Processing",
+        "Background Workers",
+        "HTTPX",
+        "Requests",
+        "BeautifulSoup",
+        "Playwright",
+        "OSINT",
+        "Nominatim",
+        "Photon",
+        "Overpass",
+        "RDAP",
+        "DNS-over-HTTPS",
+        "Certificate Transparency",
+        "crt.sh",
+        "URLScan",
+        "Wayback Machine",
+        "RIPEstat",
+        "SEC EDGAR",
         "Entity Resolution",
-        "Information Retrieval",
-        "NLP",
-        "Arabic NLP",
-        "Transliteration",
-        "Generative AI",
-        "AI Provider Abstraction",
-        "Knowledge Retrieval",
-        "Adaptive Planning",
         "Evidence Graphs",
-        "Lead Scoring",
-        "Automation"
+        "Relationship Graphs",
+        "Arabic NLP",
+        "Franco-Arabic Normalization",
+        "Phonetic Matching",
+        "OpenRouter",
+        "OpenAI",
+        "Anthropic",
+        "Google Gemini",
+        "AI Provider Abstraction",
+        "Provider Fallback",
+        "Pytest",
+        "Security Testing"
       ],
       "links": [],
-      "challenge": [],
-      "approach": [],
-      "outcome": [],
+      "challenge": [
+        "Public-web lead research usually breaks across search engines, maps, websites, DNS tools, certificate search, company registries, social profiles and spreadsheets.",
+        "The hard part is not only collecting fields; it is deciding which records describe the same entity, which relationships are supported by independent evidence, and which leads deserve action now.",
+        "The system also had to work across English, Arabic and Franco-Arabic inputs while avoiding false merges between similar company or person names."
+      ],
+      "approach": [
+        "Built a discovery-to-action pipeline: Discover -> Enrich -> Resolve -> Connect -> Verify -> Score -> Act.",
+        "Modeled companies, people, domains, emails, phones, websites, IPs, registries and social profiles as graph entities with provenance and confidence.",
+        "Added autonomous pivoting so the engine can move from a company to a domain, certificate, related domain, IP, registry, organization, filing or analytics signal, then decide the next useful probe.",
+        "Kept AI optional. Discovery, extraction, resolution, evidence, pivoting and scoring continue to run when AI providers are disabled or unavailable."
+      ],
+      "outcome": [
+        "Reframed the product from a scraper into an evidence-based intelligence pipeline for public-web lead research.",
+        "Reached a frozen V2 baseline with 503/503 tests passing before real-world discovery-quality measurement.",
+        "Produced structured outputs as JSON, CSV, HTML and Markdown dossiers for sales or research workflows."
+      ],
       "credits": [],
       "media": {
         "preview": null,
@@ -682,8 +753,110 @@
       }
     },
     {
-      "slug": "keyone-data",
+      "slug": "pulse",
       "index": "04",
+      "title": "PULSE",
+      "subtitle": "Revenue intelligence and autonomous sales operations platform",
+      "year": "2026",
+      "date": "2026",
+      "role": "Product architecture, backend, AI provider gateway, sales workflow design",
+      "summary": "A revenue-intelligence platform that turns raw customer data, company research, sales signals, conversations, follow-ups and deals into one actionable workspace.",
+      "overview": [
+        "PULSE is a SaaS platform for managing the sales cycle from messy customer data to intelligence, opportunity, conversation, follow-up and deal movement.",
+        "The product brings together CRM-style records, account research, business signals, smart inbox workflows, deal management, company knowledge and multi-provider AI orchestration inside one workspace.",
+        "Instead of asking only who to contact, PULSE is designed to answer why now: what changed, what evidence supports the opportunity, and what the next sales action should be."
+      ],
+      "challenge": [
+        "Sales teams often keep customer data, research, emails, CRM updates, follow-ups and deal notes across disconnected tools and spreadsheets.",
+        "AI outputs are only useful when grounded in the company context, product positioning, ICP, past conversations and account evidence.",
+        "The platform needed workspace isolation, secure provider credentials, OAuth flows and auditable activity while still feeling operationally simple for a sales team."
+      ],
+      "approach": [
+        "Designed the core workflow around Raw Data -> Account Intelligence -> Research -> Signals -> Why Now -> Opportunity -> Strategy -> Conversation -> Follow-up -> Deal.",
+        "Built a workspace architecture where each team owns its customer data, knowledge base, providers, connections, opportunities, conversations, deals and activity logs.",
+        "Added a provider gateway that maps business tasks to AI providers and models, supports fallback, and records provider, model, usage, latency and failure details.",
+        "Connected conversations to accounts, contacts, opportunities and deals so email becomes part of the sales operation rather than a separate inbox."
+      ],
+      "capabilities": [
+        {
+          "label": "Unified customer data",
+          "body": "Imports, validates, maps, cleans and deduplicates companies, contacts, emails, websites, titles and customer records into a structured account database."
+        },
+        {
+          "label": "Account and opportunity intelligence",
+          "body": "Builds account profiles with contacts, interactions, research, signals, opportunities, conversations, deals and recommended next actions."
+        },
+        {
+          "label": "Why-now signal engine",
+          "body": "Transforms events such as hiring, expansion, launches, leadership changes or market movement into evidence-backed reasons to engage."
+        },
+        {
+          "label": "Smart inbox and conversation intelligence",
+          "body": "Associates Gmail or Outlook conversations with companies, contacts, opportunities and deals, then supports summaries, suggested replies and approval flows."
+        },
+        {
+          "label": "Follow-up and deal operations",
+          "body": "Schedules, reschedules, completes and cancels follow-ups while tying each deal back to the account intelligence that created it."
+        },
+        {
+          "label": "Company knowledge center",
+          "body": "Stores company context, products, services, ICP, target markets, positioning, FAQs, website context and reference documents for grounded AI operations."
+        },
+        {
+          "label": "Multi-provider AI routing",
+          "body": "Routes research, reply generation, critique, strategy and extraction tasks across OpenRouter, OpenAI, Gemini and Anthropic with provider fallback."
+        },
+        {
+          "label": "Security and workspace isolation",
+          "body": "Protects customer data through sessions, role-based access, OAuth security, encrypted provider credentials, secret masking and auditable activity."
+        }
+      ],
+      "architecture": "Authentication -> Workspace Management -> Data Layer -> Customer Knowledge -> Research & Intelligence -> Signals -> Opportunities -> Conversations -> Follow-ups -> Deals -> Activity, with a unified AI Provider Gateway across OpenRouter, OpenAI, Gemini and Anthropic.",
+      "outcome": [
+        "Defined a full revenue-intelligence operating system that combines CRM, smart inbox, AI research, opportunity generation, follow-up management and deal context.",
+        "Created a customer-onboarding path from workspace setup to data import, knowledge capture, connections, providers and operational readiness.",
+        "Separated business tasks from AI providers so the platform can change models without changing the sales workflow."
+      ],
+      "stack": [
+        "Python",
+        "ASGI",
+        "REST APIs",
+        "SQLite",
+        "Background Jobs",
+        "Workspace Architecture",
+        "Session Authentication",
+        "Role-Based Access Control",
+        "Fernet Encryption",
+        "OAuth 2.0",
+        "Gmail OAuth",
+        "Microsoft OAuth",
+        "Email Synchronization",
+        "Conversation Intelligence",
+        "CRM Systems",
+        "Revenue Intelligence",
+        "OpenRouter",
+        "OpenAI",
+        "Google Gemini",
+        "Anthropic",
+        "Multi-provider Routing",
+        "Model Fallback",
+        "Structured AI Outputs",
+        "Provider Gateway Auditing",
+        "Integration Testing",
+        "Browser Testing",
+        "End-to-End Workflows",
+        "Security Testing"
+      ],
+      "links": [],
+      "credits": [],
+      "media": {
+        "preview": null,
+        "gallery": []
+      }
+    },
+    {
+      "slug": "keyone-data",
+      "index": "05",
       "title": "KEYONE Data",
       "subtitle": "Large-scale analytics engine",
       "year": "2024",
@@ -724,7 +897,7 @@
     },
     {
       "slug": "ykchat",
-      "index": "05",
+      "index": "06",
       "title": "YkChat",
       "subtitle": "Real-time iOS messaging application",
       "year": "2023",
