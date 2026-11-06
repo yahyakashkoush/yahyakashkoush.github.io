@@ -28,20 +28,20 @@ export function Hero() {
         fill
         priority
         sizes="100vw"
-        className="object-cover object-center grayscale md:object-[50%_36%]"
+        className="hero-portrait object-cover object-center md:object-[50%_36%]"
       />
 
       {/* Scrim. Bottom-up black only: the photograph already carries the red, so
           a red wash on top of it just flattens the contrast. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/55 to-background/20 md:via-background/45 md:to-background/10"
+        className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-background/10 md:via-background/25 md:to-transparent"
       />
       {/* Light fall-off behind the title block, left side only. Kept low so the
           set stays visible through the type rather than going flat black. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent md:from-background/55"
+        className="absolute inset-0 bg-gradient-to-r from-background/65 via-transparent to-transparent md:from-background/40"
       />
 
       <Container className="relative flex min-h-[100dvh] flex-col justify-end pb-16 md:pb-20 lg:pb-24">

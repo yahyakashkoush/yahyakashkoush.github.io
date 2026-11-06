@@ -63,9 +63,9 @@ const action = cva(
   {
     variants: {
       variant: {
-        /* A restrained ivory fill: strong contrast without an ornamental accent. */
+        /* Warm sand makes the main action legible without a glowing treatment. */
         solid:
-          "border border-foreground px-7 text-foreground hover:border-red hover:bg-red hover:text-background",
+          "border border-red bg-red px-7 text-background hover:border-red-hi hover:bg-red-hi hover:text-background",
         /* Quiet sibling. Stroke stays neutral, text warms. Held at white/25 so
            the control boundary is still legible over the hero footage. */
         outline: "border border-white/25 px-7 text-fg-2 hover:border-foreground hover:text-foreground",

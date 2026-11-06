@@ -7,7 +7,13 @@ The user asked to improve the portfolio after criticism of its colors, suggested
 
 **Why:** The user wants the portfolio to look professional rather than AI-generated.
 
-**How to apply:** Favor a restrained black/gray presentation and clear content; do not restore the previous red glow and excessive effects during later maintenance.
+**How to apply:** Keep a dark, professional foundation and clear content; do not restore the previous red glow and excessive effects during later maintenance.
+
+The user later said the all-gray version felt too muted: «حاسس الموقع بقي مطفي اوي ظبط الاوان».
+
+**Why:** A fully desaturated, heavily darkened treatment lost too much visual clarity and energy.
+
+**How to apply:** Use brighter text and imagery, distinguish dark surfaces, and allow a limited accent color rather than insisting on a completely gray palette.
 
 The user asked to remove the photo beside “Architecture, not just models.” Keep that About section text-led rather than restoring its portrait.
 

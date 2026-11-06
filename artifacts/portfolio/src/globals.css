@@ -9,28 +9,29 @@
 
 /* ---------------------------------------------------------------------------
    TOKENS
-   Charcoal, ivory and neutral gray; no colored glow.
+   Lifted charcoal and clear ivory, with a restrained warm-sand accent.
 --------------------------------------------------------------------------- */
 :root {
   /* surfaces */
-  --bg: #080909;
-  --bg-2: #101112;
-  --bg-3: #181a1b;
+  --bg: #101214;
+  --bg-2: #191c1f;
+  --bg-3: #23272b;
 
   /* text */
-  --fg: #eeefec;
-  --fg-2: #b7b9b7;
-  --fg-3: #909391;
+  --fg: #faf9f6;
+  --fg-2: #c6c9c9;
+  --fg-3: #a4aaad;
 
   /* accent */
-  --red: #c8cbc7;
-  --red-hi: #e1e3df;
+  /* Legacy accent token names remain compatible with existing components. */
+  --red: #e6bb7d;
+  --red-hi: #f2cf9d;
   --red-glow: transparent;
 
   /* lines */
-  --line: rgb(255 255 255 / 0.11);
-  --line-2: rgb(255 255 255 / 0.2);
-  --line-red: rgb(255 255 255 / 0.26);
+  --line: rgb(255 255 255 / 0.14);
+  --line-2: rgb(255 255 255 / 0.25);
+  --line-red: rgb(230 187 125 / 0.45);
 
   /* motion */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -54,7 +55,7 @@
   --muted-foreground: var(--fg-3);
   --accent: var(--bg-3);
   --accent-foreground: var(--fg);
-  --destructive: var(--red);
+  --destructive: #f39b97;
   --border: var(--line);
   --input: var(--line);
   --ring: var(--red);
@@ -111,6 +112,10 @@ video[src*="/media/video/"] {
   filter: grayscale(1);
 }
 
+img.hero-portrait {
+  filter: grayscale(1) brightness(1.22) contrast(1.03);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -139,7 +144,7 @@ video[src*="/media/video/"] {
 
   ::selection {
     background: var(--red);
-    color: #fff;
+    color: var(--bg);
   }
 
   :focus-visible {
@@ -320,6 +325,10 @@ video[src*="/media/video/"] {
    affected. The neutral accent carries through the inquiry.
 --------------------------------------------------------------------------- */
 .paper {
+  /* The lighter sand accent needs a darker equivalent on paper. */
+  --red: #735025;
+  --red-hi: #513514;
+  --line-red: rgb(115 80 37 / 0.45);
   --paper: #e8e5de;
   --paper-edge: #d9d5cb;
   --ink: #171614;
