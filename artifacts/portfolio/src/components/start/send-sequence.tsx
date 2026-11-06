@@ -1,60 +1,54 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Envelope, LetterSheet } from "@/components/start/envelope";
 
-const MESSAGES = [
-  "Preparing your brief",
-  "Sending your details",
-  "Almost there",
-] as const;
+type Stage = "ready" | "inserting" | "closing" | "sealed";
+const LABELS: Record<Stage, string> = {
+  ready: "Preparing your brief",
+  inserting: "Enclosing your brief",
+  closing: "Closing the envelope",
+  sealed: "Sending your brief",
+};
 
 /**
- * A short, honest sending state instead of the broken envelope-folding
- * animation. The timer is cleaned up on unmount and completion fires once.
+ * Each physical movement hands off to the next on completion. There is no
+ * guessed timeline to drift, clip a letter, or start a flap before it is ready.
  */
 export function SendSequence({ onComplete }: { onComplete: () => void }) {
-  const reduce = useReducedMotion();
-  const [stage, setStage] = useState(0);
+  const [stage, setStage] = useState<Stage>("ready");
   const completed = useRef(false);
-
   useEffect(() => {
-    const delays = reduce ? [0, 40, 80, 120] : [0, 420, 920, 1460];
-    const timers = delays.map((delay, index) =>
-      window.setTimeout(() => {
-        if (index === delays.length - 1) {
-          if (completed.current) return;
-          completed.current = true;
-          onComplete();
-        } else {
-          setStage(index);
-        }
-      }, delay),
-    );
-    return () => timers.forEach(window.clearTimeout);
-  }, [onComplete, reduce]);
+    // One frame lets the open envelope paint before the letter moves inside.
+    const frame = requestAnimationFrame(() => setStage("inserting"));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  const letterComplete = useCallback(() => {
+    setStage((current) => current === "inserting" ? "closing" : current);
+  }, []);
+  const flapComplete = useCallback(() => {
+    setStage((current) => current === "closing" ? "sealed" : current);
+  }, []);
+  const sealComplete = useCallback(() => {
+    if (stage !== "sealed" || completed.current) return;
+    completed.current = true;
+    onComplete();
+  }, [stage, onComplete]);
 
   return (
-    <section
-      className="mx-auto w-full max-w-[42rem] border-y border-line py-12 sm:py-16"
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
-    >
-      <p className="t-label mb-8 text-fg-3">Project inquiry</p>
-      <h1 className="t-hero mb-10 text-foreground">{MESSAGES[stage]}</h1>
-      <div
-        className="grid grid-cols-3 gap-2"
-        aria-hidden="true"
-      >
-        {MESSAGES.map((message, index) => (
-          <motion.span
-            key={message}
-            className="h-0.5 origin-left bg-foreground"
-            initial={false}
-            animate={{ scaleX: index <= stage ? 1 : 0.3, opacity: index <= stage ? 1 : 0.25 }}
-            transition={reduce ? { duration: 0 } : { duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          />
-        ))}
+    <section className="mx-auto w-full max-w-[42rem] py-12" role="status" aria-live="polite" aria-atomic="true">
+      <div className="mx-auto mb-12 w-full max-w-[20rem] pt-20">
+        <Envelope
+          state={stage === "closing" || stage === "sealed" ? "closed" : "open"}
+          sealed={stage === "sealed"}
+          letterOut={stage === "ready"}
+          letter={<LetterSheet />}
+          onLetterComplete={letterComplete}
+          onFlapComplete={flapComplete}
+          onSealComplete={sealComplete}
+        />
       </div>
+      <p className="t-label mb-4 text-fg-3">Project inquiry</p>
+      <h1 className="t-sub text-foreground">{LABELS[stage]}</h1>
+      <p className="t-caption mt-4 text-fg-2">Your request is complete only when delivery is confirmed.</p>
     </section>
   );
 }

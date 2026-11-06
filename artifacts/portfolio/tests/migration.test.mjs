@@ -49,16 +49,19 @@ test("the active source no longer depends on Next.js", () => {
   assert.ok(!pkg.dependencies?.next && !pkg.devDependencies?.next);
 });
 
-test("the project inquiry opens directly without envelope art or staged timers", () => {
+test("the project inquiry uses image-free, completion-driven envelope transitions", () => {
   const start = readFileSync(new URL("../src/components/start/start-experience.tsx", import.meta.url), "utf8");
   const intro = readFileSync(new URL("../src/components/start/intro.tsx", import.meta.url), "utf8");
   const sending = readFileSync(new URL("../src/components/start/send-sequence.tsx", import.meta.url), "utf8");
   const sent = readFileSync(new URL("../src/components/start/sent-state.tsx", import.meta.url), "utf8");
 
   assert.doesNotMatch(start, /FLAP_MS|LETTER_MS|letterOut|phase === "opening"/);
-  assert.doesNotMatch(intro, /import .*Envelope|import .*LetterSheet|<Envelope|<LetterSheet|letterOut\s*=/);
-  assert.doesNotMatch(sending, /Envelope|LetterSheet|FoldedLetter/);
+  const envelope = readFileSync(new URL("../src/components/start/envelope.tsx", import.meta.url), "utf8");
+  assert.match(intro, /onLetterComplete/);
+  assert.doesNotMatch(envelope, /<Image|<img|rotateX|preserve-3d/);
+  assert.match(sending, /onFlapComplete/);
+  assert.match(sending, /onLetterComplete/);
   assert.doesNotMatch(sent, /Envelope/);
-  assert.match(sending, /return \(\) => timers\.forEach\(window\.clearTimeout\)/);
+  assert.doesNotMatch(sending, /setTimeout|TIMELINE/);
   assert.match(sending, /completed\.current/);
 });

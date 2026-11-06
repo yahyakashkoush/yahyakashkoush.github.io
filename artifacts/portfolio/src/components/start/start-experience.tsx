@@ -48,7 +48,7 @@ export function StartExperience() {
   const [outcome, setOutcome] = useState<BookingOutcome | null>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const movedByKeyboard = useRef(false);
-  /** Set while a scripted transition owns the envelope; blocks re-entry. */
+  /** Prevent duplicate delivery while the sending sequence owns the view. */
   const locked = useRef(false);
   const requestId = useRef<string | null>(null);
   /**
@@ -86,8 +86,7 @@ export function StartExperience() {
   }, []);
 
   /**
-   * The invitation transitions directly into the brief. There is no staged
-   * envelope animation or timer that can outlive the view or leave it stuck.
+   * The invitation calls this after the letter finishes its movement.
    */
   const open = useCallback(() => {
     goto("brief");
@@ -128,7 +127,7 @@ export function StartExperience() {
     setPhase("sending");
   }, [value]);
 
-  // Fired when the fold/post/seal choreography lands.
+  // Fired once the closing animation finishes, never before.
   const finishSending = useCallback(() => {
     requestId.current ||= crypto.randomUUID();
     bookingService
@@ -151,7 +150,7 @@ export function StartExperience() {
   const step = stepIndex(phase);
   const isStep = STEPS.includes(phase as StepId);
 
-  const transition = reduce ? { duration: 0 } : { duration: 0.62, ease: EASE };
+  const transition = reduce ? { duration: 0 } : { duration: 0.2, ease: EASE };
 
   return (
     <div className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pt-28 pb-20 md:pt-32">
