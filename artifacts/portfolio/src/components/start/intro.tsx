@@ -68,7 +68,7 @@ export function Intro({
             type="button"
             onClick={onOpen}
             disabled={opening}
-            className="group t-nav inline-flex min-h-12 items-center justify-center gap-3 border border-foreground px-7 text-foreground transition-[background-color,color,border-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-red hover:bg-red hover:text-white active:translate-y-px disabled:pointer-events-none disabled:opacity-40"
+            className="group t-nav inline-flex min-h-12 items-center justify-center gap-3 border border-foreground px-7 text-foreground transition-[background-color,color,border-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-red hover:bg-red hover:text-background active:translate-y-px disabled:pointer-events-none disabled:opacity-40"
           >
             {startCopy.cta}
             <ArrowRight weight="bold" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />

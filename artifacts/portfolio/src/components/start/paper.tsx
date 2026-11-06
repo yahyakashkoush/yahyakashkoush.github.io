@@ -169,7 +169,7 @@ export function ChoiceGroup({
 
 /* Actions ----------------------------------------------------------------- */
 
-/** Primary control on paper: ink stroke that floods red. */
+/** Primary control on paper: an ink-filled, high-contrast action. */
 export function InkAction({
   children,
   onClick,
@@ -191,7 +191,7 @@ export function InkAction({
       className={cn(
         "group t-nav inline-flex min-h-12 items-center justify-center gap-3 border border-[var(--ink)] px-7 text-[var(--ink)]",
         "transition-[background-color,color,border-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-        "hover:border-red hover:bg-red hover:text-white active:translate-y-px",
+        "hover:border-red hover:bg-red hover:text-[var(--paper)] active:translate-y-px",
         "disabled:pointer-events-none disabled:opacity-35",
         className,
       )}

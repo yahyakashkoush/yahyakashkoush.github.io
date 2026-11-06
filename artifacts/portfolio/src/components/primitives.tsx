@@ -63,9 +63,9 @@ const action = cva(
   {
     variants: {
       variant: {
-        /* White stroke that floods red on hover. The only filled control on the site. */
+        /* A restrained ivory fill: strong contrast without an ornamental accent. */
         solid:
-          "border border-foreground px-7 text-foreground hover:border-red hover:bg-red hover:text-white",
+          "border border-foreground px-7 text-foreground hover:border-red hover:bg-red hover:text-background",
         /* Quiet sibling. Stroke stays neutral, text warms. Held at white/25 so
            the control boundary is still legible over the hero footage. */
         outline: "border border-white/25 px-7 text-fg-2 hover:border-foreground hover:text-foreground",

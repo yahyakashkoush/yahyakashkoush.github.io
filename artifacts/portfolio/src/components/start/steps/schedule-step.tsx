@@ -163,7 +163,7 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
                   "t-meta relative border-r border-b border-[var(--rule)] py-3 text-center transition-colors duration-200",
                   enabled
                     ? selected
-                      ? "bg-red text-white"
+                      ? "bg-red text-background"
                       : "text-[var(--ink-2)] hover:bg-[rgb(23_22_20_/_0.06)] hover:text-[var(--ink)]"
                     : "cursor-not-allowed text-[var(--ink-3)]/45",
                 )}
@@ -200,7 +200,7 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
                 className={cn(
                   "t-meta min-h-11 bg-[var(--paper)] px-4 py-3 transition-colors duration-200",
                   selected
-                    ? "bg-red text-white"
+                    ? "bg-red text-background"
                     : "text-[var(--ink-2)] hover:bg-[rgb(23_22_20_/_0.06)] hover:text-[var(--ink)]",
                   !value.date && "cursor-not-allowed opacity-40 hover:bg-[var(--paper)]",
                 )}

@@ -9,29 +9,28 @@
 
 /* ---------------------------------------------------------------------------
    TOKENS
-   Near-blacks and the accent red are sampled from the photography in
-   public/media/portrait, not generated. Red marks state; it never decorates.
+   Charcoal, ivory and neutral gray; no colored glow.
 --------------------------------------------------------------------------- */
 :root {
   /* surfaces */
-  --bg: #050505;
-  --bg-2: #0a0a0b;
-  --bg-3: #111113;
+  --bg: #080909;
+  --bg-2: #101112;
+  --bg-3: #181a1b;
 
   /* text */
-  --fg: #f2f2f0;
-  --fg-2: #a3a3a0;
-  --fg-3: #6b6b69;
+  --fg: #eeefec;
+  --fg-2: #b7b9b7;
+  --fg-3: #909391;
 
   /* accent */
-  --red: #d91f26;
-  --red-hi: #ff3b30;
-  --red-glow: rgb(217 31 38 / 0.14);
+  --red: #c8cbc7;
+  --red-hi: #e1e3df;
+  --red-glow: transparent;
 
   /* lines */
-  --line: rgb(255 255 255 / 0.08);
-  --line-2: rgb(255 255 255 / 0.14);
-  --line-red: rgb(217 31 38 / 0.45);
+  --line: rgb(255 255 255 / 0.11);
+  --line-2: rgb(255 255 255 / 0.2);
+  --line-red: rgb(255 255 255 / 0.26);
 
   /* motion */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -48,7 +47,7 @@
   --popover: var(--bg-3);
   --popover-foreground: var(--fg);
   --primary: var(--red);
-  --primary-foreground: #ffffff;
+  --primary-foreground: #101112;
   --secondary: var(--bg-3);
   --secondary-foreground: var(--fg);
   --muted: var(--bg-2);
@@ -104,6 +103,14 @@
 /* ---------------------------------------------------------------------------
    BASE
 --------------------------------------------------------------------------- */
+/* Personal imagery follows the neutral theme; real product screenshots retain
+   their original colors. */
+img[src*="/media/portrait/"],
+img[src*="/media/object/"],
+video[src*="/media/video/"] {
+  filter: grayscale(1);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -310,8 +317,7 @@
    PAPER  (/start only)
    The brief is a physical sheet, so it inverts: warm off-white stock, ink
    instead of light type. Scoped to .paper so nothing else on the dark site is
-   affected. The red accent carries straight over — it is the one colour shared
-   between the page and the letter.
+   affected. The neutral accent carries through the inquiry.
 --------------------------------------------------------------------------- */
 .paper {
   --paper: #e8e5de;
@@ -320,7 +326,7 @@
   --ink-2: #57544c;
   --ink-3: #8a8579;
   --rule: rgb(23 22 20 / 0.16);
-  --rule-2: rgb(23 22 20 / 0.28);
+  --rule-2: rgb(23 22 20 / 0.32);
 
   position: relative;
   color: var(--ink);
@@ -444,9 +450,7 @@
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: var(--red);
-  box-shadow: 0 0 5px 1px rgb(217 31 38 / 0.7);
-  animation: crt-led-pulse 3.2s ease-in-out infinite;
+  background: #a7aaa6;
 }
 
 .crt-screen {

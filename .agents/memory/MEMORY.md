@@ -1,0 +1,1 @@
+- [Portfolio visual direction](visual-direction.md) — professional black/gray, restrained effects, and no AI-template appearance.

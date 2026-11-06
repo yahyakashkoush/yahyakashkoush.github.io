@@ -37,7 +37,7 @@ export function SentState({
         <button
           type="button"
           onClick={onRestart}
-          className="t-nav inline-flex min-h-12 items-center border border-foreground px-7 text-foreground transition-colors duration-300 hover:border-red hover:bg-red hover:text-white"
+          className="t-nav inline-flex min-h-12 items-center border border-foreground px-7 text-foreground transition-colors duration-300 hover:border-red hover:bg-red hover:text-background"
         >
           Back to the brief
         </button>

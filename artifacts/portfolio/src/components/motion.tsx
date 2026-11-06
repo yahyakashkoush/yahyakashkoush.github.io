@@ -120,7 +120,7 @@ export function Magnetic({ children, className }: { children: React.ReactNode; c
 
 /* Scroll progress --------------------------------------------------------- */
 
-/** One-pixel red rule at the top edge. The only persistent red on the page. */
+/** Quiet one-pixel progress rule at the top edge. */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 220, damping: 40, restDelta: 0.001 });

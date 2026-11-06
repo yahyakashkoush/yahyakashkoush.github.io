@@ -187,12 +187,6 @@ export function StartExperience() {
 
   return (
     <div className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pt-28 pb-20 md:pt-32">
-      {/* Pool of light behind the object. The only non-flat thing on the page. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_44%_at_50%_38%,rgb(217_31_38_/_0.07),transparent_72%)]"
-      />
-
       <Container className="relative">
         {/* Focus target for step changes. */}
         <div ref={headingRef} tabIndex={-1} className="outline-none" aria-live="polite">

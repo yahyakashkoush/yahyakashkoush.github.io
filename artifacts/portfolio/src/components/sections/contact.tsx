@@ -102,7 +102,7 @@ export function Contact() {
                       className={cn(
                         "t-nav inline-flex min-h-12 items-center justify-center border border-foreground px-7 text-foreground",
                         "transition-[background-color,color,border-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                        "hover:border-red hover:bg-red hover:text-white active:translate-y-px",
+                        "hover:border-red hover:bg-red hover:text-background active:translate-y-px",
                         "disabled:pointer-events-none disabled:opacity-40",
                       )}
                     >

@@ -22,4 +22,4 @@ The bundled content is the original app's initial snapshot. Authenticated admin 
 
 ## Migration scope
 
-Preserve `/`, `/work`, `/work/:slug`, `/start`, `/admin`, and the original query-string project links. Keep the original dark theme, Archivo and JetBrains Mono fonts, media, motion, and interaction behavior. This port is not a redesign.
+Preserve `/`, `/work`, `/work/:slug`, `/start`, `/admin`, and the original query-string project links. The original port preserved the app; the user subsequently requested a professional black/gray redesign without an AI-generated feel. Keep personal imagery monochrome, real project screenshots in color, and avoid decorative glow, cursor effects, or cinematic interruptions. Preserve content and interaction behavior.
