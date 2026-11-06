@@ -1,45 +1,25 @@
-# [Project name]
+# Yahya — Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Imported creative portfolio, migrated from a static Next.js export to a React + Vite app in the pnpm workspace. Preserve the original design and product flows.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Start the managed workflow `artifacts/portfolio: web` to run the app.
+- The workflow provides `PORT` and `BASE_PATH`; do not run a root-level dev command.
+- `node --test artifacts/portfolio/tests/migration.test.mjs` checks content validity, local media, route coverage, and removal of Next.js imports.
 
-## Stack
+## Project layout
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- `artifacts/portfolio/` — the migrated web app, public media, and migration checks.
+- `.migration-backup/` — original imported source, retained as the parity reference.
+- `artifacts/api-server/`, `artifacts/mockup-sandbox/`, `lib/` — existing workspace scaffold; the portfolio does not require these services to run.
 
-## Where things live
+## Existing services
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+The app continues to use its original Supabase project for published content, administrator authentication, draft publishing, image uploads, and inquiry submission. Do not migrate or replace that database without explicit permission.
 
-## Architecture decisions
+The bundled content is the original app's initial snapshot. Authenticated admin functions require an existing authorized Supabase account. The `/start` flow requests a preferred meeting time; it must not claim the meeting is confirmed.
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+## Migration scope
 
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+Preserve `/`, `/work`, `/work/:slug`, `/start`, `/admin`, and the original query-string project links. Keep the original dark theme, Archivo and JetBrains Mono fonts, media, motion, and interaction behavior. This port is not a redesign.

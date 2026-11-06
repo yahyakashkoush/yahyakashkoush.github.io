@@ -1,0 +1,50 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { parseContent, safeUrl } from "../src/lib/content-schema.ts";
+
+const content = JSON.parse(readFileSync(new URL("../src/content/portfolio.json", import.meta.url), "utf8"));
+
+test("the complete portfolio snapshot validates without losing fields", () => {
+  assert.deepEqual(parseContent(content), content);
+});
+
+test("published content rejects unsafe links, duplicate projects and invalid schedules", () => {
+  for (const url of ["javascript:alert(1)", "//evil.test", "/\\evil.test", "data:text/html,test"]) {
+    assert.equal(safeUrl.safeParse(url).success, false);
+  }
+  const duplicate = structuredClone(content);
+  duplicate.projects.push(duplicate.projects[0]);
+  assert.throws(() => parseContent(duplicate), /Duplicate/);
+  const schedule = structuredClone(content);
+  schedule.start.scheduling.leadTimeDays = 365;
+  assert.throws(() => parseContent(schedule), /horizon/);
+});
+
+test("all media referenced by the initial portfolio exists", () => {
+  const paths = new Set(JSON.stringify(content).match(/\/media\/[^"\s]+/g));
+  assert.ok(paths.size > 0);
+  for (const path of paths) {
+    assert.ok(existsSync(new URL(`../public${path}`, import.meta.url)), `Missing media: ${path}`);
+  }
+});
+
+test("all public pages and the private workspace remain represented", () => {
+  for (const name of ["site", "navigation", "hero", "work", "about", "experience", "capabilities", "contact", "start", "cinematic", "projects"]) {
+    assert.ok(content[name], `${name} content must exist`);
+  }
+  assert.ok(content.navigation.some((item) => item.href === "/start"));
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  for (const route of ["/work", "/start", "/admin"]) assert.ok(app.includes(route), `Missing route: ${route}`);
+});
+
+test("the active source no longer depends on Next.js", () => {
+  const root = new URL("../src/", import.meta.url);
+  for (const path of readdirSync(root, { recursive: true })) {
+    if (!/\.[jt]sx?$/.test(path)) continue;
+    const source = readFileSync(new URL(path, root), "utf8");
+    assert.doesNotMatch(source, /from\s+["']next(?:\/[^"']*)?["']/, `Next.js import in ${path}`);
+  }
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  assert.ok(!pkg.dependencies?.next && !pkg.devDependencies?.next);
+});
