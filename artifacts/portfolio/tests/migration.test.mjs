@@ -48,3 +48,17 @@ test("the active source no longer depends on Next.js", () => {
   const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
   assert.ok(!pkg.dependencies?.next && !pkg.devDependencies?.next);
 });
+
+test("the project inquiry opens directly without envelope art or staged timers", () => {
+  const start = readFileSync(new URL("../src/components/start/start-experience.tsx", import.meta.url), "utf8");
+  const intro = readFileSync(new URL("../src/components/start/intro.tsx", import.meta.url), "utf8");
+  const sending = readFileSync(new URL("../src/components/start/send-sequence.tsx", import.meta.url), "utf8");
+  const sent = readFileSync(new URL("../src/components/start/sent-state.tsx", import.meta.url), "utf8");
+
+  assert.doesNotMatch(start, /FLAP_MS|LETTER_MS|letterOut|phase === "opening"/);
+  assert.doesNotMatch(intro, /import .*Envelope|import .*LetterSheet|<Envelope|<LetterSheet|letterOut\s*=/);
+  assert.doesNotMatch(sending, /Envelope|LetterSheet|FoldedLetter/);
+  assert.doesNotMatch(sent, /Envelope/);
+  assert.match(sending, /return \(\) => timers\.forEach\(window\.clearTimeout\)/);
+  assert.match(sending, /completed\.current/);
+});

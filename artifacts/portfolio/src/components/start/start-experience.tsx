@@ -25,16 +25,6 @@ import {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/**
- * Opening beats, in physical order: the flap lifts, then the sheet slides out
- * of the mouth, and only then does the brief take the stage. Matches the
- * envelope's own FLAP_MS / LETTER_MS so the phase never changes mid-travel.
- */
-const FLAP_MS = 900;
-const LETTER_MS = 900;
-/** A beat of daylight between the sheet arriving and the form replacing it. */
-const HANDOFF_MS = 260;
-
 const STEP_COMPONENTS = {
   brief: BriefStep,
   budget: BudgetStep,
@@ -61,13 +51,6 @@ export function StartExperience() {
   /** Set while a scripted transition owns the envelope; blocks re-entry. */
   const locked = useRef(false);
   const requestId = useRef<string | null>(null);
-  const timers = useRef<number[]>([]);
-
-  useEffect(() => {
-    const pending = timers.current;
-    return () => pending.forEach(window.clearTimeout);
-  }, []);
-
   /**
    * Answers are merged, never replaced, so moving between steps keeps
    * everything already written. A field's error is dropped the moment it is
@@ -103,27 +86,12 @@ export function StartExperience() {
   }, []);
 
   /**
-   * Transitions are locked while they run: the envelope is a physical object
-   * mid-travel, so a second click can't be allowed to start a competing
-   * animation or strand it half-open. Every timer is tracked and cleared on
-   * unmount so nothing fires into a dead component.
+   * The invitation transitions directly into the brief. There is no staged
+   * envelope animation or timer that can outlive the view or leave it stuck.
    */
   const open = useCallback(() => {
-    if (locked.current) return;
-    locked.current = true;
-    const s = reduce ? 0.08 : 1;
-    setPhase("opening");
-    timers.current.push(window.setTimeout(() => setPhase("letterOut"), FLAP_MS * s));
-    timers.current.push(
-      window.setTimeout(
-        () => {
-          locked.current = false;
-          goto("brief");
-        },
-        (FLAP_MS + LETTER_MS + HANDOFF_MS) * s,
-      ),
-    );
-  }, [goto, reduce]);
+    goto("brief");
+  }, [goto]);
 
   const advance = useCallback(
     (from: StepId) => {
@@ -203,21 +171,13 @@ export function StartExperience() {
 
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            /* The opening beats keep the intro's key so the envelope stays the
-               same mounted node throughout — it is never remounted mid-open. */
-            key={phase === "opening" || phase === "letterOut" ? "intro" : phase}
+            key={phase}
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -14 }}
             transition={transition}
           >
-            {(phase === "intro" || phase === "opening" || phase === "letterOut") && (
-              <Intro
-                opening={phase === "opening" || phase === "letterOut"}
-                letterOut={phase === "letterOut"}
-                onOpen={open}
-              />
-            )}
+            {phase === "intro" && <Intro onOpen={open} />}
 
             {isStep && step && <StepPage phase={phase as StepId} value={value} patch={patch} errors={errors} advance={advance} back={back} step={step} />}
 
@@ -233,7 +193,7 @@ export function StartExperience() {
               </div>
             )}
 
-            {phase === "sending" && <SendSequence value={value} onComplete={finishSending} />}
+            {phase === "sending" && <SendSequence onComplete={finishSending} />}
 
             {phase === "sent" && outcome && (
               <SentState value={value} outcome={outcome} onRestart={restart} />

@@ -32,12 +32,10 @@ export const STEPS = ["brief", "budget", "contact", "schedule"] as const;
 export type StepId = (typeof STEPS)[number];
 
 /**
- * The whole interaction as one deterministic machine:
- * intro(closed) → opening(flap up) → letterOut(sheet slides out) → the four
- * steps + review(interactive) → sending(fold → letter in → flap down → seal)
- * → sent. Every arrow is driven from StartExperience and locked while it runs.
+ * The inquiry phases. The landing transition and send progress are deliberately
+ * separate from the form steps so animation state cannot strand the workflow.
  */
-export type Phase = "intro" | "opening" | "letterOut" | StepId | "review" | "sending" | "sent";
+export type Phase = "intro" | StepId | "review" | "sending" | "sent";
 
 /** Steps are numbered on the letter as 01 / 04. Non-step phases return null. */
 export const stepIndex = (phase: Phase): { n: number; of: number } | null => {

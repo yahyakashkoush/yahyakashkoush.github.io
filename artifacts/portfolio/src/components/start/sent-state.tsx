@@ -1,8 +1,8 @@
 
 import { usePortfolio } from "@/components/content-provider";
+import { Check } from "@phosphor-icons/react/dist/ssr";
 import { motion, useReducedMotion } from "motion/react";
 import { Action } from "@/components/primitives";
-import { Envelope } from "@/components/start/envelope";
 import { type BookingOutcome } from "@/lib/booking";
 import { formatLongDate, formatTime, resolvedTimeZone, type ProjectInquiry } from "@/lib/inquiry";
 
@@ -48,18 +48,18 @@ export function SentState({
   const confirmed = outcome.status === "confirmed";
 
   return (
-    <div className="mx-auto flex w-full max-w-[42rem] flex-col items-center">
+    <div className="mx-auto w-full max-w-[42rem]">
       <motion.div
-        className="w-full"
-        initial={reduce ? false : { opacity: 0, scale: 0.98 }}
+        className="mb-8 flex size-12 items-center justify-center border border-line-2 text-foreground"
+        initial={reduce ? false : { opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={t(0.9)}
+        transition={t(0.35)}
       >
-        <Envelope state="closed" sealed />
+        <Check aria-hidden="true" weight="regular" className="size-5" />
       </motion.div>
 
       <motion.div
-        className="mt-12 w-full border-t border-line pt-8"
+        className="border-t border-line pt-8"
         initial={reduce ? false : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={t(0.8, 0.25)}
