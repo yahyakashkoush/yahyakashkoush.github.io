@@ -2,7 +2,7 @@
 
 ## ما الذي سيعمل وأين؟
 
-- **Render Static Site:** الموقع، الفيديو والصور، `/start`، دراسات المشاريع، `/admin` ومعاينة المسودات.
+- **Render Web Service (Node):** الموقع، الفيديو والصور، `/start`، دراسات المشاريع، `/admin` ومعاينة المسودات.
 - **Supabase الحالي:** حساب الأدمن، المحتوى، الصور المرفوعة من الأدمن، الرسائل، الحجوزات وEdge Function.
 - لا تحتاج إنشاء PostgreSQL أو تشغيل API Server منفصل على Render. لا تعِد تشغيل سكربت نقل البيانات أو إنشاء الجداول.
 
@@ -13,19 +13,22 @@
 في Render اختر **New → Blueprint** واربط المستودع. الملف `render.yaml` يحدد الإعدادات تلقائيًا، بما فيها بيانات Supabase **العامة فقط**.
 اسم الخدمة في الملف مجرد اسم مقترح، وليس رابط نشر تم إنشاؤه أو حجزه.
 
-لو ستنشئ الخدمة يدويًا، اختر **Static Site**:
+لو ستنشئ الخدمة يدويًا، اختر **Web Service → Node**:
 
 | الإعداد | القيمة |
 |---|---|
 | Root Directory | اتركه فارغًا، أي جذر المستودع |
 | Build Command | `bash scripts/render-build.sh` |
-| Publish Directory | `artifacts/portfolio/dist/public` |
 | Node | `24.22.1`، محددة في `.node-version` |
-| Start Command | لا يوجد، لأنها Static Site |
+| Start Command | `node scripts/render-start.mjs` |
+| Health Check Path | `/healthz` |
 
 انسخ المتغيرين العامين `VITE_SUPABASE_URL` و`VITE_SUPABASE_PUBLISHABLE_KEY` من `render.yaml` إلى إعدادات Environment في الخدمة اليدوية.
 لا تستخدم `npm install` ولا تجعل مجلد المشروع الفرعي Root Directory.
-أضف Rewrite: المصدر `/*`، الوجهة `/index.html`، النوع **Rewrite**؛ هذا يحمي فتح `/admin` و`/start` مباشرة وإعادة تحميلهما من خطأ 404.
+لا تحتاج Publish Directory أو Rewrite في Web Service؛ السيرفر يقدم ملفات الإنتاج، ويرجع `/index.html` لمسارات الموقع والأدمن تلقائيًا. يدعم طلبات Range للفيديو ويستخدم `PORT` الذي يحدده Render، ولا يشغّل Vite في الإنتاج.
+
+الـBlueprint يبدأ بخطة Free، ويمكنك اختيار خطة أخرى من Render بنفسك.
+لو فضّلت Static Site لاحقًا، استخدم نفس Build Command مع Publish Directory = `artifacts/portfolio/dist/public` وRewrite من `/*` إلى `/index.html`، وبدون Start Command.
 
 ## 2. تفعيل رابط Render الفعلي على Supabase
 
@@ -70,7 +73,7 @@ node artifacts/portfolio/scripts/configure-production-origin.mjs \
 
 ## أمان مهم
 
-لا تضع `SUPABASE_SECRET_KEY` أو service-role key أو `SUPABASE_ACCESS_TOKEN` في Render Static Site أو أي متغير يبدأ بـ`VITE_`.
+لا تضع `SUPABASE_SECRET_KEY` أو service-role key أو `SUPABASE_ACCESS_TOKEN` في إعدادات هذه الخدمة أو أي متغير يبدأ بـ`VITE_`؛ السيرفر يحتاج فقط ملفات البناء و`PORT`، وعمليات البيانات المحمية تبقى على Supabase.
 سكربت البناء يرفض الأنواع الخاصة المعروفة. المفتاح العام المصمم للمتصفح ظاهر للمستخدمين بطبيعته؛ الحماية تتم بصلاحيات Supabase.
 المفتاح السري الذي انكشف سابقًا يجب إلغاؤه من Supabase قبل استقبال بيانات عملاء حقيقية؛ تهيئة Render لا تلغيه تلقائيًا.
 
@@ -78,7 +81,8 @@ node artifacts/portfolio/scripts/configure-production-origin.mjs \
 
 ```bash
 bash scripts/render-build.sh --skip-install
-node --test artifacts/portfolio/tests/render-deployment.test.mjs
+node --test artifacts/portfolio/tests/render-deployment.test.mjs artifacts/portfolio/tests/render-server.test.mjs
+PORT=10000 node scripts/render-start.mjs
 ```
 
 خيار `--skip-install` للاختبار داخل مساحة العمل التي تحتوي بالفعل على الحزم؛ Render يستخدم الأمر العادي ويثبت من الـlockfile.

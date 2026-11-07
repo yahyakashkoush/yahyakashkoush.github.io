@@ -26,10 +26,10 @@ test("build allows public credentials, not privileged keys or leaked VITE secret
   assert.throws(() => validatePublicConfig({ ...publicEnv, VITE_SUPABASE_PUBLISHABLE_KEY: jwt("service_role") }));
   assert.throws(() => validatePublicConfig({ ...publicEnv, VITE_SUPABASE_URL: "https://user:password@example.com" }));
 });
-test("Render serves all SPA routes and only deploys the portfolio output", async () => {
+test("Render Web Service starts the production server and has a health check", async () => {
   const blueprint = await readFile(new URL("../../../render.yaml", import.meta.url), "utf8");
-  assert.match(blueprint, /runtime: static/);
-  assert.match(blueprint, /staticPublishPath: artifacts\/portfolio\/dist\/public/);
-  assert.match(blueprint, /source: \/\*\s+destination: \/index.html/);
-  assert.doesNotMatch(blueprint, /startCommand:|SUPABASE_SECRET_KEY|SUPABASE_ACCESS_TOKEN|DATABASE_URL/);
+  assert.match(blueprint, /runtime: node/);
+  assert.match(blueprint, /startCommand: node scripts\/render-start.mjs/);
+  assert.match(blueprint, /healthCheckPath: \/healthz/);
+  assert.doesNotMatch(blueprint, /staticPublishPath:|SUPABASE_SECRET_KEY|SUPABASE_ACCESS_TOKEN|DATABASE_URL/);
 });

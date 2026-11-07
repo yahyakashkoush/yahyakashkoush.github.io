@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Render serves the output on its CDN; no Vite dev/preview server is deployed.
+# Build static files; render-start.mjs serves them in production (not Vite).
 export NODE_ENV=production
 export BASE_PATH=/
 export PORT="${PORT:-10000}"

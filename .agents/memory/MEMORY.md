@@ -1,3 +1,4 @@
 - [Portfolio visual direction](visual-direction.md) — professional black/gray, restrained effects, and no AI-template appearance.
 - [Supabase auth redirects](supabase-auth-redirects.md) — management updates can accept unknown fields without applying redirect settings; verify the resulting configuration.
 - [Stable browser verification](stable-browser-verification.md) — finish shared-preview edits before testing multi-step inquiry and admin journeys.
+- [Render deployment choice](render-deployment-choice.md) — the user needs a Web Service with an explicit Start Command, not repeated Static Site instructions.
