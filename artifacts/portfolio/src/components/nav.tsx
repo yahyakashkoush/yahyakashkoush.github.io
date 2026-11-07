@@ -33,20 +33,20 @@ export function Nav() {
         >
           <Link
             href="/"
-            className="group flex min-h-11 items-center gap-2.5 pr-2"
+            className="group inline-flex min-h-11 shrink-0 items-center pr-4"
             aria-label={`${site.name}, home`}
           >
-            <span className="t-nav text-foreground">{site.name}</span>
+            <span className="font-sans text-[15px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap text-foreground lg:text-base">{site.name}</span>
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-9 md:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex xl:gap-9">
             {/* py-2.5 keeps each hit area at the WCAG 2.5.8 minimum without
                 changing the visual height of the bar. */}
             {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="link-wipe t-nav inline-flex items-center py-2.5 text-fg-2 transition-colors duration-300 hover:text-foreground"
+                className="link-wipe t-nav inline-flex min-h-11 items-center whitespace-nowrap text-fg-2 transition-colors duration-300 hover:text-foreground"
               >
                 {item.label}
               </Link>
@@ -58,7 +58,7 @@ export function Nav() {
               <button
                 type="button"
                 aria-label="Open menu"
-                className="group flex size-11 flex-col items-center justify-center gap-[5px] md:hidden"
+                className="group flex size-11 flex-col items-center justify-center gap-[5px] lg:hidden"
               >
                 <span className="block h-px w-[18px] bg-foreground transition-transform duration-300 group-hover:translate-y-px" />
                 <span className="block h-px w-[18px] bg-foreground transition-transform duration-300 group-hover:-translate-y-px" />
