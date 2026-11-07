@@ -36,7 +36,6 @@ export function Nav() {
             className="group flex min-h-11 items-center gap-2.5 pr-2"
             aria-label={`${site.name}, home`}
           >
-            <span className="block size-1.5 bg-red transition-transform duration-300 group-hover:scale-150" />
             <span className="t-nav text-foreground">{site.name}</span>
           </Link>
 

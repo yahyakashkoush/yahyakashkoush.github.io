@@ -27,7 +27,6 @@ export function Hero() {
       <Container className="relative z-10 grid min-h-[86dvh] items-center gap-14 pt-32 pb-16 md:pt-40 md:pb-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         <div className="min-w-0">
           <p className="hero-rise t-label mb-6 flex items-center gap-3 text-red" data-testid="text-hero-role">
-            <span aria-hidden className="inline-block h-px w-8 bg-red" />
             {hero.role}
           </p>
 
