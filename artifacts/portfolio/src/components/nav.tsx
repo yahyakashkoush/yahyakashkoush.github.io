@@ -33,15 +33,14 @@ export function Nav() {
         >
           <Link
             href="/"
-            className="group inline-flex min-h-11 shrink-0 items-center pr-4"
+            className="group t-nav inline-flex min-h-11 shrink-0 items-center pr-4 text-fg-2 transition-colors duration-300 hover:text-foreground"
             aria-label={`${site.name}, home`}
           >
-            <span className="font-sans text-[15px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap text-foreground lg:text-base">{site.name}</span>
+            <span>YK</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex xl:gap-9">
-            {/* py-2.5 keeps each hit area at the WCAG 2.5.8 minimum without
-                changing the visual height of the bar. */}
+            {/* Match the brand's type and centered 44px hit area. */}
             {nav.map((item) => (
               <Link
                 key={item.href}
