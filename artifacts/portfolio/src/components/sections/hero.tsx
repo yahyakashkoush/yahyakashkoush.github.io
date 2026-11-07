@@ -1,19 +1,37 @@
 
 import { usePortfolio } from "@/components/content-provider";
 import { Action, Container } from "@/components/primitives";
+import { CrtMonitor } from "@/components/crt-monitor";
+import { LiquidEther } from "@/components/liquid-ether";
 
-/** A text-led introduction: no photography or background imagery. */
+/** The original systems reel accompanies the introduction, without portraits. */
 export function Hero() {
-  const { content: { hero } } = usePortfolio();
+  const { content: { hero, cinematic } } = usePortfolio();
   return (
-    <section className="relative w-full border-b border-line">
-      <Container className="flex min-h-[82dvh] flex-col justify-center pt-36 pb-20 md:pt-44 md:pb-24">
+    <section className="relative isolate w-full overflow-hidden border-b border-line">
+      <div aria-hidden className="pointer-events-none absolute inset-0 hidden opacity-40 mix-blend-screen md:block">
+        <LiquidEther
+          colors={["#171717", "#87939f", "#292929"]}
+          mouseForce={12}
+          cursorSize={100}
+          resolution={0.35}
+          iterationsPoisson={20}
+          autoDemo
+          autoSpeed={0.3}
+          autoIntensity={1.5}
+          autoResumeDelay={2400}
+          autoRampDuration={0.8}
+        />
+      </div>
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/35" />
+      <Container className="relative z-10 grid min-h-[82dvh] items-center gap-16 pt-36 pb-20 md:pt-44 md:pb-24 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="min-w-0">
         <p className="t-label mb-6 text-red">
           {hero.role}
         </p>
 
         <h1
-          className="t-display max-w-[20ch] text-foreground"
+          className="t-display max-w-[20ch] text-foreground lg:text-[clamp(4rem,7vw,7rem)]"
         >
           <span className="whitespace-pre-line">{hero.heading}</span>
         </h1>
@@ -34,6 +52,13 @@ export function Hero() {
             {hero.secondaryLabel}
           </Action>
         </div>
+        </div>
+        <CrtMonitor
+          clip={cinematic.crtReel}
+          caption={cinematic.crtReel.caption}
+          embedded
+          className="max-w-[560px] justify-self-center"
+        />
       </Container>
     </section>
   );

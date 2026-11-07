@@ -990,6 +990,7 @@ function createLiquidEther(container: HTMLElement, opts: LiquidEtherOptions) {
     dispose() {
       io.disconnect();
       ro.disconnect();
+      manager.pause();
       manager.dispose();
     },
   };

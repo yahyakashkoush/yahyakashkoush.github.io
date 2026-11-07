@@ -19,7 +19,19 @@ The user subsequently requested removal of all images and “monochrome with blu
 
 **Why:** The portfolio needs to make a formal professional impression for a company audience.
 
-**How to apply:** Keep public pages image-free, including project screenshots and hover previews. Use neutral black/gray/white with restrained blue emphasis; this supersedes the earlier warm-sand accent.
+**How to apply:** Keep portraits, project screenshots and hover previews removed. Use neutral black/gray/white with restrained blue emphasis; this supersedes the earlier warm-sand accent.
+
+The user explicitly requested the original television and its original video in the empty right side of the introduction.
+
+**Why:** This is an intentional exception to the earlier removal of all imagery, not permission to restore the other images.
+
+**How to apply:** Keep the original systems reel in a television beside the introduction on desktop and below the text on mobile. Do not restore the separate end-of-page television.
+
+The user also explicitly asked to restore the old animated smoke background.
+
+**Why:** They want this specific ambient effect back, despite preferring restrained presentation overall.
+
+**How to apply:** Allow subtle neutral smoke behind the introduction, keeping text legible and preserving reduced-motion behavior. This does not permit restoring red glow or other removed effects.
 
 The user asked to remove the photo beside “Architecture, not just models.” Keep that About section text-led rather than restoring its portrait.
 

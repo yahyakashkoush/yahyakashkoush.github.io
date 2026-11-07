@@ -1,5 +1,4 @@
 
-import Image from "@/lib/compat/image";
 import { Container, Kicker } from "@/components/primitives";
 import { Reveal } from "@/components/motion";
 import { useViewportPlayback } from "@/components/video";
@@ -19,49 +18,36 @@ import { cn } from "cn";
  * vignette, and a slow flicker. Kept subtle on purpose — a CRT that's easy to
  * read beats one that performs.
  */
-export function CrtMonitor({ clip, caption, className }: { clip: Clip; caption: string; className?: string }) {
-  const { ref, playing } = useViewportPlayback();
+export function CrtMonitor({ clip, caption, className, embedded = false }: { clip: Clip; caption: string; className?: string; embedded?: boolean }) {
+  const { ref } = useViewportPlayback();
 
-  return (
-    <section id="story" aria-label={caption} className={cn("scroll-mt-24 py-24 md:py-32 lg:py-40", className)}>
-      <Container>
-        <Reveal className="flex flex-col items-center">
-          <Kicker className="mb-10 text-center">{caption}</Kicker>
-
+  const monitor = (
+    <figure aria-label={caption} className={cn("w-full", embedded && className)}>
           <div className="crt-unit w-full max-w-[240px] sm:max-w-[420px] md:max-w-[560px]">
             <div className="crt-shell">
               {/* Power LED + vents: the only decoration on the shell, kept minimal. */}
               <div className="mb-3 flex items-center gap-2 px-1">
                 <span aria-hidden className="crt-led" />
-                <span className="t-label text-[0.55rem] tracking-[0.3em] text-white/25">REC · SIGNAL</span>
+                <span className="t-label text-[0.55rem] tracking-[0.3em] text-fg-3">SYSTEMS IN MOTION</span>
               </div>
 
               <div className="crt-screen" style={{ aspectRatio: clip.width / clip.height }}>
-                <Image
-                  src={clip.poster}
-                  alt={clip.posterAlt}
-                  fill
-                  sizes="(max-width: 768px) 90vw, 560px"
-                  className="object-cover object-center"
-                />
                 <video
                   ref={ref}
-                  className={cn(
-                    "absolute inset-0 size-full object-cover object-center transition-opacity duration-700",
-                    playing ? "opacity-100" : "opacity-0",
-                  )}
+                  className="absolute inset-0 size-full object-contain object-center"
                   src={clip.src}
+                  poster={clip.poster}
                   width={clip.width}
                   height={clip.height}
                   muted
                   loop
                   playsInline
+                  controls
                   preload="none"
                   aria-label={clip.content}
                 />
                 <div aria-hidden className="crt-vignette" />
                 <div aria-hidden className="crt-scanlines" />
-                <div aria-hidden className="crt-flicker" />
               </div>
 
               {/* Vents, echoing the source footage's own TV without copying its
@@ -74,6 +60,18 @@ export function CrtMonitor({ clip, caption, className }: { clip: Clip; caption: 
             </div>
             <div aria-hidden className="crt-stand" />
           </div>
+          {embedded && <figcaption className="t-label mt-6 text-center text-fg-3">{caption}</figcaption>}
+    </figure>
+  );
+
+  if (embedded) return monitor;
+
+  return (
+    <section id="story" aria-label={caption} className={cn("scroll-mt-24 py-24 md:py-32 lg:py-40", className)}>
+      <Container>
+        <Reveal className="flex flex-col items-center">
+          <Kicker className="mb-10 text-center">{caption}</Kicker>
+          {monitor}
         </Reveal>
       </Container>
     </section>
