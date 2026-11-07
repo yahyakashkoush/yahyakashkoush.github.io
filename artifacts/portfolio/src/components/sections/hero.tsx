@@ -8,7 +8,7 @@ import { LiquidEther } from "@/components/liquid-ether";
 export function Hero() {
   const { content: { hero, cinematic } } = usePortfolio();
   return (
-    <section className="relative isolate w-full overflow-hidden border-b border-line">
+    <section id="intro" className="relative isolate w-full overflow-hidden border-b border-line">
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden opacity-40 mix-blend-screen md:block">
         <LiquidEther
           colors={["#171717", "#87939f", "#292929"]}
