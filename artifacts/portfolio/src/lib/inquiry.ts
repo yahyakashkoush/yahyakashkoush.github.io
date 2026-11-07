@@ -6,6 +6,7 @@ export type ProjectInquiry = {
   projectBrief: string;
   projectTypes: ProjectTypeId[];
   budget: BudgetId | null;
+  customBudget: string;
   name: string;
   email: string;
   company: string;
@@ -19,6 +20,7 @@ export const emptyInquiry: ProjectInquiry = {
   projectBrief: "",
   projectTypes: [],
   budget: null,
+  customBudget: "",
   name: "",
   email: "",
   company: "",
@@ -62,7 +64,11 @@ export function validateStep(step: StepId, v: ProjectInquiry): Errors {
     else if (brief.length < MIN_BRIEF) e.projectBrief = `A little more to go on — ${MIN_BRIEF - brief.length} characters short.`;
     if (v.projectTypes.length === 0) e.projectTypes = "Pick at least one.";
   }
-  if (step === "budget" && !v.budget) e.budget = "Pick a range, or choose Let's discuss.";
+  if (step === "budget") {
+    if (!v.budget) e.budget = "Choose a range, enter your own budget, or select Let's discuss.";
+    else if (v.budget === "__custom__" && !v.customBudget.trim()) e.budget = "Enter your budget, including the currency.";
+    else if (v.budget === "__custom__" && v.customBudget.trim().length > 120) e.budget = "Keep your budget under 120 characters.";
+  }
   if (step === "contact") {
     if (!v.name.trim()) e.name = "Required.";
     const email = v.email.trim();
@@ -88,8 +94,12 @@ export const isComplete = (v: ProjectInquiry): boolean => Object.keys(validateAl
 export const typeLabels = (ids: ProjectTypeId[], choices: readonly {id: string; label: string}[] = projectTypes): string =>
   ids.map((id) => choices.find((t) => t.id === id)?.label ?? id).join(", ");
 
-export const budgetLabel = (id: BudgetId | null, choices: readonly {id: string; label: string}[] = budgetBands): string =>
-  choices.find((b) => b.id === id)?.label ?? "";
+export const budgetLabel = (id: BudgetId | null, choices: readonly {id: string; label: string}[] = budgetBands, customBudget = ""): string =>
+  id === "__custom__" ? customBudget.trim() : choices.find((b) => b.id === id)?.label ?? "";
+
+/** One published business timezone, never a different slot per visitor. */
+export const scheduleTimeZone = (config: { timeZone?: string } = scheduling): string =>
+  config.timeZone || "Africa/Cairo";
 
 /* Dates ------------------------------------------------------------------- */
 

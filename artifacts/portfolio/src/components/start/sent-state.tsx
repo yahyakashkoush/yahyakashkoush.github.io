@@ -4,7 +4,7 @@ import { Check } from "@phosphor-icons/react/dist/ssr";
 import { motion, useReducedMotion } from "motion/react";
 import { Action } from "@/components/primitives";
 import { type BookingOutcome } from "@/lib/booking";
-import { formatLongDate, formatTime, resolvedTimeZone, type ProjectInquiry } from "@/lib/inquiry";
+import { formatLongDate, formatTime, scheduleTimeZone, type ProjectInquiry } from "@/lib/inquiry";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -73,11 +73,11 @@ export function SentState({
           <p>{start.successMessage}</p>
           {value.date && value.time && (
             <p className="mt-4">
-              {confirmed ? "Confirmed for " : "You asked for "}
+              {confirmed ? "Confirmed for " : outcome.status === "requested" && outcome.slotReserved ? "Your time is reserved for " : "You asked for "}
               <span className="text-foreground">
                 {formatLongDate(value.date)} at {formatTime(value.time)}
               </span>
-              <span className="text-fg-3"> · {resolvedTimeZone()}</span>
+              <span className="text-fg-3"> · {scheduleTimeZone(start.scheduling)}</span>
               {!confirmed && ". I'll confirm that time by reply."}
             </p>
           )}

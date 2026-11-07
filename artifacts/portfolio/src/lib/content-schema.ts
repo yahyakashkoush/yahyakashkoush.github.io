@@ -12,7 +12,8 @@ export const shotSchema = imageSchema.extend({ width: z.number().int().min(1).ma
 const paragraphs = z.array(text).max(100);
 const section = z.object({ label: required, title: required });
 const choice = z.object({ id: slug, label: required });
-export const scheduleSchema = z.object({ leadTimeDays: z.number().int().min(0).max(365), horizonDays: z.number().int().min(1).max(365), weekdays: z.array(z.number().int().min(0).max(6)).min(1).max(7), slots: z.array(z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)).min(1).max(48) }).refine((v) => v.horizonDays > v.leadTimeDays, "The booking horizon must exceed the lead time");
+const timeZone = z.string().max(100).refine((value) => { try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; } }, "Enter an IANA timezone such as Africa/Cairo");
+export const scheduleSchema = z.object({ timeZone: timeZone.optional(), leadTimeDays: z.number().int().min(0).max(365), horizonDays: z.number().int().min(1).max(365), weekdays: z.array(z.number().int().min(0).max(6)).min(1).max(7), slots: z.array(z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)).min(1).max(48) }).refine((v) => v.horizonDays > v.leadTimeDays, "The booking horizon must exceed the lead time");
 export const projectSchema = z.object({
   slug, index: required, title: required, subtitle: required, year: text.nullable(), date: text.nullable(), role: required, summary: required,
   overview: paragraphs.min(1).refine((v) => v.some((p) => p.trim()), "Add an overview"), challenge: paragraphs, approach: paragraphs,

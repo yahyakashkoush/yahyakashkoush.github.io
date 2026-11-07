@@ -37,7 +37,10 @@ export async function uploadImage(file: File) {
 export async function submitMessage(payload: Record<string, unknown>) {
   const response = await fetch(`${supabaseUrl}/functions/v1/portfolio-submit`, { method: "POST", headers: { "Content-Type": "application/json", apikey: submissionKey, Authorization: `Bearer ${submissionKey}` }, body: JSON.stringify(payload) });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || "Your message could not be sent. Please try again.");
-  return result as { id: string };
+  if (!response.ok) throw new SubmissionError(result.error || "Your message could not be sent. Please try again.", result.code);
+  return result as { id: string; bookingStatus?: "reserved" };
+}
+export class SubmissionError extends Error {
+  constructor(message: string, public code?: string) { super(message); this.name = "SubmissionError"; }
 }
 export function errorMessage(error: unknown) { return error instanceof Error ? error.message : typeof error === "object" && error && "message" in error ? String(error.message) : "Something went wrong. Please try again."; }

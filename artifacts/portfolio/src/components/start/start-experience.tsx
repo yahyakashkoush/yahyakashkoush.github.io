@@ -11,6 +11,7 @@ import { ContactStep } from "@/components/start/steps/contact-step";
 import { ScheduleStep } from "@/components/start/steps/schedule-step";
 import { ReviewStep } from "@/components/start/steps/review-step";
 import { bookingService, type BookingOutcome } from "@/lib/booking";
+import { SubmissionError } from "@/lib/cms";
 import {
   STEPS,
   emptyInquiry,
@@ -128,16 +129,24 @@ export function StartExperience() {
   }, [value]);
 
   // Fired once the closing animation finishes, never before.
-  const finishSending = useCallback(() => {
+  const finishSending = useCallback(async () => {
     requestId.current ||= crypto.randomUUID();
-    bookingService
-      .submit(value, requestId.current)
-      .then((res) => setOutcome(res))
-      .catch((e: unknown) =>
-        setOutcome({ status: "failed", reason: e instanceof Error ? e.message : "The brief could not be sent." }),
-      )
-      .finally(() => { locked.current = false; setPhase("sent"); });
-  }, [value]);
+    try {
+      const result = await bookingService.submit(value, requestId.current);
+      setOutcome(result);
+      setPhase("sent");
+    } catch (error) {
+      if (error instanceof SubmissionError && error.code === "SLOT_TAKEN") {
+        setValue((previous) => ({ ...previous, time: null }));
+        setErrors({ time: "That time was just booked. Your brief is safe — choose another time." });
+        requestId.current = null;
+        goto("schedule");
+      } else {
+        setOutcome({ status: "failed", reason: error instanceof Error ? error.message : "The brief could not be sent." });
+        setPhase("sent");
+      }
+    } finally { locked.current = false; }
+  }, [value, goto]);
 
   const restart = useCallback(() => {
     locked.current = false;

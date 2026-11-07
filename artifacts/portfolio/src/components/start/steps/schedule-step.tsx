@@ -1,13 +1,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { CaretLeft, CaretRight, X } from "@phosphor-icons/react/dist/ssr";
 import { usePortfolio } from "@/components/content-provider";
-import { bookingService, type Availability } from "@/lib/booking";
+import { bookingService, mailHandoffProvider, type Availability } from "@/lib/booking";
 import {
   formatTime,
   fromISODate,
   isRequestable,
-  resolvedTimeZone,
+  scheduleTimeZone,
   toISODate,
 } from "@/lib/inquiry";
 import { Ask, FieldError, InkAction, InkLabel, Sheet, SheetFoot, SheetHead } from "@/components/start/paper";
@@ -20,40 +20,61 @@ const addMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth()
 const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
 const sameDay = (a: Date, b: Date) => toISODate(a) === toISODate(b);
 
-/**
- * A printed appointment sheet, not a scheduling dashboard.
- *
- * The site has no calendar integration, so nothing here is presented as a free
- * slot. `bookingService.getAvailability()` returns null under the shipped mail
- * handoff and the grid stays a list of *preferred* times, labelled as such.
- * Connect a provider and the same grid narrows to whatever it publishes.
- */
+/** Live availability is required; unavailable services never imply free slots. */
 export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: StepProps) {
   const { content: { start } } = usePortfolio();
   const scheduling = start.scheduling;
   const [month, setMonth] = useState(() => startOfMonth(value.date ? fromISODate(value.date) : new Date()));
   const [availability, setAvailability] = useState<Availability | null>(null);
+  const [availabilityError, setAvailabilityError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
   const [focusDate, setFocusDate] = useState<Date>(() => (value.date ? fromISODate(value.date) : new Date()));
   const gridRef = useRef<HTMLDivElement>(null);
   const shouldFocus = useRef(false);
-  const today = useMemo(() => new Date(), []);
+  const zone = availability?.timeZone || scheduleTimeZone(scheduling);
+  const today = useMemo(() => {
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+    const get = (type: string) => parts.find((part) => part.type === type)?.value;
+    return fromISODate(`${get("year")}-${get("month")}-${get("day")}`);
+  }, [zone]);
 
   useEffect(() => {
     let live = true;
-    bookingService.getAvailability().then((a) => live && setAvailability(a));
+    let inFlight = false;
+    const refresh = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const result = await bookingService.getAvailability();
+        if (live) { setAvailability(result); setAvailabilityError(""); }
+      } catch (error) {
+        if (live) { setAvailability(null); setAvailabilityError(error instanceof Error ? error.message : "Availability could not be checked."); }
+      } finally { inFlight = false; }
+    };
+    void refresh();
+    const interval = window.setInterval(() => { if (!document.hidden) void refresh(); }, 15000);
+    window.addEventListener("focus", refresh);
     return () => {
       live = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", refresh);
     };
-  }, []);
+  }, [refreshKey]);
+
+  useEffect(() => {
+    if (availability && value.date && value.time && !availability.slotsByDate[value.date]?.includes(value.time)) {
+      patch({ time: null });
+    }
+  }, [availability, value.date, value.time, patch]);
 
   const openable = (d: Date) => {
     if (!isRequestable(d, today, scheduling)) return false;
-    return availability ? availability.dates.includes(toISODate(d)) : true;
+    return !!availability?.dates.includes(toISODate(d));
   };
 
   const slots = useMemo(() => {
-    if (!value.date) return scheduling.slots as readonly string[];
-    return availability?.slotsByDate[value.date] ?? (scheduling.slots as readonly string[]);
+    if (!value.date || !availability) return scheduling.slots as readonly string[];
+    return [...new Set([...(availability.slotsByDate[value.date] || []), ...(availability.bookedByDate[value.date] || [])])].sort();
   }, [availability, value.date, scheduling.slots]);
 
   /* Grid cells, padded to whole weeks. */
@@ -100,12 +121,24 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
   };
 
   const monthLabel = month.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  const tabDate = cells.find((day) => day && sameDay(day, focusDate) && openable(day))
+    ?? cells.find((day) => day && openable(day));
 
   return (
     <Sheet>
       <SheetHead title={start.scheduleTitle} step={step} />
 
       <Ask>{start.scheduleQuestion}</Ask>
+      <p className="t-caption mb-5 text-[var(--ink-2)]">All appointments are shown in {zone}. A submitted brief reserves the time while meeting details are confirmed.</p>
+      {availabilityError && (
+        <div role="alert" className="mb-6 border border-red p-4 text-sm text-[var(--ink)]">
+          <p>{availabilityError}</p>
+          <button type="button" className="mt-3 min-h-11 underline" onClick={() => setRefreshKey((key) => key + 1)}>Retry availability</button>
+          <button type="button" className="ml-5 mt-3 min-h-11 underline" onClick={() => { void mailHandoffProvider.submit(value); }}>Open an email draft instead</button>
+          <p className="mt-2 text-xs">The email option opens your mail app with your brief. It does not reserve a meeting.</p>
+        </div>
+      )}
+      {!availability && !availabilityError && <p role="status" className="t-caption mb-5">Checking live availability…</p>}
 
       {/* Calendar --------------------------------------------------------- */}
       <div className="border-t border-[var(--rule-2)] pt-5">
@@ -147,7 +180,8 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
             const id = toISODate(d);
             const selected = value.date === id;
             const enabled = openable(d);
-            const focused = sameDay(d, focusDate);
+            const focused = !!tabDate && sameDay(d, tabDate);
+            const fullyBooked = isRequestable(d, today, scheduling) && !enabled && (availability?.bookedByDate[id]?.length ?? 0) > 0;
             return (
               <button
                 key={i}
@@ -157,7 +191,7 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
                 tabIndex={focused ? 0 : -1}
                 disabled={!enabled}
                 aria-selected={selected}
-                aria-label={d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
+                aria-label={`${d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}${fullyBooked ? " — fully booked" : ""}`}
                 onClick={() => pick(d)}
                 className={cn(
                   "t-meta relative border-r border-b border-[var(--rule)] py-3 text-center transition-colors duration-200",
@@ -169,6 +203,7 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
                 )}
               >
                 {d.getDate()}
+                {fullyBooked && <X aria-hidden className="absolute right-1 top-1 size-2.5" />}
                 {sameDay(d, today) && !selected && (
                   <span aria-hidden className="absolute inset-x-0 bottom-1.5 mx-auto block size-1 bg-red" />
                 )}
@@ -189,23 +224,27 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
         >
           {slots.map((t) => {
             const selected = value.time === t;
+            const booked = !!value.date && !!availability?.bookedByDate[value.date]?.includes(t);
+            const enabled = !!value.date && !!availability?.slotsByDate[value.date]?.includes(t);
             return (
               <button
                 key={t}
                 type="button"
                 role="radio"
                 aria-checked={selected}
-                disabled={!value.date}
+                disabled={!enabled}
+                aria-label={`${formatTime(t)}${booked ? " — booked" : ""}`}
                 onClick={() => patch({ time: t })}
                 className={cn(
                   "t-meta min-h-11 bg-[var(--paper)] px-4 py-3 transition-colors duration-200",
                   selected
                     ? "bg-red text-background"
                     : "text-[var(--ink-2)] hover:bg-[rgb(23_22_20_/_0.06)] hover:text-[var(--ink)]",
-                  !value.date && "cursor-not-allowed opacity-40 hover:bg-[var(--paper)]",
+                  !enabled && "cursor-not-allowed opacity-50 hover:bg-[var(--paper)]",
                 )}
               >
-                {formatTime(t)}
+                <span className={cn(booked && "line-through")}>{formatTime(t)}</span>
+                {booked && <X aria-hidden className="ml-2 inline size-3.5" weight="bold" />}
               </button>
             );
           })}
@@ -214,16 +253,14 @@ export function ScheduleStep({ value, patch, errors, onNext, onBack, step }: Ste
 
         <p className="t-caption mt-4 max-w-[52ch] text-[var(--ink-3)]">
           {value.date
-            ? `Times shown in ${resolvedTimeZone()}. `
+            ? `Times shown in ${zone}. × means already booked. `
             : "Choose a day first. "}
-          {bookingService.confirmsBookings
-            ? "Slots shown are open."
-            : start.scheduleHelp}
+          Availability refreshes automatically. A time is reserved only after your brief is accepted.
         </p>
       </div>
 
       <SheetFoot onBack={onBack}>
-        <InkAction onClick={onNext}>Review brief</InkAction>
+        <InkAction onClick={onNext} disabled={!availability || !value.date || !value.time || !availability.slotsByDate[value.date]?.includes(value.time)}>Review brief</InkAction>
       </SheetFoot>
     </Sheet>
   );

@@ -41,6 +41,7 @@ export const budgetBands: readonly { id: BudgetId; label: string; note?: string 
  * `src/lib/booking.ts` and `getAvailability` starts filtering this grid.
  */
 export const scheduling = {
+  timeZone: "Africa/Cairo",
   /** Earliest requestable day, counted forward from today. */
   leadTimeDays: 2,
   /** How far ahead the calendar lets a visitor look. */

@@ -2,3 +2,33 @@
 @media(max-width:1100px){.sidebar{width:205px;padding:27px 18px}.main{margin-left:205px}.content{padding:30px 25px}.topbar{padding:16px 25px}.sectionCards{grid-template-columns:repeat(2,1fr)}.editorLayout{grid-template-columns:155px minmax(0,1fr);gap:18px}.publishGrid,.inboxLayout{grid-template-columns:1fr}.inboxLayout>.panel:nth-child(2){position:static}.banner{flex-wrap:wrap}.banner>button{margin:0}.stats{gap:12px}.stats button{padding:20px}.stats small{font-size:10px}.stats button>svg{display:none}}
 @media(max-width:760px){.sidebar{position:relative;width:auto;border-right:0;border-bottom:1px solid var(--line);padding:20px}.brand{font-size:27px}.brand small{display:inline-block;margin-left:18px;font-size:8px}.workspaceName,.sidebar>.eyebrow{display:none}.sidebar nav{flex-direction:row;overflow-x:auto;gap:4px;margin-top:22px}.sidebar nav button{font-size:10px;padding:9px 10px;white-space:nowrap;gap:6px}.sidebar nav button svg{width:15px}.sidebarFoot{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:18px;padding-top:15px}.sidebarFoot small{display:none}.sidebarFoot>a{font-size:10px;justify-content:flex-start;gap:8px}.sidebarFoot>button{font-size:10px}.main{margin:0}.topbar{padding:12px 20px;min-height:64px;font-size:10px}.topbar>div{gap:10px}.topbar>span>span{margin:0 5px}.topbar .button{font-size:10px;padding:8px 10px}.saveState{font-size:9px}.content{padding:28px 20px}.heading{align-items:flex-start;flex-direction:column;gap:20px}.heading h1{font-size:26px}.heading .muted{font-size:12px}.stats{gap:8px}.stats button{padding:14px 11px}.stats strong{font-size:29px}.stats span{font-size:10px}.stats small{font-size:9px}.sectionCards{gap:12px}.sectionCards .panel{padding:18px 14px}.sectionCards h2{font-size:14px}.sectionCards .eyebrow{font-size:7px}.sectionCards p{font-size:10px}.banner{padding:20px}.banner>svg{display:none}.banner h2{font-size:14px}.editorLayout{grid-template-columns:1fr}.sectionNav{position:static;flex-direction:row;overflow-x:auto;padding-bottom:10px}.sectionNav button{white-space:nowrap;font-size:11px;padding:10px}.panel{padding:20px 16px}.panelHeading{flex-wrap:wrap;gap:14px}.panelHeading>a{font-size:10px}.field input,.field textarea,.field select,.authPage input{font-size:16px!important}.arrayField,.imageField{padding:15px 12px}.arrayItem{padding:12px 10px}.arrayItem .arrayField{border:0;padding:0}.projectRow{gap:12px}.projectLink strong{font-size:13px}.projectLink small{font-size:10px}.projectNumber{display:none}.rowActions{gap:4px}.rowActions .button{font-size:10px;padding:8px}.projectLink>span{font-size:9px}.search{max-width:none}.publishGrid{gap:20px}.publishGrid h2{font-size:18px}.assetGrid{grid-template-columns:repeat(2,1fr)}.authCard{padding:30px 25px}.authPage{padding:30px 16px}.authCard h1{font-size:26px}.footer{font-size:7px}.badge{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.app *,.authPage *{transition:none!important}}
+
+/* Match the public portfolio: neutral surfaces, restrained blue emphasis. */
+.app,.authPage{--line:#303030;--muted:#aaa;background:#111;color:#f4f4f4}
+.app :is(button,a,input,textarea,select,summary):focus-visible,.authPage :is(button,a,input):focus-visible{outline-color:#80b2ff}
+.primary{background:#80b2ff;color:#111;border-color:#80b2ff;font-weight:600}
+.primary:hover:not(:disabled){background:#a6c9ff}
+.brand>span,.authBrand span{color:#80b2ff}
+.sidebar{background:#151515}
+.sidebar nav .active{color:#a6c9ff;background:#1c2839;border-left-color:#80b2ff}
+.sectionNav .selected,.filterTabs>.selected{background:#1c2839;border-color:#4f72a5;color:#c3dbff}
+.banner{background:linear-gradient(110deg,#182334,#171717);border-color:#33445c}
+.banner>svg,.publishGrid .panel>svg,.revision>button{color:#a6c9ff}
+.authPage{background:radial-gradient(ellipse at 50% 0,#172235,transparent 65%),#111}
+.lock{background:#182334;border-color:#33445c;color:#a6c9ff}
+.checkbox input{accent-color:#80b2ff}
+.upload:focus-within{outline-color:#80b2ff}
+.messageRow.selected{background:#1b2636}
+.authLinks{color:#c2cbd9}
+.bookingLayout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:24px;align-items:start}
+.bookingLayout .panelHeading h2{display:flex;align-items:center;gap:10px}
+.bookingList{list-style:none;margin:0;padding:0}
+.bookingList>li{padding:22px 0;border-top:1px solid var(--line)}
+.bookingHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;flex-wrap:wrap}
+.bookingHeading strong{font-size:13px;font-weight:500}
+.bookingStatus{font-size:10px;text-transform:capitalize;border:1px solid #3f5c84;background:#1c2839;color:#b7d2fa;padding:3px 8px}
+.bookingStatus[data-status="cancelled"]{border-color:#454545;background:#222;color:#aaa}
+.bookingStatus[data-status="blocked"]{border-color:#555;background:#292929;color:#ccc}
+.bookingEmail{color:#a6c9ff;overflow-wrap:anywhere;font-size:12px}
+.bookingList .toolbar{margin-bottom:0}
+@media(max-width:1100px){.bookingLayout{grid-template-columns:1fr}}

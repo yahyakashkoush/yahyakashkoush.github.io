@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, CheckCircle, DownloadSimple, EnvelopeSimple, FolderSimple, GearSix, Globe, GridFour, ImageSquare, Plus, RocketLaunch, SignOut, FloppyDisk, ClockCounterClockwise, ArrowLeft } from "@phosphor-icons/react";
+import { ArrowUpRight, CalendarCheck, CheckCircle, DownloadSimple, EnvelopeSimple, FolderSimple, GearSix, Globe, GridFour, ImageSquare, Plus, RocketLaunch, SignOut, FloppyDisk, ClockCounterClockwise, ArrowLeft } from "@phosphor-icons/react";
 import { AdminAuth } from "./auth-gate";
 import { ContentFields, emptyProject, type EditableValue } from "./content-editor";
 import { initialContent, projectHref } from "@/components/content-provider";
@@ -8,8 +8,9 @@ import { parseContent, type PortfolioContent } from "@/lib/content-schema";
 import { errorMessage, publishDraft, readWorkspace, saveDraft, type InboxMessage } from "@/lib/cms";
 import { getSupabase } from "@/lib/supabase";
 import styles from "./cms.module.css";
+import { BookingManager } from "./booking-manager";
 
-const sections = ["Overview", "Projects", "Site content", "Messages", "Publishing"] as const;
+const sections = ["Overview", "Projects", "Site content", "Messages", "Bookings", "Publishing"] as const;
 type Section = typeof sections[number];
 type ContentKey = Exclude<keyof PortfolioContent, "projects">;
 const contentSections: { key: ContentKey; label: string; path: string }[] = [
@@ -19,7 +20,7 @@ const contentSections: { key: ContentKey; label: string; path: string }[] = [
   { key: "work", label: "Work heading", path: "/#work" }, { key: "site", label: "Identity & contact details", path: "/" },
   { key: "navigation", label: "Navigation & footer links", path: "/" }, { key: "cinematic", label: "Films & captions", path: "/" },
 ];
-const icons = [GridFour, FolderSimple, Globe, EnvelopeSimple, RocketLaunch];
+const icons = [GridFour, FolderSimple, Globe, EnvelopeSimple, CalendarCheck, RocketLaunch];
 
 export function CmsDashboard() { return <AdminAuth><Workspace /></AdminAuth>; }
 
@@ -99,6 +100,7 @@ function Workspace() {
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = "portfolio-draft.json"; anchor.click(); URL.revokeObjectURL(url);
   }
   async function navigate(next: Section) {
+    if (section === "Messages" && message && note !== message.note && !window.confirm("Leave this message without saving the private note?")) return;
     setSection(next); setQuery(""); setError("");
     if (next === "Messages") await action(() => loadMessages());
     if (next === "Publishing") await action(async () => {
@@ -112,15 +114,16 @@ function Workspace() {
     <aside className={styles.sidebar}>
       <a className={styles.brand} href="/" target="_blank" rel="noreferrer">YK<span>.</span><small>PORTFOLIO / STUDIO</small></a>
       <div className={styles.workspaceName}><strong>{draft.site.name}</strong><small>Administrator workspace</small></div>
-      <p className={styles.eyebrow}>MANAGE</p><nav aria-label="Admin navigation">{sections.map((name, i) => { const Icon = icons[i]; return <button key={name} className={section === name ? styles.active : ""} disabled={busy} onClick={() => void navigate(name)}><Icon size={19} />{name}{name === "Messages" && unread > 0 && <span className={styles.badge}>{unread}</span>}</button>; })}</nav>
+      <p className={styles.eyebrow}>MANAGE</p><nav aria-label="Admin navigation">{sections.map((name, i) => { const Icon = icons[i]; return <button key={name} aria-current={section === name ? "page" : undefined} className={section === name ? styles.active : ""} disabled={busy} onClick={() => void navigate(name)}><Icon size={19} />{name}{name === "Messages" && unread > 0 && <span className={styles.badge}>{unread}</span>}</button>; })}</nav>
       <div className={styles.sidebarFoot}><a href="/" target="_blank" rel="noreferrer">View live portfolio <ArrowUpRight size={16} /></a><button disabled={busy} onClick={() => { if (!dirty || window.confirm("Sign out and discard changes that have not been saved?")) void action(async () => { const { error } = await getSupabase().auth.signOut(); if (error) throw error; }); }}><SignOut size={17} />Sign out</button><small>Private drafts · Protected inbox</small></div>
     </aside>
     <div className={styles.main}>
       <header className={styles.topbar}><span>Workspace <span>/</span> {section}</span><div><span className={styles.saveState}>{loading ? "Loading…" : dirty ? "Unsaved changes" : "Draft saved"}</span><button className={styles.button} disabled={busy || loading || !dirty} onClick={() => void action(async () => { await save(); setNotice("Draft saved privately. Publish when you are ready."); })}><FloppyDisk size={16} />Save draft</button></div></header>
       <div className={styles.content}>
-        <div className={styles.heading}><div><p className={styles.eyebrow}>YOUR WORK, YOUR WORDS</p><h1>{section === "Overview" ? "Your portfolio, under control." : section === "Site content" ? "Make every word yours." : section === "Messages" ? "Your conversations." : section === "Publishing" ? "Ready for the world." : "The work you put your name on."}</h1><p className={styles.muted}>{section === "Messages" ? "Contact messages and project requests, in one private inbox." : "Edit freely. Save a private draft. Publish when it feels right."}</p></div>{section === "Projects" && <button className={styles.primary} disabled={busy || loading} onClick={() => { const slug = `project-${Date.now().toString(36)}`; const project = { ...structuredClone(emptyProject), slug, index: String(draft.projects.length + 1).padStart(2, "0") }; setDraft({ ...draft, projects: [...draft.projects, project as PortfolioContent["projects"][number]] }); setProjectIndex(draft.projects.length); }}><Plus size={17} />Add project</button>}</div>
+        <div className={styles.heading}><div><p className={styles.eyebrow}>YOUR WORK, YOUR WORDS</p><h1>{section === "Overview" ? "Your portfolio, under control." : section === "Site content" ? "Make every word yours." : section === "Messages" ? "Your conversations." : section === "Bookings" ? "Your time, protected." : section === "Publishing" ? "Ready for the world." : "The work you put your name on."}</h1><p className={styles.muted}>{section === "Messages" ? "Contact messages and project requests, in one private inbox." : section === "Bookings" ? "Manage reservations, confirm meetings, and keep unavailable time closed." : "Edit freely. Save a private draft. Publish when it feels right."}</p></div>{section === "Projects" && <button className={styles.primary} disabled={busy || loading} onClick={() => { const slug = `project-${Date.now().toString(36)}`; const project = { ...structuredClone(emptyProject), slug, index: String(draft.projects.length + 1).padStart(2, "0") }; setDraft({ ...draft, projects: [...draft.projects, project as PortfolioContent["projects"][number]] }); setProjectIndex(draft.projects.length); }}><Plus size={17} />Add project</button>}</div>
         {error && <div role="alert" className={styles.error}>{error}</div>}{notice && <div role="status" className={styles.notice}><CheckCircle size={18} />{notice}<button aria-label="Dismiss notification" onClick={() => setNotice("")}>×</button></div>}
         {loading ? <div className={styles.panel}>Loading your private workspace…</div> : !draftVersion ? <div className={styles.panel}><p>The workspace could not be loaded.</p><button className={styles.button} onClick={() => void load()}>Try again</button></div> : <>
+        {section === "Bookings" && <BookingManager />}
         {section === "Overview" && <>
           <div className={styles.stats}><button onClick={() => void navigate("Projects")}><FolderSimple size={22} /><span>Projects</span><strong>{String(draft.projects.length).padStart(2, "0")}</strong><small>Case studies & image galleries</small></button><button onClick={() => void navigate("Messages")}><EnvelopeSimple size={22} /><span>New messages</span><strong>{String(unread).padStart(2, "0")}</strong><small>Waiting in your inbox</small></button><button onClick={() => void navigate("Site content")}><Globe size={22} /><span>Editable sections</span><strong>{contentSections.length}</strong><small>Your full portfolio content</small></button></div>
           <div className={styles.banner}><RocketLaunch size={28} /><div><h2>{unpublished ? "You have a new story to publish." : "Your published content is up to date."}</h2><p>{updatedAt ? `Last published ${new Date(updatedAt).toLocaleString()}` : "Your changes appear live after publishing."}</p></div><button className={styles.button} onClick={() => void navigate("Publishing")}>Review publishing <ArrowUpRight size={16} /></button></div>

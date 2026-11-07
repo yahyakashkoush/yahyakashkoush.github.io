@@ -1,10 +1,12 @@
 import { site } from "@/content/site";
+import { z } from "zod";
+import { getSupabase } from "@/lib/supabase";
 import { submitMessage } from "@/lib/cms";
 import {
   budgetLabel,
   formatLongDate,
   formatTime,
-  resolvedTimeZone,
+  scheduleTimeZone,
   typeLabels,
   type ProjectInquiry,
 } from "@/lib/inquiry";
@@ -23,7 +25,7 @@ export type BookingOutcome =
   /** A provider held the slot. Only this status may be shown as booked. */
   | { status: "confirmed"; reference: string; when: string }
   /** Brief delivered, meeting time still a request awaiting a human reply. */
-  | { status: "requested"; via: "mail" | "inbox"; reference?: string }
+  | { status: "requested"; via: "mail" | "inbox"; reference?: string; slotReserved?: boolean }
   | { status: "failed"; reason: string };
 
 /** A provider that publishes real availability returns one of these. */
@@ -32,6 +34,8 @@ export type Availability = {
   dates: string[];
   /** 24h times per ISO date. */
   slotsByDate: Record<string, string[]>;
+  bookedByDate: Record<string, string[]>;
+  timeZone: string;
 };
 
 export interface BookingProvider {
@@ -60,7 +64,7 @@ export function inquiryTranscript(v: ProjectInquiry, locale?: string): string {
     typeLabels(v.projectTypes),
     "",
     "INVESTMENT",
-    budgetLabel(v.budget),
+    budgetLabel(v.budget, undefined, v.customBudget),
     "",
     "CONTACT",
     v.name.trim(),
@@ -71,7 +75,7 @@ export function inquiryTranscript(v: ProjectInquiry, locale?: string): string {
     lines.push(
       "",
       "PREFERRED MEETING",
-      `${formatLongDate(v.date, locale)} at ${formatTime(v.time, locale)} (${resolvedTimeZone()})`,
+      `${formatLongDate(v.date, locale)} at ${formatTime(v.time, locale)} (${scheduleTimeZone()})`,
       "",
       "This time is a request, not a confirmed booking.",
     );
@@ -119,9 +123,21 @@ export const mailHandoffProvider: BookingProvider = {
 export const bookingService: BookingProvider = {
   id: "private-inbox",
   confirmsBookings: false,
-  async getAvailability() { return null; },
+  async getAvailability() {
+    const { data, error } = await getSupabase().rpc("get_portfolio_booking_availability").retry(false);
+    if (error) throw new Error("Live availability is unavailable. Please retry or contact me by email.");
+    return availabilitySchema.parse(data);
+  },
   async submit(value, requestId) {
-    const result = await submitMessage({ id: requestId || crypto.randomUUID(), kind: "project", name: value.name, email: value.email, message: value.projectBrief, company: value.company, projectTypes: value.projectTypes, budget: value.budget, date: value.date, time: value.time, timeZone: resolvedTimeZone(), website: "" });
-    return { status: "requested", via: "inbox", reference: result.id };
+    const result = await submitMessage({ id: requestId || crypto.randomUUID(), kind: "project", name: value.name, email: value.email, message: value.projectBrief, company: value.company, projectTypes: value.projectTypes, budget: value.budget, customBudget: value.customBudget, date: value.date, time: value.time, website: "" });
+    if (result.bookingStatus !== "reserved") throw new Error("Your brief was received, but the time was not reserved. Please contact me to confirm it.");
+    return { status: "requested", via: "inbox", reference: result.id, slotReserved: true };
   },
 };
+
+const availabilitySchema = z.object({
+  dates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)),
+  slotsByDate: z.record(z.string(), z.array(z.string().regex(/^\d{2}:\d{2}$/))),
+  bookedByDate: z.record(z.string(), z.array(z.string().regex(/^\d{2}:\d{2}$/))),
+  timeZone: z.string().min(1),
+});

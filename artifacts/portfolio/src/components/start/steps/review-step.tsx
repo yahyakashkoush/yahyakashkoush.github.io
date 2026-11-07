@@ -4,7 +4,7 @@ import {
   budgetLabel,
   formatLongDate,
   formatTime,
-  resolvedTimeZone,
+  scheduleTimeZone,
   typeLabels,
   type Errors,
   type ProjectInquiry,
@@ -49,7 +49,7 @@ export function ReviewStep({
         </Entry>
 
         <Entry label="Investment" onEdit={() => onEdit("budget")}>
-          {budgetLabel(value.budget, start.budgetBands)}
+          {budgetLabel(value.budget, start.budgetBands, value.customBudget)}
         </Entry>
 
         <Entry label="Contact" onEdit={() => onEdit("contact")}>
@@ -64,7 +64,7 @@ export function ReviewStep({
               <span className="block">{formatLongDate(value.date)}</span>
               <span className="block">
                 {formatTime(value.time)}
-                <span className="text-[var(--ink-3)]"> · {resolvedTimeZone()}</span>
+                <span className="text-[var(--ink-3)]"> · {scheduleTimeZone(start.scheduling)}</span>
               </span>
             </>
           ) : (
