@@ -1,50 +1,13 @@
 
-import Image from "@/lib/compat/image";
 import { usePortfolio } from "@/components/content-provider";
 import { Action, Container } from "@/components/primitives";
 
-/**
- * A still portrait with a clear title card and restrained entrance.
- *
- * A single still, no video. The entrance is CSS rather than Motion because this
- * block holds the LCP element: it has to paint without waiting on JS.
- * See globals.css for the keyframes.
- *
- * No client state of its own, so this stays a Server Component — the portrait
- * `Image` is still the LCP element and paints without waiting on JS.
- */
+/** A text-led introduction: no photography or background imagery. */
 export function Hero() {
   const { content: { hero } } = usePortfolio();
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-hidden">
-      {/* The portrait is 3:4. On a wide viewport `object-cover` crops top and
-          bottom, so the focal point is nudged up to keep his head clear of the
-          title block. On phones the frame is taller than the image, so the
-          composition survives almost intact at object-center. */}
-      <Image
-        src={hero.image.src}
-        alt={hero.image.alt}
-        aria-hidden
-        fill
-        priority
-        sizes="100vw"
-        className="hero-portrait object-cover object-center md:object-[50%_36%]"
-      />
-
-      {/* Scrim. Bottom-up black only: the photograph already carries the red, so
-          a red wash on top of it just flattens the contrast. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-background/10 md:via-background/25 md:to-transparent"
-      />
-      {/* Light fall-off behind the title block, left side only. Kept low so the
-          set stays visible through the type rather than going flat black. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-background/65 via-transparent to-transparent md:from-background/40"
-      />
-
-      <Container className="relative flex min-h-[100dvh] flex-col justify-end pb-16 md:pb-20 lg:pb-24">
+    <section className="relative w-full border-b border-line">
+      <Container className="flex min-h-[82dvh] flex-col justify-center pt-36 pb-20 md:pt-44 md:pb-24">
         <p className="t-label mb-6 text-red">
           {hero.role}
         </p>

@@ -9,29 +9,29 @@
 
 /* ---------------------------------------------------------------------------
    TOKENS
-   Lifted charcoal and clear ivory, with a restrained warm-sand accent.
+   Neutral charcoal and white, with blue reserved for emphasis.
 --------------------------------------------------------------------------- */
 :root {
   /* surfaces */
-  --bg: #101214;
-  --bg-2: #191c1f;
-  --bg-3: #23272b;
+  --bg: #111111;
+  --bg-2: #1a1a1a;
+  --bg-3: #252525;
 
   /* text */
-  --fg: #faf9f6;
-  --fg-2: #c6c9c9;
-  --fg-3: #a4aaad;
+  --fg: #fafafa;
+  --fg-2: #cccccc;
+  --fg-3: #aaaaaa;
 
   /* accent */
   /* Legacy accent token names remain compatible with existing components. */
-  --red: #e6bb7d;
-  --red-hi: #f2cf9d;
+  --red: #80b2ff;
+  --red-hi: #a6c9ff;
   --red-glow: transparent;
 
   /* lines */
   --line: rgb(255 255 255 / 0.14);
   --line-2: rgb(255 255 255 / 0.25);
-  --line-red: rgb(230 187 125 / 0.45);
+  --line-red: rgb(128 178 255 / 0.45);
 
   /* motion */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -104,18 +104,6 @@
 /* ---------------------------------------------------------------------------
    BASE
 --------------------------------------------------------------------------- */
-/* Personal imagery follows the neutral theme; real product screenshots retain
-   their original colors. */
-img[src*="/media/portrait/"],
-img[src*="/media/object/"],
-video[src*="/media/video/"] {
-  filter: grayscale(1);
-}
-
-img.hero-portrait {
-  filter: grayscale(1) brightness(1.22) contrast(1.03);
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -325,15 +313,15 @@ img.hero-portrait {
    affected. The neutral accent carries through the inquiry.
 --------------------------------------------------------------------------- */
 .paper {
-  /* The lighter sand accent needs a darker equivalent on paper. */
-  --red: #735025;
-  --red-hi: #513514;
-  --line-red: rgb(115 80 37 / 0.45);
-  --paper: #e8e5de;
-  --paper-edge: #d9d5cb;
-  --ink: #171614;
-  --ink-2: #57544c;
-  --ink-3: #8a8579;
+  /* Dark blue keeps emphasis readable on the neutral light sheet. */
+  --red: #2459a6;
+  --red-hi: #17417c;
+  --line-red: rgb(36 89 166 / 0.45);
+  --paper: #eeeeee;
+  --paper-edge: #d9d9d9;
+  --ink: #171717;
+  --ink-2: #555555;
+  --ink-3: #737373;
   --rule: rgb(23 22 20 / 0.16);
   --rule-2: rgb(23 22 20 / 0.32);
 

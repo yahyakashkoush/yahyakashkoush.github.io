@@ -1,5 +1,4 @@
 
-import Image from "@/lib/compat/image";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -51,8 +50,8 @@ export function Contact() {
   return (
     <section id="contact" className="scroll-mt-24 pt-24 md:pt-32 lg:pt-40">
       <Container>
-        <div className="grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-10 lg:gap-16">
-          <div className="md:col-span-7">
+        <div className="max-w-3xl">
+          <div>
             <Reveal>
               <Kicker className="mb-5">{contact.label}</Kicker>
               <SectionHeading className="mb-8 max-w-[14ch]">{contact.title}</SectionHeading>
@@ -119,17 +118,6 @@ export function Contact() {
             </Reveal>
           </div>
 
-          <Reveal delay={0.12} className="md:col-span-5">
-            <div className="relative aspect-[3/4] w-full">
-              <Image
-                src={contact.image.src}
-                alt={contact.image.alt}
-                fill
-                sizes="(max-width: 768px) 100vw, 40vw"
-                className="object-cover object-center"
-              />
-            </div>
-          </Reveal>
         </div>
       </Container>
     </section>

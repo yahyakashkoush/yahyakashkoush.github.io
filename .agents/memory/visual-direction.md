@@ -13,7 +13,13 @@ The user later said the all-gray version felt too muted: «حاسس الموقع
 
 **Why:** A fully desaturated, heavily darkened treatment lost too much visual clarity and energy.
 
-**How to apply:** Use brighter text and imagery, distinguish dark surfaces, and allow a limited accent color rather than insisting on a completely gray palette.
+**How to apply:** Use brighter text, distinguish dark surfaces, and allow a limited accent color rather than insisting on a completely gray palette.
+
+The user subsequently requested removal of all images and “monochrome with blue empesse color”, then delegated the exact professional, formal palette because a company will review the portfolio.
+
+**Why:** The portfolio needs to make a formal professional impression for a company audience.
+
+**How to apply:** Keep public pages image-free, including project screenshots and hover previews. Use neutral black/gray/white with restrained blue emphasis; this supersedes the earlier warm-sand accent.
 
 The user asked to remove the photo beside “Architecture, not just models.” Keep that About section text-led rather than restoring its portrait.
 

@@ -2,7 +2,6 @@ import Link from "@/lib/compat/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { Container, Kicker, Prose, Rule, SectionHeading, Tag, TextLink } from "@/components/primitives";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion";
-import { Gallery } from "@/components/gallery";
 import { usePortfolio, projectHref } from "@/components/content-provider";
 import type { CmsProject } from "@/lib/content-schema";
 
@@ -13,14 +12,10 @@ export function CaseStudyContent({ slug }: { slug: string }) {
   if (!project) return <Container className="py-40"><h1 className="t-section">{loading ? "Loading project…" : "Project not found"}</h1><Link href="/#work">View all projects</Link></Container>;
   const prev = projects.length > 1 ? projects[(index - 1 + projects.length) % projects.length] : null;
   const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null;
-  const media = project.media;
   return (
     <article>
       {/* Hero -------------------------------------------------------------- */}
-      {/* A title card, not an image. The cinematic photography belongs to the
-          person, not to any product, and a screenshot under a scrim would be
-          unreadable. Each project's own captures appear in Interface below,
-          shown whole. */}
+      {/* Case studies stay text-led, consistent with the image-free portfolio. */}
       <header className="flex min-h-[58vh] flex-col justify-end pt-32 pb-12 md:min-h-[66vh] md:pt-40 md:pb-16">
         <Container>
           <Reveal y={16}>
@@ -115,20 +110,6 @@ export function CaseStudyContent({ slug }: { slug: string }) {
                 </RevealItem>
               ))}
             </RevealGroup>
-          </Container>
-        </section>
-      )}
-
-      {/* Interface --------------------------------------------------------- */}
-      {/* Rendered only when this project has its own screenshots. Nothing is
-          substituted when it does not. */}
-      {media.gallery.length > 0 && (
-        <section className="pt-20 md:pt-28">
-          <Container>
-            <Reveal>
-              <Kicker as="h2" className="mb-10">Interface</Kicker>
-            </Reveal>
-            <Gallery items={media.gallery} title={project.title} />
           </Container>
         </section>
       )}

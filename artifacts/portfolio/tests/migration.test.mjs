@@ -49,6 +49,16 @@ test("the active source no longer depends on Next.js", () => {
   assert.ok(!pkg.dependencies?.next && !pkg.devDependencies?.next);
 });
 
+test("public portfolio surfaces remain image-free with blue emphasis", () => {
+  for (const file of ["sections/hero.tsx", "sections/about.tsx", "sections/work.tsx", "sections/contact.tsx", "case-study.tsx"]) {
+    const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /<Image\b|<img\b|<Gallery\b|<video\b|ScreenshotPeek/, file);
+  }
+  const css = readFileSync(new URL("../src/globals.css", import.meta.url), "utf8");
+  assert.match(css, /--red: #80b2ff;/);
+  assert.match(css, /--red: #2459a6;/);
+});
+
 test("the project inquiry uses image-free, completion-driven envelope transitions", () => {
   const start = readFileSync(new URL("../src/components/start/start-experience.tsx", import.meta.url), "utf8");
   const intro = readFileSync(new URL("../src/components/start/intro.tsx", import.meta.url), "utf8");

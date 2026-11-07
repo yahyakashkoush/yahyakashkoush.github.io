@@ -91,7 +91,7 @@ export function Envelope({
 
 export function LetterSheet({ children, className }: { children?: ReactNode; className?: string }) {
   return (
-    <div className={cn("aspect-[1/0.54] w-full border border-black/20 bg-[#e8e5de] px-[8%] py-[7%] text-[#262725]", className)}>
+    <div className={cn("aspect-[1/0.54] w-full border border-black/20 bg-[#eeeeee] px-[8%] py-[7%] text-[#262626]", className)}>
       {children ?? (
         <>
           <div className="mb-4 h-px w-1/3 bg-black/40" />
