@@ -5,6 +5,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion";
 import { Gallery } from "@/components/gallery";
 import { usePortfolio, projectHref } from "@/components/content-provider";
 import type { CmsProject } from "@/lib/content-schema";
+import { cn } from "cn";
 
 export function CaseStudyContent({ slug }: { slug: string }) {
   const { content: { projects }, loading } = usePortfolio();
@@ -13,15 +14,19 @@ export function CaseStudyContent({ slug }: { slug: string }) {
   if (!project) return <Container className="py-40"><h1 className="t-section">{loading ? "Loading project…" : "Project not found"}</h1><Link href="/#work">View all projects</Link></Container>;
   const prev = projects.length > 1 ? projects[(index - 1 + projects.length) % projects.length] : null;
   const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null;
-  const screenshots = [
-    ...(project.media.preview ? [project.media.preview] : []),
-    ...project.media.gallery,
-  ].filter((shot, i, all) => all.findIndex(item => item.src === shot.src) === i);
+  const lead = project.media.preview ?? project.media.gallery[0] ?? null;
+  const rest = project.media.gallery.filter((shot) => shot.src !== lead?.src);
+  // The first challenge and outcome lines lead the page; the sections below carry the rest.
+  const challenge = project.challenge.filter((p) => p.trim());
+  const outcome = project.outcome.filter((p) => p.trim());
+  const problem = challenge[0] ?? project.summary;
+  const result = outcome[0] ?? null;
+  const moreChallenge = challenge.slice(1);
+  const moreOutcome = outcome.slice(1);
   return (
     <article>
       {/* Hero -------------------------------------------------------------- */}
-      {/* Clear title first; original project screenshots appear below. */}
-      <header className="flex min-h-[58vh] flex-col justify-end pt-32 pb-12 md:min-h-[66vh] md:pt-40 md:pb-16">
+      <header className="flex flex-col justify-end pt-28 pb-10 md:pt-40 md:pb-14">
         <Container>
           <Reveal y={16}>
             <p className="t-label mb-6 text-red">
@@ -33,16 +38,28 @@ export function CaseStudyContent({ slug }: { slug: string }) {
           </Reveal>
         </Container>
       </header>
-      <Rule />
 
-      {screenshots.length > 0 && (
-        <section aria-label={`${project.title} screenshots`} className="pt-12 md:pt-16">
-          <Container>
-            <Kicker as="h2" className="mb-6">Project screenshots</Kicker>
-            <Gallery items={screenshots} title={project.title} />
-          </Container>
-        </section>
+      {/* Lead screenshot: one frame before the explanation. ---------------- */}
+      {lead && (
+        <Container>
+          <Reveal>
+            <Gallery items={[lead]} title={project.title} />
+          </Reveal>
+        </Container>
       )}
+
+      {/* At a glance: role, problem, result. ------------------------------- */}
+      <section className="pt-14 md:pt-20">
+        <Container>
+          <Reveal>
+            <dl className={cn("grid grid-cols-1 gap-px border border-line bg-line", result ? "md:grid-cols-3" : "md:grid-cols-2")}>
+              <Glance label="Role" value={project.role} />
+              <Glance label="Problem" value={problem} />
+              {result && <Glance label="Result" value={result} accent />}
+            </dl>
+          </Reveal>
+        </Container>
+      </section>
 
       {/* Overview ---------------------------------------------------------- */}
       <section className="pt-20 md:pt-28">
@@ -50,7 +67,6 @@ export function CaseStudyContent({ slug }: { slug: string }) {
           <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
             <Reveal className="md:col-span-4">
               <dl className="flex flex-col gap-7 md:sticky md:top-28">
-                <Meta label="Role" value={project.role} />
                 {project.year && <Meta label="Year" value={project.year} />}
                 {project.links.length > 0 && (
                   <div className="flex flex-col gap-2">
@@ -76,7 +92,7 @@ export function CaseStudyContent({ slug }: { slug: string }) {
         </Container>
       </section>
 
-      {project.challenge.length > 0 && <Block title="Challenge"><Prose blocks={project.challenge} /></Block>}
+      {moreChallenge.length > 0 && <Block title="Challenge"><Prose blocks={moreChallenge} /></Block>}
 
       {/* Approach ---------------------------------------------------------- */}
       {project.approach.length > 0 && (
@@ -128,11 +144,34 @@ export function CaseStudyContent({ slug }: { slug: string }) {
         </section>
       )}
 
+      {rest.length > 0 && (
+        <section className="pt-20 md:pt-28">
+          <Container>
+            <Reveal>
+              <Kicker as="h2" className="mb-10">Interface</Kicker>
+            </Reveal>
+            <Gallery items={rest} title={project.title} />
+          </Container>
+        </section>
+      )}
+
       {/* Outcome ----------------------------------------------------------- */}
-      {project.outcome.length > 0 && (
-        <Block title="Outcome">
-          <Prose blocks={project.outcome} />
-        </Block>
+      {moreOutcome.length > 0 && (
+        <section className="pt-20 md:pt-28">
+          <Container>
+            <Reveal>
+              <Kicker as="h2" className="mb-6">Outcome</Kicker>
+              <ul className="grid grid-cols-1 gap-px border border-line bg-line md:grid-cols-2">
+                {moreOutcome.map((o, i) => (
+                  <li key={o} className="flex gap-4 bg-background p-6 md:p-8">
+                    <span className="t-label shrink-0 pt-1 text-red">{String(i + 2).padStart(2, "0")}</span>
+                    <p className="t-body max-w-[52ch] text-fg-2">{o}</p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </Container>
+        </section>
       )}
 
       {/* Stack ------------------------------------------------------------- */}
@@ -169,6 +208,15 @@ export function CaseStudyContent({ slug }: { slug: string }) {
         </div>
       </Container>
     </article>
+  );
+}
+
+function Glance({ label, value, accent = false }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="flex flex-col gap-3 bg-background p-6 md:p-7">
+      <dt className="t-label text-fg-3">{label}</dt>
+      <dd className={cn("t-body max-w-[40ch]", accent ? "text-foreground" : "text-fg-2")}>{value}</dd>
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ export function Hero() {
   const { content: { hero, cinematic } } = usePortfolio();
   return (
     <section id="intro" className="relative isolate w-full overflow-hidden border-b border-line">
-      <Container className="relative z-10 grid min-h-[86dvh] items-center gap-14 pt-32 pb-16 md:pt-40 md:pb-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+      <Container className="relative z-10 grid items-center gap-10 pt-24 pb-12 md:pt-36 md:pb-20 lg:min-h-[86dvh] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14 lg:pt-40 lg:pb-24">
         <div className="min-w-0">
           <p className="hero-rise t-label mb-6 flex items-center gap-3 text-red" data-testid="text-hero-role">
             {hero.role}
@@ -18,11 +18,11 @@ export function Hero() {
             <span className="whitespace-pre-line">{hero.heading}</span>
           </h1>
 
-          <p className="hero-rise t-body mt-7 max-w-[46ch] text-fg-2" style={{ ["--rise-delay" as string]: "0.16s" }}>
+          <p className="hero-rise t-body mt-6 max-w-[50ch] text-fg-2 md:mt-7" style={{ ["--rise-delay" as string]: "0.16s" }}>
             {hero.description}
           </p>
 
-          <div className="hero-rise mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4" style={{ ["--rise-delay" as string]: "0.24s" }}>
+          <div className="hero-rise mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 md:mt-10" style={{ ["--rise-delay" as string]: "0.24s" }}>
             <Action href={hero.primaryHref} variant="solid" block direction="down" className="w-full sm:w-auto">
               {hero.primaryLabel}
             </Action>
@@ -31,10 +31,10 @@ export function Hero() {
             </Action>
           </div>
 
-          <AutomationFlow className="hero-rise mt-12 max-w-[30rem]" />
+          <AutomationFlow className="hero-rise mt-10 hidden max-w-[30rem] md:block md:mt-12" />
         </div>
         <div className="hero-rise min-w-0 lg:pl-4" style={{ ["--rise-delay" as string]: "0.3s" }}>
-          <CrtMonitor clip={cinematic.crtReel} caption={cinematic.crtReel.caption} embedded className="max-w-[540px]" />
+          <CrtMonitor caption={cinematic.crtReel.caption} embedded className="max-w-[540px]" />
         </div>
       </Container>
     </section>

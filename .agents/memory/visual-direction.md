@@ -50,3 +50,9 @@ Coordinate the inquiry envelope with animation completion events rather than ind
 **Why:** Independent stages can drift or leave the form delayed even when each individual movement looks correct.
 
 **How to apply:** Keep letter, flap, and seal movements sequential, honor reduced motion, and show success only after the submission succeeds.
+
+The stock television footage was replaced by a generated three.js systems reel built from the real projects (one architecture, four products), at the user's request for something non-traditional.
+
+**Why:** The illustrated figure and red electricity clashed with the restrained identity, and the user wanted 3D/motion that reflects his own systems.
+
+**How to apply:** Extend the reel's chapters when projects change; do not bring back stock or illustrated clips. The hero's automation strip is hidden on phones so the television arrives sooner.

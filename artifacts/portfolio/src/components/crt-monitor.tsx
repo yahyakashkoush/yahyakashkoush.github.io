@@ -1,65 +1,33 @@
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { Container, Kicker } from "@/components/primitives";
 import { Reveal } from "@/components/motion";
-import { useViewportPlayback } from "@/components/video";
-import type { Clip } from "@/content/media";
+import { SystemsReel } from "@/components/systems-reel";
 import { cn } from "cn";
 import "./automation-flow.css";
 
 /**
- * The original systems reel on a restrained television set. A manual pause is
- * respected: re-entering the viewport will not override the viewer's choice.
+ * A restrained television set showing the systems reel: a generated programme
+ * built from the real projects rather than stock footage. The Play/Pause
+ * control is the viewer's; scrolling away pauses rendering on its own.
  */
-export function CrtMonitor({ clip, caption, className, embedded = false }: { clip: Clip; caption: string; className?: string; embedded?: boolean }) {
-  const { ref, playing } = useViewportPlayback();
-  const userPaused = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const guard = () => {
-      if (userPaused.current) el.pause();
-    };
-    el.addEventListener("play", guard);
-    return () => el.removeEventListener("play", guard);
-  }, [ref]);
-
-  const toggle = () => {
-    const el = ref.current;
-    if (!el) return;
-    if (el.paused) {
-      userPaused.current = false;
-      if (el.readyState === 0) {
-        el.preload = "auto";
-        el.load();
-      }
-      el.play().catch(() => {});
-    } else {
-      userPaused.current = true;
-      el.pause();
-    }
-  };
+export function CrtMonitor({ caption, className, embedded = false }: { caption: string; className?: string; embedded?: boolean }) {
+  const [playing, setPlaying] = useState(true);
+  const toggle = () => setPlaying((p) => !p);
 
   const monitor = (
     <figure aria-label={caption} className={cn("tv", embedded && className)}>
       <div aria-hidden className="tv-antenna"><i /><i /><b /></div>
       <div className="tv-body">
         <div className="tv-bezel">
-          <div className="tv-screen" data-on={playing} style={{ aspectRatio: clip.width / clip.height }}>
-            <video
-              ref={ref}
-              className="absolute inset-0 size-full cursor-pointer object-contain object-center"
-              src={clip.src}
-              poster={clip.poster}
-              width={clip.width}
-              height={clip.height}
-              muted
-              loop
-              playsInline
-              preload="none"
+          <div className="tv-screen" data-on={playing} style={{ aspectRatio: "950 / 590" }}>
+            <SystemsReel playing={playing} />
+            <button
+              type="button"
               onClick={toggle}
-              aria-label={clip.content}
+              aria-label={playing ? "Pause reel" : "Play reel"}
+              aria-pressed={playing}
+              className="absolute inset-0 z-10 cursor-pointer appearance-none bg-transparent"
               data-testid="video-reel"
             />
             <div aria-hidden className="tv-lines" />

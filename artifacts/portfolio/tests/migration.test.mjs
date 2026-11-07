@@ -60,7 +60,8 @@ test("personal photos stay removed while project images remain with blue emphasi
   const work = readFileSync(new URL("../src/components/sections/work.tsx", import.meta.url), "utf8");
   const study = readFileSync(new URL("../src/components/case-study.tsx", import.meta.url), "utf8");
   assert.match(work, /<Image\b/);
-  assert.match(study, /<Gallery items=\{project\.media\.gallery\}/);
+  assert.match(study, /<Gallery items=\{\[lead\]\}/);
+  assert.match(study, /<Gallery items=\{rest\}/);
 });
 
 test("the project inquiry uses image-free, completion-driven envelope transitions", () => {

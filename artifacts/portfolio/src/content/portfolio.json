@@ -41,7 +41,7 @@
   "hero": {
     "heading": "Yahya\nKashkoush",
     "role": "Applied AI & Automation Engineer",
-    "description": "I build AI products, SaaS platforms and automation systems, end to end.",
+    "description": "I turn conversations, data and research into systems that do the work: orders that are not missed, evidence that can be checked, decisions that do not wait on a spreadsheet.",
     "image": {
       "src": "/media/portrait/front-medium.jpg",
       "alt": "Yahya Kashkoush"
@@ -439,8 +439,8 @@
       "width": 950,
       "height": 590,
       "duration": 23.33,
-      "content": "Four-beat story: intro, manual work turning to chaos, an AI system organising it, the automated result.",
-      "caption": "From manual work to automated systems"
+      "content": "Generated reel: signals move from sources through one intelligence layer into actions, cycling across WKEYONE, Headshot, PULSE and KEYONE Data.",
+      "caption": "One architecture, four systems"
     }
   },
   "projects": [
@@ -504,7 +504,10 @@
           "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_saas-whatsappbusiness-businessintelligence-activity-7485666574960513024-CU7D"
         }
       ],
-      "challenge": [],
+      "challenge": [
+        "Companies that sell over WhatsApp handle thousands of conversations a month across shared numbers and changing staff. Orders get lost between messages, and a reply bot alone does not fix that.",
+        "The platform had to understand text, voice and images, answer from the company's real business data, and hand a difficult conversation to a person without breaking the thread."
+      ],
       "approach": [],
       "architecture": "",
       "credits": [],
@@ -692,6 +695,7 @@
         "Efficient conversation storage and maintenance algorithms."
       ],
       "outcome": [
+        "A new provider is an addition, not a rewrite: the provider layer changed without touching the conversation interface.",
         "Multi-API integration strategies for diverse AI capabilities, resilient mobile architecture, and conversation context and memory management at scale."
       ],
       "stack": [
@@ -709,7 +713,10 @@
           "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_ios-swiftui-artificialintelligence-activity-7336776985374867457-lC7Z"
         }
       ],
-      "challenge": [],
+      "challenge": [
+        "Every AI provider ships its own API, limits and failure modes. Binding the app directly to one of them meant each change rippled through the interface.",
+        "Conversations, images and context had to be stored and reloaded efficiently on the device."
+      ],
       "architecture": "",
       "credits": [],
       "media": {
@@ -886,10 +893,14 @@
           "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_digitalmarketing-ai-python-activity-7357149739794006018-HRvg"
         }
       ],
-      "challenge": [],
+      "challenge": [
+        "Hundreds of millions of records had to be queried through an API without standing up a separate warehouse or a long ETL cycle."
+      ],
       "capabilities": [],
       "architecture": "",
-      "outcome": [],
+      "outcome": [
+        "A query layer that serves paginated analytics over hundreds of millions of records on DuckDB and Parquet, with no separate warehouse to run."
+      ],
       "credits": [],
       "media": {
         "preview": null,
@@ -953,9 +964,13 @@
           "href": "https://www.linkedin.com/posts/yahya-kashkoush-268172221_swift-ios-swiftui-activity-7245403119294062592-pQib"
         }
       ],
-      "challenge": [],
+      "challenge": [
+        "Real-time text, media, voice and location messages each have different storage, upload and playback needs. Keeping them in one maintainable codebase was the main constraint."
+      ],
       "architecture": "",
-      "outcome": [],
+      "outcome": [
+        "Message history that works offline through Realm, and feature modules that can be extended without touching each other."
+      ],
       "media": {
         "preview": null,
         "gallery": []
