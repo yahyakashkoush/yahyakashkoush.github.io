@@ -13,6 +13,10 @@ export function CaseStudyContent({ slug }: { slug: string }) {
   if (!project) return <Container className="py-40"><h1 className="t-section">{loading ? "Loading project…" : "Project not found"}</h1><Link href="/#work">View all projects</Link></Container>;
   const prev = projects.length > 1 ? projects[(index - 1 + projects.length) % projects.length] : null;
   const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null;
+  const screenshots = [
+    ...(project.media.preview ? [project.media.preview] : []),
+    ...project.media.gallery,
+  ].filter((shot, i, all) => all.findIndex(item => item.src === shot.src) === i);
   return (
     <article>
       {/* Hero -------------------------------------------------------------- */}
@@ -30,6 +34,15 @@ export function CaseStudyContent({ slug }: { slug: string }) {
         </Container>
       </header>
       <Rule />
+
+      {screenshots.length > 0 && (
+        <section aria-label={`${project.title} screenshots`} className="pt-12 md:pt-16">
+          <Container>
+            <Kicker as="h2" className="mb-6">Project screenshots</Kicker>
+            <Gallery items={screenshots} title={project.title} />
+          </Container>
+        </section>
+      )}
 
       {/* Overview ---------------------------------------------------------- */}
       <section className="pt-20 md:pt-28">
@@ -111,17 +124,6 @@ export function CaseStudyContent({ slug }: { slug: string }) {
                 </RevealItem>
               ))}
             </RevealGroup>
-          </Container>
-        </section>
-      )}
-
-      {project.media.gallery.length > 0 && (
-        <section className="pt-20 md:pt-28">
-          <Container>
-            <Reveal>
-              <Kicker as="h2" className="mb-10">Interface</Kicker>
-            </Reveal>
-            <Gallery items={project.media.gallery} title={project.title} />
           </Container>
         </section>
       )}

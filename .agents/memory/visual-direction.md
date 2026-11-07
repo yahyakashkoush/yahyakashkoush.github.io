@@ -33,11 +33,11 @@ The user explicitly requested the original television and its original video in 
 
 **How to apply:** Keep the original systems reel in a television beside the introduction on desktop and below the text on mobile. Do not restore the separate end-of-page television.
 
-The user also explicitly asked to restore the old animated smoke background.
+The user explicitly asked to restore the old animated smoke background, then requested: «انميشن دخان في موقع للاخر وكمان علي موبيل».
 
 **Why:** They want this specific ambient effect back, despite preferring restrained presentation overall.
 
-**How to apply:** Allow subtle neutral smoke behind the introduction, keeping text legible and preserving reduced-motion behavior. This does not permit restoring red glow or other removed effects.
+**How to apply:** Keep subtle neutral animated smoke behind the entire public site through the footer, including mobile, rather than restricting it to the introduction or desktop. Keep text legible, use a lighter mobile rendering budget, and preserve reduced-motion behavior. This does not permit restoring red glow or other removed effects.
 
 The user asked to remove the photo beside “Architecture, not just models.” Keep that About section text-led rather than restoring its portrait.
 

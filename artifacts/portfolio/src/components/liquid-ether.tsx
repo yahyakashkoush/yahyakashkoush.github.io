@@ -5,12 +5,11 @@ import { cn } from "cn";
 
 /**
  * A WebGL fluid simulation (Navier–Stokes, solved on the GPU) used as ambient
- * motion behind the hero portrait. Ported from a vanilla-JS build of the
+ * motion behind the public portfolio. Ported from a vanilla-JS build of the
  * "LiquidEther" effect rather than reimplemented, since the physics and
  * shaders are the whole point and are already correct.
  *
- * Mounted client-side only, after hydration — the hero's photo is still the
- * LCP element and paints without waiting on this. Pauses itself when the tab
+ * Mounted client-side only; page content paints independently. Pauses when the tab
  * is hidden or the canvas leaves the viewport, and never mounts at all under
  * `prefers-reduced-motion`.
  */
@@ -33,6 +32,8 @@ export type LiquidEtherOptions = {
   takeoverDuration: number;
   autoResumeDelay: number;
   autoRampDuration: number;
+  maxFPS: number;
+  pixelRatioLimit: number;
 };
 
 const DEFAULTS: LiquidEtherOptions = {
@@ -53,6 +54,8 @@ const DEFAULTS: LiquidEtherOptions = {
   takeoverDuration: 0.25,
   autoResumeDelay: 3000,
   autoRampDuration: 0.6,
+  maxFPS: 30,
+  pixelRatioLimit: 1.5,
 };
 
 type Fbo = THREE.WebGLRenderTarget;
@@ -146,9 +149,14 @@ function createLiquidEther(container: HTMLElement, opts: LiquidEtherOptions) {
 
     init(el: HTMLElement) {
       this.container = el;
-      this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      this.pixelRatio = Math.min(window.devicePixelRatio || 1, options.pixelRatioLimit);
       this.resize();
-      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      this.renderer = new THREE.WebGLRenderer({ antialias: options.pixelRatioLimit > 1, alpha: true });
+      if (!this.renderer.extensions.has("EXT_color_buffer_float")) {
+        this.renderer.dispose();
+        this.renderer.forceContextLoss();
+        throw new Error("Floating-point fluid rendering is unsupported.");
+      }
       this.renderer.autoClear = false;
       this.renderer.setClearColor(new THREE.Color(0), 0);
       this.renderer.setPixelRatio(this.pixelRatio);
@@ -892,6 +900,7 @@ function createLiquidEther(container: HTMLElement, opts: LiquidEtherOptions) {
     autoDriver: AutoDriver;
     output: Output;
     running = false;
+    private lastFrame = 0;
     private _loop = this.loop.bind(this);
     private _resize = this.resize.bind(this);
     private _onVisibility = () => {
@@ -929,9 +938,12 @@ function createLiquidEther(container: HTMLElement, opts: LiquidEtherOptions) {
       common.update();
       this.output.update();
     }
-    loop() {
+    loop(timestamp = performance.now()) {
       if (this.running) {
-        this.render();
+        if (timestamp - this.lastFrame >= 1000 / options.maxFPS - 0.5) {
+          this.render();
+          this.lastFrame = timestamp;
+        }
         rafId = requestAnimationFrame(this._loop);
       }
     }
@@ -1017,30 +1029,28 @@ export function LiquidEther({
   takeoverDuration = DEFAULTS.takeoverDuration,
   autoResumeDelay = DEFAULTS.autoResumeDelay,
   autoRampDuration = DEFAULTS.autoRampDuration,
+  maxFPS = DEFAULTS.maxFPS,
+  pixelRatioLimit = DEFAULTS.pixelRatioLimit,
 }: Partial<LiquidEtherOptions> & { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Matches the `md:block` this component is always wrapped in on the site
-    // (see hero.tsx): below that, skip the WebGL context and sim entirely
-    // rather than create it and rely on the IntersectionObserver to pause a
-    // `display: none` canvas — no allocation is cheaper than a paused one.
-    if (!window.matchMedia("(min-width: 768px)").matches) return;
-
-    const instance = createLiquidEther(container, {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobile = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    let instance: ReturnType<typeof createLiquidEther> | null = null;
+    const options = {
       colors: colors ?? DEFAULTS.colors,
       mouseForce,
       cursorSize,
       isViscous,
       viscous,
-      iterationsViscous,
-      iterationsPoisson,
+      iterationsViscous: mobile ? Math.min(iterationsViscous, 8) : iterationsViscous,
+      iterationsPoisson: mobile ? Math.min(iterationsPoisson, 12) : iterationsPoisson,
       dt,
-      BFECC,
-      resolution,
+      BFECC: mobile ? false : BFECC,
+      resolution: mobile ? Math.min(resolution, 0.2) : resolution,
       isBounce,
       autoDemo,
       autoSpeed,
@@ -1048,9 +1058,26 @@ export function LiquidEther({
       takeoverDuration,
       autoResumeDelay,
       autoRampDuration,
-    });
-
-    return () => instance.dispose();
+      maxFPS: Math.max(1, mobile ? Math.min(maxFPS, 24) : maxFPS),
+      pixelRatioLimit: Math.max(0.5, mobile ? Math.min(pixelRatioLimit, 1) : pixelRatioLimit),
+    };
+    const syncMotion = () => {
+      instance?.dispose();
+      instance = null;
+      if (motion.matches) return;
+      try {
+        instance = createLiquidEther(container, options);
+      } catch {
+        // Decorative WebGL must never take the page down; the CSS haze remains.
+        console.warn("Fluid background unavailable on this device; using the lightweight animated haze.");
+      }
+    };
+    syncMotion();
+    motion.addEventListener("change", syncMotion);
+    return () => {
+      motion.removeEventListener("change", syncMotion);
+      instance?.dispose();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- options are read once at mount; changing them is not a supported live-update path here.
   }, []);
 

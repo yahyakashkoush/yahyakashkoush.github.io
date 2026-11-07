@@ -1,7 +1,6 @@
 import { usePortfolio } from "@/components/content-provider";
 import { Action, Container } from "@/components/primitives";
 import { CrtMonitor } from "@/components/crt-monitor";
-import { LiquidEther } from "@/components/liquid-ether";
 import { AutomationFlow } from "@/components/automation-flow";
 
 /** The original systems reel accompanies the introduction, without portraits. */
@@ -9,21 +8,6 @@ export function Hero() {
   const { content: { hero, cinematic } } = usePortfolio();
   return (
     <section id="intro" className="relative isolate w-full overflow-hidden border-b border-line">
-      <div aria-hidden className="pointer-events-none absolute inset-0 hidden opacity-40 mix-blend-screen md:block">
-        <LiquidEther
-          colors={["#171717", "#87939f", "#292929"]}
-          mouseForce={12}
-          cursorSize={100}
-          resolution={0.35}
-          iterationsPoisson={20}
-          autoDemo
-          autoSpeed={0.3}
-          autoIntensity={1.5}
-          autoResumeDelay={2400}
-          autoRampDuration={0.8}
-        />
-      </div>
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/35" />
       <Container className="relative z-10 grid min-h-[86dvh] items-center gap-14 pt-32 pb-16 md:pt-40 md:pb-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         <div className="min-w-0">
           <p className="hero-rise t-label mb-6 flex items-center gap-3 text-red" data-testid="text-hero-role">
