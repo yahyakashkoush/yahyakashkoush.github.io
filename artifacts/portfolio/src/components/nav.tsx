@@ -36,7 +36,7 @@ export function Nav() {
             className="group t-nav inline-flex min-h-11 shrink-0 items-center pr-4 text-fg-2 transition-colors duration-300 hover:text-foreground"
             aria-label={`${site.name}, home`}
           >
-            <span>YK</span>
+            <span>Kashkoush</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex xl:gap-9">
