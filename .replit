@@ -1,4 +1,4 @@
-modules = ["nodejs-24"]
+modules = ["nodejs-24", "python-base-3.13"]
 
 [deployment]
 router = "application"
@@ -38,3 +38,9 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DQoOhAyUozkzdrd-at_O8g_1PvSSfpx"
+VITE_SUPABASE_URL = "https://ifljomfujnlamnduldaz.supabase.co"

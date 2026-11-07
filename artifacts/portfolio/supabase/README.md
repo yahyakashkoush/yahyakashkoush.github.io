@@ -42,3 +42,22 @@ the database or authentication provider, create another database, or delete data
 The workspace cannot activate these database/Edge Function changes while the
 original Supabase hostname is unreachable. Code and isolated tests are not proof
 that a production database has been upgraded.
+
+## Moving to an explicitly approved empty Supabase destination
+
+`scripts/migrate-supabase.mjs` uses a securely supplied `SUPABASE_ACCESS_TOKEN`
+and an explicit `SUPABASE_TARGET_REF`. Its default is read-only inspection;
+`--apply` refuses a nonempty public schema and initializes the CMS, booking
+upgrade, exact bundled content, and submission function. It never drops tables
+or deletes the original project. Existing `/media` assets remain website files.
+
+The browser uses shared `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+No service-role or management credential belongs in a `VITE_` variable.
+The submission gateway uses `verify_jwt: false` with a publishable API key;
+validation and server-side rate limits still protect public submissions.
+Admin/inbox/storage operations remain protected by Supabase Auth and RLS.
+
+This transfers the bundled public portfolio, not unreachable private inbox,
+booking, revision, or authentication records. Those require a source export or
+access to the original project. Never describe snapshot initialization as a
+complete private-data migration.

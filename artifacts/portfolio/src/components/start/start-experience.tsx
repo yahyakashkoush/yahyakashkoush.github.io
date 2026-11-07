@@ -12,6 +12,7 @@ import { ScheduleStep } from "@/components/start/steps/schedule-step";
 import { ReviewStep } from "@/components/start/steps/review-step";
 import { bookingService, type BookingOutcome } from "@/lib/booking";
 import { SubmissionError } from "@/lib/cms";
+import { clearInquiryDraft, readInquiryDraft, saveInquiryDraft } from "@/lib/inquiry-draft";
 import {
   STEPS,
   emptyInquiry,
@@ -43,15 +44,21 @@ const STEP_COMPONENTS = {
  */
 export function StartExperience() {
   const reduce = useReducedMotion();
-  const [phase, setPhase] = useState<Phase>("intro");
-  const [value, setValue] = useState<ProjectInquiry>(emptyInquiry);
+  const [resumedDraft] = useState(readInquiryDraft);
+  const [phase, setPhase] = useState<Phase>(resumedDraft?.phase || "intro");
+  const [value, setValue] = useState<ProjectInquiry>(resumedDraft?.value || emptyInquiry);
   const [errors, setErrors] = useState<Errors>({});
   const [outcome, setOutcome] = useState<BookingOutcome | null>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const movedByKeyboard = useRef(false);
   /** Prevent duplicate delivery while the sending sequence owns the view. */
   const locked = useRef(false);
-  const requestId = useRef<string | null>(null);
+  const requestId = useRef<string | null>(resumedDraft?.requestId || null);
+  useEffect(() => {
+    if (phase === "sent" && outcome?.status !== "failed") { clearInquiryDraft(); return; }
+    if (phase === "intro") return;
+    saveInquiryDraft(value, phase === "sent" ? "review" : phase, requestId.current);
+  }, [value, phase, outcome]);
   /**
    * Answers are merged, never replaced, so moving between steps keeps
    * everything already written. A field's error is dropped the moment it is
@@ -131,6 +138,7 @@ export function StartExperience() {
   // Fired once the closing animation finishes, never before.
   const finishSending = useCallback(async () => {
     requestId.current ||= crypto.randomUUID();
+    saveInquiryDraft(value, "review", requestId.current);
     try {
       const result = await bookingService.submit(value, requestId.current);
       setOutcome(result);
@@ -150,7 +158,7 @@ export function StartExperience() {
 
   const restart = useCallback(() => {
     locked.current = false;
-    if (outcome?.status !== "failed") { setValue(emptyInquiry); requestId.current = null; }
+    if (outcome?.status !== "failed") { setValue(emptyInquiry); requestId.current = null; clearInquiryDraft(); }
     setOutcome(null);
     setErrors({});
     setPhase("intro");

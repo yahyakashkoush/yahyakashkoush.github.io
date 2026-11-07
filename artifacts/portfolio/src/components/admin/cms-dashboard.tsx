@@ -42,6 +42,7 @@ function Workspace() {
   const [messageFilter, setMessageFilter] = useState("all");
   const [revisions, setRevisions] = useState<{ id: number; published_at: string }[]>([]);
   const dirty = saved !== "" && JSON.stringify(draft) !== saved;
+  const noteDirty = message !== null && note !== message.note;
   const unpublished = published !== "" && JSON.stringify(draft) !== published;
   const selectedProject = projectIndex === null ? null : draft.projects[projectIndex];
 
@@ -66,11 +67,11 @@ function Workspace() {
     return () => { active = false; };
   }, []);
   useEffect(() => {
-    if (!dirty) return;
-    const protect = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    if (!dirty && !noteDirty) return;
+    const protect = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
     window.addEventListener("beforeunload", protect);
     return () => window.removeEventListener("beforeunload", protect);
-  }, [dirty]);
+  }, [dirty, noteDirty]);
 
   async function save() {
     const valid = parseContent({ ...draft, projects: draft.projects.map((p, i) => ({ ...p, index: String(i + 1).padStart(2, "0") })) });
@@ -100,6 +101,7 @@ function Workspace() {
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = "portfolio-draft.json"; anchor.click(); URL.revokeObjectURL(url);
   }
   async function navigate(next: Section) {
+    if (busy) return;
     if (section === "Messages" && message && note !== message.note && !window.confirm("Leave this message without saving the private note?")) return;
     setSection(next); setQuery(""); setError("");
     if (next === "Messages") await action(() => loadMessages());
@@ -115,7 +117,7 @@ function Workspace() {
       <a className={styles.brand} href="/" target="_blank" rel="noreferrer">YK<span>.</span><small>PORTFOLIO / STUDIO</small></a>
       <div className={styles.workspaceName}><strong>{draft.site.name}</strong><small>Administrator workspace</small></div>
       <p className={styles.eyebrow}>MANAGE</p><nav aria-label="Admin navigation">{sections.map((name, i) => { const Icon = icons[i]; return <button key={name} aria-current={section === name ? "page" : undefined} className={section === name ? styles.active : ""} disabled={busy} onClick={() => void navigate(name)}><Icon size={19} />{name}{name === "Messages" && unread > 0 && <span className={styles.badge}>{unread}</span>}</button>; })}</nav>
-      <div className={styles.sidebarFoot}><a href="/" target="_blank" rel="noreferrer">View live portfolio <ArrowUpRight size={16} /></a><button disabled={busy} onClick={() => { if (!dirty || window.confirm("Sign out and discard changes that have not been saved?")) void action(async () => { const { error } = await getSupabase().auth.signOut(); if (error) throw error; }); }}><SignOut size={17} />Sign out</button><small>Private drafts · Protected inbox</small></div>
+      <div className={styles.sidebarFoot}><a href="/" target="_blank" rel="noreferrer">View live portfolio <ArrowUpRight size={16} /></a><button disabled={busy} onClick={() => { if ((!dirty && !noteDirty) || window.confirm("Sign out and discard changes that have not been saved?")) void action(async () => { const { error } = await getSupabase().auth.signOut(); if (error) throw error; }); }}><SignOut size={17} />Sign out</button><small>Private drafts · Protected inbox</small></div>
     </aside>
     <div className={styles.main}>
       <header className={styles.topbar}><span>Workspace <span>/</span> {section}</span><div><span className={styles.saveState}>{loading ? "Loading…" : dirty ? "Unsaved changes" : "Draft saved"}</span><button className={styles.button} disabled={busy || loading || !dirty} onClick={() => void action(async () => { await save(); setNotice("Draft saved privately. Publish when you are ready."); })}><FloppyDisk size={16} />Save draft</button></div></header>
@@ -135,7 +137,7 @@ function Workspace() {
         {section === "Site content" && <div className={styles.editorLayout}><nav className={styles.sectionNav} aria-label="Content sections">{contentSections.map(({ key, label }) => <button key={key} className={contentKey === key ? styles.selected : ""} onClick={() => setContentKey(key)}>{label}</button>)}</nav><section className={styles.panel}><div className={styles.panelHeading}><h2>{contentSections.find((s) => s.key === contentKey)?.label}</h2><a target="_blank" rel="noreferrer" href={`${contentSections.find((s) => s.key === contentKey)?.path.split("#")[0] || "/"}?preview=draft${contentSections.find((s) => s.key === contentKey)?.path.includes("#") ? "#" + contentSections.find((s) => s.key === contentKey)?.path.split("#")[1] : ""}`}>Preview saved draft <ArrowUpRight size={14} /></a></div><ContentFields value={fieldValue(draft[contentKey])} path={contentKey} onChange={(value) => setDraft({ ...draft, [contentKey]: value })} disabled={busy} /></section></div>}
         {section === "Messages" && <div className={styles.inboxLayout}>
           <section className={styles.panel}><div className={styles.panelHeading}><h2>Inbox</h2><button disabled={busy} onClick={() => void action(() => loadMessages())}>Refresh</button></div><input className={styles.search} aria-label="Search inbox" placeholder="Search names, emails, messages…" value={query} onChange={(e) => setQuery(e.target.value)} /><div className={styles.filterTabs}>{["all", "new", "contact", "project", "archived"].map((filter) => <button key={filter} className={filter === messageFilter ? styles.selected : ""} onClick={() => setMessageFilter(filter)}>{filter}</button>)}</div>
-            {messages.filter((m) => (messageFilter === "all" ? m.status !== "archived" : m.status === messageFilter || m.kind === messageFilter) && `${m.name} ${m.email} ${m.message}`.toLowerCase().includes(query.toLowerCase())).map((m) => <button key={m.id} className={`${styles.messageRow} ${message?.id === m.id ? styles.selected : ""}`} onClick={() => { setMessage(m); setNote(m.note); }}><span><strong>{m.name}</strong><small>{new Date(m.created_at).toLocaleDateString()}</small></span><span className={styles.messageType}>{m.kind === "project" ? "Project request" : "Contact message"} · {m.status}</span><p>{m.message}</p></button>)}
+            {messages.filter((m) => (messageFilter === "all" ? m.status !== "archived" : m.status === messageFilter || m.kind === messageFilter) && `${m.name} ${m.email} ${m.message}`.toLowerCase().includes(query.toLowerCase())).map((m) => <button key={m.id} disabled={busy} className={`${styles.messageRow} ${message?.id === m.id ? styles.selected : ""}`} onClick={() => { if (noteDirty && !window.confirm("Discard the unsaved private note before opening this message?")) return; setMessage(m); setNote(m.note); }}><span><strong>{m.name}</strong><small>{new Date(m.created_at).toLocaleDateString()}</small></span><span className={styles.messageType}>{m.kind === "project" ? "Project request" : "Contact message"} · {m.status}</span><p>{m.message}</p></button>)}
             {!messages.length && <div className={styles.empty}><EnvelopeSimple size={32} /><h3>Your inbox is ready.</h3><p>New contact messages and project briefs will appear here.</p></div>}
             <button className={styles.button} disabled={busy} onClick={() => void action(() => loadMessages(true))}>Load older messages</button><p className={styles.hint}>{messages.length} messages loaded. Search applies to loaded messages.</p>
           </section><section className={styles.panel}>{message ? <><div className={styles.panelHeading}><h2>{message.name}</h2><span className={styles.badge}>{message.status}</span></div><a href={`mailto:${message.email}`}>{message.email}</a><p className={styles.hint}>{new Date(message.created_at).toLocaleString()}</p><p className={styles.messageBody}>{message.message}</p>{Object.keys(message.details).length > 0 && <dl className={styles.details}>{Object.entries(message.details).map(([key, value]) => <div key={key}><dt>{key.replace(/([A-Z])/g, " $1")}</dt><dd>{Array.isArray(value) ? value.join(", ") : String(value ?? "—")}</dd></div>)}</dl>}<label className={styles.field}>Private note<textarea rows={4} value={note} maxLength={10000} onChange={(e) => setNote(e.target.value)} /></label><div className={styles.toolbar}><button className={styles.button} disabled={busy} onClick={() => void action(() => changeMessage(message.status))}>Save note</button><a className={styles.primary} href={`mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.kind === "project" ? "Your project request" : "Your message"}`)}`}>Reply by email <ArrowUpRight size={14} /></a></div><p className={styles.hint}>Reply opens your email app. Mark replied after you send the email.</p><div className={styles.toolbar}>{(["new", "read", "replied", "archived"] as const).filter((status) => status !== message.status).map((status) => <button key={status} disabled={busy} className={styles.button} onClick={() => void action(() => changeMessage(status))}>Mark {status}</button>)}</div></> : <div className={styles.empty}>Select a message to read it and manage its status.</div>}</section>

@@ -43,27 +43,10 @@ export function CrtMonitor({ clip, caption, className, embedded = false }: { cli
 
   const monitor = (
     <figure aria-label={caption} className={cn("tv", embedded && className)}>
+      <div aria-hidden className="tv-antenna"><i /><i /><b /></div>
       <div className="tv-body">
-        <div className="mb-3 flex items-center justify-between gap-3 px-1">
-          <div className="flex items-center gap-2">
-            <span aria-hidden className="tv-led" data-on={playing} />
-            <span className="t-label text-[0.55rem] text-fg-3">Systems in motion</span>
-          </div>
-          <button
-            type="button"
-            onClick={toggle}
-            className="tv-btn t-label text-[0.55rem]"
-            aria-label={playing ? "Pause reel" : "Play reel"}
-            aria-pressed={playing}
-            data-testid="button-reel-toggle"
-          >
-            {playing ? <Pause className="size-3" /> : <Play className="size-3" />}
-            {playing ? "Pause" : "Play"}
-          </button>
-        </div>
-
         <div className="tv-bezel">
-          <div className="tv-screen" style={{ aspectRatio: clip.width / clip.height }}>
+          <div className="tv-screen" data-on={playing} style={{ aspectRatio: clip.width / clip.height }}>
             <video
               ref={ref}
               className="absolute inset-0 size-full cursor-pointer object-contain object-center"
@@ -84,13 +67,23 @@ export function CrtMonitor({ clip, caption, className, embedded = false }: { cli
           </div>
         </div>
 
-        <div aria-hidden className="mt-3 flex items-center justify-between px-1">
-          <span className="t-label text-[0.5rem] text-fg-3/70">YK / 01</span>
-          <div className="flex gap-[3px]">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <span key={i} className="h-2.5 w-[3px] bg-white/10" />
-            ))}
-          </div>
+        <div className="tv-panel">
+          <span aria-hidden className="tv-brand t-label text-[0.5rem]">YK-01</span>
+          <span aria-hidden className="tv-dial" data-on={playing} />
+          <div aria-hidden className="tv-ticks"><span /><span /><span /><span /><span /></div>
+          <div aria-hidden className="tv-grille" />
+          <span aria-hidden className="tv-led" data-on={playing} />
+          <button
+            type="button"
+            onClick={toggle}
+            className="tv-btn t-label text-[0.55rem]"
+            aria-label={playing ? "Pause reel" : "Play reel"}
+            aria-pressed={playing}
+            data-testid="button-reel-toggle"
+          >
+            {playing ? <Pause className="size-3" /> : <Play className="size-3" />}
+            {playing ? "Pause" : "Play"}
+          </button>
         </div>
       </div>
       <div aria-hidden className="tv-feet"><span /><span /></div>

@@ -7,7 +7,7 @@ import styles from "./cms.module.css";
 
 export function AdminAuth({ children }: { children: React.ReactNode }) {
   const [access, setAccess] = useState<"loading" | "login" | "denied" | "admin">("loading");
-  const [mode, setMode] = useState<"login" | "reset" | "password">("login");
+  const [mode, setMode] = useState<"login" | "reset" | "password">(() => new URLSearchParams(window.location.search).get("setup") === "1" ? "password" : "login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -40,6 +40,9 @@ export function AdminAuth({ children }: { children: React.ReactNode }) {
       const client = getSupabase();
       if (mode === "password") {
         const { error } = await client.auth.updateUser({ password }); if (error) throw error;
+        const location = new URL(window.location.href);
+        location.searchParams.delete("setup");
+        window.history.replaceState(null, "", `${location.pathname}${location.search}${location.hash}`);
         setPassword(""); setMode("login"); setNotice("Password updated.");
       } else if (mode === "reset") {
         const { error } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/admin` });

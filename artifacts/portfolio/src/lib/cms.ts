@@ -1,4 +1,4 @@
-import { getSupabase, submissionKey, supabaseUrl } from "./supabase";
+import { getSupabase, supabasePublicKey, supabaseUrl } from "./supabase";
 import { parseContent, type PortfolioContent } from "./content-schema";
 
 export type ContentRow = { id: string; content: PortfolioContent; version: number; updated_at: string };
@@ -35,7 +35,7 @@ export async function uploadImage(file: File) {
   return { src: getSupabase().storage.from("portfolio-images").getPublicUrl(name).data.publicUrl, width, height, alt: file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "), caption: "", kind: width < height ? "mobile" as const : "desktop" as const };
 }
 export async function submitMessage(payload: Record<string, unknown>) {
-  const response = await fetch(`${supabaseUrl}/functions/v1/portfolio-submit`, { method: "POST", headers: { "Content-Type": "application/json", apikey: submissionKey, Authorization: `Bearer ${submissionKey}` }, body: JSON.stringify(payload) });
+  const response = await fetch(`${supabaseUrl}/functions/v1/portfolio-submit`, { method: "POST", headers: { "Content-Type": "application/json", apikey: supabasePublicKey }, body: JSON.stringify(payload) });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new SubmissionError(result.error || "Your message could not be sent. Please try again.", result.code);
   return result as { id: string; bookingStatus?: "reserved" };

@@ -53,7 +53,7 @@
   },
   "work": {
     "label": "Selected work",
-    "title": "Five systems, built end to end."
+    "title": "Systems built end to end."
   },
   "about": {
     "label": "About",
@@ -339,9 +339,9 @@
     "contactQuestion": "Where should I send the reply?",
     "scheduleTitle": "Schedule",
     "scheduleQuestion": "When should we talk?",
-    "scheduleHelp": "This is a preferred slot, not a confirmed booking — I’ll confirm by reply.",
+    "scheduleHelp": "Your time is held after your brief is accepted. I’ll confirm the meeting details by reply.",
     "reviewTitle": "Project brief",
-    "reviewHelp": "Your brief is sent privately. The meeting time is a request and will be confirmed by reply.",
+    "reviewHelp": "Your brief is sent privately. Once accepted, your selected time is held so nobody else can request it. Meeting details will be confirmed by reply.",
     "submitLabel": "Seal the brief",
     "successTitle": "Your project brief has been received.",
     "successMessage": "I’ll be in touch shortly.",
@@ -399,6 +399,7 @@
       }
     ],
     "scheduling": {
+      "timeZone": "Africa/Cairo",
       "leadTimeDays": 2,
       "horizonDays": 42,
       "weekdays": [

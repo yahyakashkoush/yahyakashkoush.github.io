@@ -1,11 +1,22 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-// Public browser credentials only. Authorization is enforced by database RLS.
-export const supabaseUrl = "https://ckgdktknigrrwkjfnkqm.supabase.co";
-export const supabasePublicKey = "sb_publishable_Z_PSWfvlqnyxxG82mAlUWw_yG13JQEq";
-export const submissionKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrZ2RrdGtuaWdycndramZua3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5MDYwMjEsImV4cCI6MjEwNTQ4MjAyMX0.EQTggdONHTk_i0mqoAb7LWIRP7zTWQEC3FHL14yki_A";
+// Only the public project URL and publishable key may enter the browser bundle.
+// Administrative/management credentials are NEVER read from VITE_ variables.
+export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+export const supabasePublicKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+if (!supabaseUrl || !supabasePublicKey) throw new Error("Supabase public configuration is missing.");
+const project = new URL(supabaseUrl).hostname.split(".")[0];
 let client: SupabaseClient | undefined;
+
 export function getSupabase() {
-  if (!client) client = createClient(supabaseUrl, supabasePublicKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "portfolio-admin-auth" } });
+  if (!client) {
+    client = createClient(supabaseUrl, supabasePublicKey, {
+      auth: {
+        persistSession: true, autoRefreshToken: true, detectSessionInUrl: true,
+        // Sessions from a previous project must not be sent to the new one.
+        storageKey: `portfolio-admin-auth:${project}`,
+      },
+    });
+  }
   return client;
 }
