@@ -19,7 +19,13 @@ The user subsequently requested removal of all images and “monochrome with blu
 
 **Why:** The portfolio needs to make a formal professional impression for a company audience.
 
-**How to apply:** Keep portraits, project screenshots and hover previews removed. Use neutral black/gray/white with restrained blue emphasis; this supersedes the earlier warm-sand accent.
+**How to apply:** Use neutral black/gray/white with restrained blue emphasis; this supersedes the earlier warm-sand accent. Keep personal/decorative portraits removed, but preserve real project screenshots.
+
+The user objected when project images were removed: «صور مشاريع ليه شلتها».
+
+**Why:** The earlier “all images” request was interpreted too broadly; project screenshots are evidence of the work, not decorative imagery.
+
+**How to apply:** Keep project previews and case-study galleries visible in their original colors. Do not remove them as part of personal-image cleanup.
 
 The user explicitly requested the original television and its original video in the empty right side of the introduction.
 

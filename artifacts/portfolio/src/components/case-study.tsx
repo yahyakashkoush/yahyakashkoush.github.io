@@ -2,6 +2,7 @@ import Link from "@/lib/compat/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { Container, Kicker, Prose, Rule, SectionHeading, Tag, TextLink } from "@/components/primitives";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion";
+import { Gallery } from "@/components/gallery";
 import { usePortfolio, projectHref } from "@/components/content-provider";
 import type { CmsProject } from "@/lib/content-schema";
 
@@ -15,7 +16,7 @@ export function CaseStudyContent({ slug }: { slug: string }) {
   return (
     <article>
       {/* Hero -------------------------------------------------------------- */}
-      {/* Case studies stay text-led, consistent with the image-free portfolio. */}
+      {/* Clear title first; original project screenshots appear below. */}
       <header className="flex min-h-[58vh] flex-col justify-end pt-32 pb-12 md:min-h-[66vh] md:pt-40 md:pb-16">
         <Container>
           <Reveal y={16}>
@@ -110,6 +111,17 @@ export function CaseStudyContent({ slug }: { slug: string }) {
                 </RevealItem>
               ))}
             </RevealGroup>
+          </Container>
+        </section>
+      )}
+
+      {project.media.gallery.length > 0 && (
+        <section className="pt-20 md:pt-28">
+          <Container>
+            <Reveal>
+              <Kicker as="h2" className="mb-10">Interface</Kicker>
+            </Reveal>
+            <Gallery items={project.media.gallery} title={project.title} />
           </Container>
         </section>
       )}

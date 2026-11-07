@@ -49,14 +49,18 @@ test("the active source no longer depends on Next.js", () => {
   assert.ok(!pkg.dependencies?.next && !pkg.devDependencies?.next);
 });
 
-test("public portfolio surfaces remain image-free with blue emphasis", () => {
-  for (const file of ["sections/hero.tsx", "sections/about.tsx", "sections/work.tsx", "sections/contact.tsx", "case-study.tsx"]) {
+test("personal photos stay removed while project images remain with blue emphasis", () => {
+  for (const file of ["sections/hero.tsx", "sections/about.tsx", "sections/contact.tsx"]) {
     const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
     assert.doesNotMatch(source, /<Image\b|<img\b|<Gallery\b|<video\b|ScreenshotPeek/, file);
   }
   const css = readFileSync(new URL("../src/globals.css", import.meta.url), "utf8");
   assert.match(css, /--red: #80b2ff;/);
   assert.match(css, /--red: #2459a6;/);
+  const work = readFileSync(new URL("../src/components/sections/work.tsx", import.meta.url), "utf8");
+  const study = readFileSync(new URL("../src/components/case-study.tsx", import.meta.url), "utf8");
+  assert.match(work, /<Image\b/);
+  assert.match(study, /<Gallery items=\{project\.media\.gallery\}/);
 });
 
 test("the project inquiry uses image-free, completion-driven envelope transitions", () => {
