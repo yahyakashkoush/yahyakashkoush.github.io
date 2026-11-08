@@ -21,18 +21,17 @@ export const projectSchema = z.object({
   stack: paragraphs, links: z.array(z.object({ label: required, href: safeUrl })).max(30),
   media: z.object({ preview: shotSchema.nullable(), gallery: z.array(shotSchema).max(30) }),
 });
-const clip = z.object({ src: safeUrl, poster: safeUrl, posterAlt: required, width: z.number().positive(), height: z.number().positive(), duration: z.number().positive(), content: text, caption: text });
 export const contentSchema = z.object({
   site: z.object({ name: required, role: required, statement: paragraphs, intro: required, email: z.email(), linkedin: safeUrl, url: z.url() }),
   navigation: z.array(z.object({ label: required, href: safeUrl })).min(1).max(20),
-  hero: z.object({ heading: required, role: required, description: required, image: imageSchema, primaryLabel: required, primaryHref: safeUrl, secondaryLabel: required, secondaryHref: safeUrl }),
+  hero: z.object({ heading: required, role: required, description: required, primaryLabel: required, primaryHref: safeUrl, secondaryLabel: required, secondaryHref: safeUrl }),
   work: section,
-  about: section.extend({ paragraphs: paragraphs.min(1), image: imageSchema, linkLabel: required }),
+  about: section.extend({ paragraphs: paragraphs.min(1), linkLabel: required }),
   experience: section.extend({ entries: z.array(z.object({ period: required, title: required, org: text, body: paragraphs })).max(50) }),
   capabilities: section.extend({ groups: z.array(z.object({ title: required, items: paragraphs })).max(50) }),
-  contact: section.extend({ image: imageSchema, description: text, buttonLabel: required, successMessage: required }),
+  contact: section.extend({ description: text, buttonLabel: required, successMessage: required }),
   start: section.extend({ lede: text, cta: required, briefTitle: required, briefQuestion: required, briefPlaceholder: text, typeQuestion: required, budgetTitle: required, budgetQuestion: required, budgetHelp: text, contactTitle: required, contactQuestion: required, scheduleTitle: required, scheduleQuestion: required, scheduleHelp: text, reviewTitle: required, reviewHelp: text, submitLabel: required, successTitle: required, successMessage: required, projectTypes: z.array(choice).min(1).max(30), budgetBands: z.array(choice.extend({ note: text })).min(1).max(30), scheduling: scheduleSchema }),
-  cinematic: z.object({ chapterWork: clip, crtReel: clip }),
+  cinematic: z.object({ crtReel: z.object({ caption: text }) }),
   projects: z.array(projectSchema).min(1).max(100),
 }).superRefine((value, context) => {
   for (const [path, ids] of [["projects", value.projects.map((p) => p.slug)], ["start.projectTypes", value.start.projectTypes.map((p) => p.id)], ["start.budgetBands", value.start.budgetBands.map((p) => p.id)]] as const) {

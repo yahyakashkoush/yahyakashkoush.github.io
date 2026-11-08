@@ -42,10 +42,6 @@
     "heading": "Yahya\nKashkoush",
     "role": "Applied AI & Automation Engineer",
     "description": "I turn conversations, data and research into systems that do the work: orders that are not missed, evidence that can be checked, decisions that do not wait on a spreadsheet.",
-    "image": {
-      "src": "/media/portrait/front-medium.jpg",
-      "alt": "Yahya Kashkoush"
-    },
     "primaryLabel": "Selected work",
     "primaryHref": "/#work",
     "secondaryLabel": "Contact",
@@ -62,10 +58,6 @@
       "Computer Science and Artificial Intelligence graduate. I started on a software and mobile path, moved into applied AI, and now build AI SaaS, automation and backend systems end to end.",
       "My interest sits in architecture and production engineering, not only in using AI models. The question that holds my attention is how a system behaves once it is carrying real traffic, real data and real money."
     ],
-    "image": {
-      "src": "/media/portrait/close-up.jpg",
-      "alt": "Portrait lit from one side in deep red"
-    },
     "linkLabel": "LinkedIn"
   },
   "experience": {
@@ -315,10 +307,6 @@
   "contact": {
     "label": "Contact",
     "title": "Let’s build something.",
-    "image": {
-      "src": "/media/portrait/full-body.jpg",
-      "alt": "Full-length portrait inside a red light frame"
-    },
     "description": "Your message is sent privately. I’ll reply by email.",
     "buttonLabel": "Send message",
     "successMessage": "Thank you. Your message has been received. I’ll reply by email."
@@ -422,24 +410,7 @@
     }
   },
   "cinematic": {
-    "chapterWork": {
-      "src": "/media/video/ai-transition.mp4",
-      "poster": "/media/portrait/abstract-system.jpg",
-      "posterAlt": "Abstract red wireframe architecture suspended in darkness",
-      "width": 1920,
-      "height": 1080,
-      "duration": 8,
-      "content": "Abstract red lattice and slabs, camera travelling forward. No subject.",
-      "caption": "The systems behind the work"
-    },
     "crtReel": {
-      "src": "/media/video/crt-reel.mp4",
-      "poster": "/media/portrait/crt-reel-poster.webp",
-      "posterAlt": "Illustrated figure surrounded by files and gears, mid-transition on a CRT screen",
-      "width": 950,
-      "height": 590,
-      "duration": 23.33,
-      "content": "Generated reel: signals move from sources through one intelligence layer into actions, cycling across WKEYONE, Headshot, PULSE and KEYONE Data.",
       "caption": "One architecture, four systems"
     }
   },

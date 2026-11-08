@@ -45,6 +45,12 @@ The user asked to remove the photo beside “Architecture, not just models.” K
 
 **How to apply:** Retain the heading and supporting content without a decorative photo in this section.
 
+Retired portraits and stock videos must not be kept in the current repository, including migration backups, or exposed as editable Site content fields. Keep real project screenshots. Use YK as the browser icon and no old portrait as the link-sharing image.
+
+**Why:** The user explicitly requested removal of all old photos/video and the stale admin/share previews.
+
+**How to apply:** Do not restore legacy media or unused upload controls when extending the CMS; preserve the generated systems reel and project evidence.
+
 Coordinate the inquiry envelope with animation completion events rather than independent timers, and include page enter/exit duration when judging its total opening time.
 
 **Why:** Independent stages can drift or leave the form delayed even when each individual movement looks correct.

@@ -50,6 +50,16 @@ test("the active source no longer depends on Next.js", () => {
 });
 
 test("personal photos stay removed while project images remain with blue emphasis", () => {
+  for (const key of ["hero", "about", "contact"]) assert.ok(!("image" in content[key]));
+  assert.deepEqual(Object.keys(content.cinematic), ["crtReel"]);
+  assert.deepEqual(Object.keys(content.cinematic.crtReel), ["caption"]);
+  assert.doesNotMatch(JSON.stringify(content), /\/media\/(?:portrait|video)\//);
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.doesNotMatch(html, /og:image|twitter:image/);
+  assert.match(html, /favicon\.svg\?v=yk2/);
+  for (const directory of ["portrait", "video"]) {
+    assert.ok(!existsSync(new URL(`../public/media/${directory}`, import.meta.url)));
+  }
   for (const file of ["sections/hero.tsx", "sections/about.tsx", "sections/contact.tsx"]) {
     const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
     assert.doesNotMatch(source, /<Image\b|<img\b|<Gallery\b|<video\b|ScreenshotPeek/, file);

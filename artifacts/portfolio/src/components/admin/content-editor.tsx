@@ -8,7 +8,7 @@ import { safeUrl } from "@/lib/content-schema";
 import styles from "./cms.module.css";
 
 export type EditableValue = string | number | boolean | null | EditableValue[] | { [key: string]: EditableValue };
-export const emptyShot = { src: "/media/portrait/front-medium.jpg", alt: "Describe this image", width: 1089, height: 1445, caption: "", kind: "desktop" };
+export const emptyShot = { src: "", alt: "Describe this image", width: 1200, height: 800, caption: "", kind: "desktop" };
 export const emptyProject = { slug: "new-project", index: "01", title: "New project", subtitle: "", year: null, date: null, role: "", summary: "", overview: [""], challenge: [], approach: [], capabilities: [], architecture: "", outcome: [], stack: [], credits: [], links: [], media: { preview: null, gallery: [] } };
 function labelFor(key: string) { return key.replace(/([A-Z])/g, " $1").replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase()); }
 function newItem(key: string): EditableValue {

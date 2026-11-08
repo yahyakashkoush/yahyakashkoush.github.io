@@ -1,11 +1,7 @@
 /**
  * The single source of truth for media. No component picks an asset itself.
  *
- * Two namespaces that must never mix:
- *
- *   projectMedia   /media/work/**      real product evidence. Screenshots only.
- *   cinematic      /media/video/**     the prepared narrative footage, plus
- *                  /media/portrait/**  its poster frames.
+ * projectMedia contains real product evidence: screenshots only.
  *
  * Personal photography is never used as project evidence, and a project never
  * borrows another project's assets. A project with no screenshots has
@@ -120,84 +116,3 @@ export const projectMedia: Record<string, ProjectMedia> = {
 export const getProjectMedia = (slug: string): ProjectMedia =>
   projectMedia[slug] ?? { preview: null, gallery: [] };
 
-/* Cinematic --------------------------------------------------------------- */
-
-export type Clip = {
-  src: string;
-  /** Still from the same shoot, shown until the clip has frames to paint. */
-  poster: string;
-  posterAlt: string;
-  width: number;
-  height: number;
-  duration: number;
-  /** What is actually on screen, confirmed by stepping through the footage. */
-  content: string;
-};
-
-/**
- * Placement is driven by what each clip does on screen, not by its filename.
- * Frames were inspected at 20% and 85% of each clip's duration.
- */
-export const cinematic = {
-  /** Abstract travel through a red lattice. No subject: it reads as a cut. */
-  chapterWork: {
-    src: "/media/video/ai-transition.mp4",
-    poster: "/media/portrait/abstract-system.jpg",
-    posterAlt: "Abstract red wireframe architecture suspended in darkness",
-    width: 1920,
-    height: 1080,
-    duration: 8,
-    content: "Abstract red lattice and slabs, camera travelling forward. No subject.",
-  },
-  /**
-   * The four uploaded retro-cartoon scenes (intro, manual work, AI automation,
-   * automated future), cropped to just the in-footage screen content and
-   * crossfaded into one continuous reel by scripts/build-crt-reel.sh. Played
-   * inside the new CrtMonitor frame, not the original footage's own TV body.
-   */
-  crtReel: {
-    src: "/media/video/crt-reel.mp4",
-    poster: "/media/portrait/crt-reel-poster.webp",
-    posterAlt: "Illustrated figure surrounded by files and gears, mid-transition on a CRT screen",
-    width: 950,
-    height: 590,
-    duration: 23.33,
-    content:
-      "Four-beat story: intro, manual work turning to chaos, an AI system organising it, the automated result.",
-  },
-} satisfies Record<string, Clip>;
-
-/**
- * Held back on purpose, so the audit has no unexplained orphans.
- *
- * The hero and About both use stills by request, which freed hero.mp4 and
- * close-up.mp4. Both are still strong footage; they are parked here rather than
- * forced into a third and fourth full-bleed cut, which would turn the page into
- * section/video/section/video. Promoting any of these is a one-line change.
- */
-export const unusedClips = [
-  {
-    src: "/media/video/hero.mp4",
-    reason: "Freed when the hero moved to a still. Push-in on the subject; the strongest cut candidate.",
-  },
-  {
-    src: "/media/video/close-up.mp4",
-    reason: "Freed when About moved to a still. Push-in to the face; the natural identity cut.",
-  },
-  {
-    src: "/media/video/front-wide.mp4",
-    reason: "Same set and action as hero.mp4, and the weaker of the two takes.",
-  },
-  {
-    src: "/media/video/ai-network.mp4",
-    reason: "Abstract forward travel, same role as ai-transition.mp4 which reads stronger.",
-  },
-  {
-    src: "/media/video/human-system.mp4",
-    reason: "Freed when this cut moved to a still by request, matching hero and About. Wide among monoliths, landing on the subject in profile.",
-  },
-  {
-    src: "/media/video/cinematic-02.mp4",
-    reason: "720p, and covers the same beat as human-system.mp4 at lower resolution.",
-  },
-] as const;

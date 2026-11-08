@@ -18,7 +18,7 @@ const contentSections: { key: ContentKey; label: string; path: string }[] = [
   { key: "experience", label: "Experience", path: "/#experience" }, { key: "capabilities", label: "Capabilities", path: "/#capabilities" },
   { key: "contact", label: "Contact", path: "/#contact" }, { key: "start", label: "Start a project", path: "/start" },
   { key: "work", label: "Work heading", path: "/#work" }, { key: "site", label: "Identity & contact details", path: "/" },
-  { key: "navigation", label: "Navigation & footer links", path: "/" }, { key: "cinematic", label: "Films & captions", path: "/" },
+  { key: "navigation", label: "Navigation & footer links", path: "/" }, { key: "cinematic", label: "Systems reel caption", path: "/" },
 ];
 const icons = [GridFour, FolderSimple, Globe, EnvelopeSimple, CalendarCheck, RocketLaunch];
 
